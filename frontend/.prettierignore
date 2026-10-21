@@ -5,3 +5,4 @@ playwright-report
 test-results
 coverage
 next-env.d.ts
+lib/api/schema.d.ts

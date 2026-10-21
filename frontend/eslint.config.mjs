@@ -38,6 +38,7 @@ const eslintConfig = defineConfig([
     "playwright-report/**",
     "test-results/**",
     "next-env.d.ts",
+    "lib/api/schema.d.ts", // generated from backend/openapi.json
   ]),
 ]);
 

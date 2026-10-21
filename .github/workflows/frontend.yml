@@ -2,9 +2,9 @@ name: frontend
 
 on:
   push:
-    paths: ["frontend/**", ".github/workflows/frontend.yml"]
+    paths: ["frontend/**", "backend/openapi.json", ".github/workflows/frontend.yml"]
   pull_request:
-    paths: ["frontend/**", ".github/workflows/frontend.yml"]
+    paths: ["frontend/**", "backend/openapi.json", ".github/workflows/frontend.yml"]
 
 concurrency:
   group: frontend-${{ github.ref }}
@@ -29,6 +29,8 @@ jobs:
           cache: pnpm
           cache-dependency-path: frontend/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+      - name: API types match backend/openapi.json
+        run: pnpm gen:api:check
       - name: Type check
         run: pnpm typecheck
       - name: Lint (includes the strict jsx-a11y rules)
@@ -37,8 +39,10 @@ jobs:
         run: pnpm format:check
       - name: Unit tests
         run: pnpm test
-      - name: Production build
+      - name: Production build (default settings)
         run: pnpm build
+      - name: Production build for the end-to-end tests (component gallery on)
+        run: pnpm build:e2e
       - name: Install Chromium and its system libraries
         run: pnpm e2e:install
       - name: End-to-end and accessibility (axe) tests
