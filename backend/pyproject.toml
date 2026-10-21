@@ -42,6 +42,8 @@ asyncio_default_test_loop_scope = "session"
 [tool.coverage.run]
 source = ["zolo"]
 branch = true
+# SQLAlchemy's async layer runs queries in greenlets; without this, coverage misses those lines.
+concurrency = ["greenlet", "thread"]
 
 [tool.coverage.report]
 show_missing = true
@@ -57,6 +59,7 @@ ignore = ["UP047"]  # keep TypeVar helpers readable
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["E501"]
 "migrations/*" = ["E501"]
+"zolo/api/routes_dev.py" = ["E501"]  # the embedded test page has long JavaScript lines
 
 [tool.mypy]
 strict = true

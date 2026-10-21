@@ -3,6 +3,22 @@
 Phase 1 (Voice MVP): no language model. The AI only proposes: its single write is
 `create_draft`, and it never approves, executes, or writes the readback a customer approves.
 
+## API (Phase 1)
+
+The HTTP API is the contract in `openapi.json` (regenerate with
+`uv run python -m zolo.api.export_openapi > openapi.json`; CI fails if it is stale and the
+frontend generates its types from it). Errors are RFC 9457 problem JSON with an uppercase `code`.
+
+- **Sessions:** a signed, `HttpOnly`, `SameSite=Lax` cookie (12 hours). Customers and agents log in
+  with `POST /auth/mock-login` (phone plus the fixed OTP). That route and `/dev/passkey-test`
+  exist **only when `DEMO_MODE=true`** (which also needs a `DEMO_TOKEN` of 8+ characters).
+- **Rate limits** (in memory, one process): login, request creation, claim (5 a minute, and 5
+  wrong codes lock the customer for 5 minutes), challenge and approve. `429` carries `Retry-After`.
+- **Passkeys:** `WEBAUTHN_STRICT_COUNTER` (default `true`) refuses a repeated non-zero counter;
+  `false` is for the demo and logs a warning. A counter that goes backwards is always refused.
+  A bad signature is always a bare `SIGNATURE_INVALID`; the reason is logged server-side only.
+- **Real phone:** see `../docs/REAL_DEVICE_TEST.md` (not yet run on a phone).
+
 ## Run
 
 ```

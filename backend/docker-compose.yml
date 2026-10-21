@@ -32,6 +32,8 @@ services:
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
       DEMO_MODE: ${DEMO_MODE:-true}
       DEMO_TOKEN: ${DEMO_TOKEN:-dev-demo-token}
+      # the demo copy tolerates platform passkeys that repeat a counter (logged as a warning)
+      WEBAUTHN_STRICT_COUNTER: ${WEBAUTHN_STRICT_COUNTER:-false}
     ports:
       - "8000:8000"
 
