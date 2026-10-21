@@ -1,0 +1,3 @@
+# version: 1
+# status: UNREVIEWED machine-written draft. Not for the demo until a native Hausa speaker rewrites it
+{payee} yana neman naira {amount_words}. {amount_digits_spoken}. Kana amincewa?

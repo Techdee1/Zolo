@@ -1,0 +1,3 @@
+# version: 1
+# status: UNREVIEWED machine-written draft. Not for the demo until a native Igbo speaker rewrites it
+{payee} na-arị naira {amount_words}. {amount_digits_spoken}. I kwenyere?

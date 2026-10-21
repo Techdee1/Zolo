@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "note": "Every line the stage demo can speak. Pidgin wording is unreviewed.",
+  "readbacks": [
+    {"payee": "Bisi Ventures", "amount_kobo": 5100000, "what": "fraud caught: wrong amount"},
+    {"payee": "Bisi Ventures", "amount_kobo": 1500000, "what": "honest payment"},
+    {"payee": "Mama Chi Stores", "amount_kobo": 1850000, "what": "Card Guard"}
+  ],
+  "readback_langs": ["en", "pcm", "yo", "ha", "ig"],
+  "phrases": {
+    "en": [
+      "Let me read it back to you.",
+      "Which one? Please choose from the options.",
+      "Sorry, I did not catch that. Please say it again.",
+      "I could not hear you well. Please type the amount.",
+      "Please type the amount on your keypad.",
+      "One moment, please. I am working on it.",
+      "This payment changed after you heard it. Nothing was sent.",
+      "Your payment of fifteen thousand naira to Bisi Ventures is done.",
+      "You declined this payment. Nothing was sent.",
+      "This request has expired. Nothing was sent."
+    ],
+    "pcm": [
+      "Make I read am back give you.",
+      "Which one? Abeg choose from the options.",
+      "Sorry, I no hear you well. Abeg talk am again.",
+      "I no hear well. Abeg type the amount.",
+      "Abeg type the amount for your keypad.",
+      "Wait small, abeg. I dey work on am.",
+      "Dis payment don change after you don hear am. Nothing go.",
+      "Your payment of fifteen thousand naira to Bisi Ventures don go.",
+      "You don reject dis payment. Nothing go.",
+      "Dis request don expire. Nothing go."
+    ]
+  }
+}

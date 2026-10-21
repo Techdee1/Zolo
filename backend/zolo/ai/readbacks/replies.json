@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "note": "Spoken replies used by voice_turn. Pidgin wording is unreviewed; yo, ha and ig fall back to English until native speakers write them.",
+  "replies": {
+    "read_back": {"en": "Let me read it back to you.", "pcm": "Make I read am back give you."},
+    "which_one": {"en": "Which one? Please choose from the options.", "pcm": "Which one? Abeg choose from the options."},
+    "repeat": {"en": "Sorry, I did not catch that. Please say it again.", "pcm": "Sorry, I no hear you well. Abeg talk am again."},
+    "ask_amount": {"en": "How much should I send?", "pcm": "How much you wan send?"},
+    "ask_recipient": {"en": "Who should I send it to?", "pcm": "Na who you wan send am give?"},
+    "ask_amount_again": {"en": "I want to be sure of the amount. Please say it again, or type it.", "pcm": "I wan sure of the amount. Abeg talk am again, or type am."},
+    "ask_intent": {"en": "I can send money or check your balance. What would you like?", "pcm": "I fit send money or check your balance. Wetin you want?"},
+    "not_found": {"en": "I could not find that person. Please choose from your saved recipients.", "pcm": "I no see that person. Abeg choose from your saved people."},
+    "handoff_amount": {"en": "Please type the amount on your keypad.", "pcm": "Abeg type the amount for your keypad."},
+    "handoff_recipient": {"en": "Please pick the recipient from your list.", "pcm": "Abeg pick the person from your list."},
+    "handoff_type": {"en": "I could not hear you well. Please type it instead.", "pcm": "I no hear well. Abeg type am instead."},
+    "handoff_form": {"en": "Let us do this with the form.", "pcm": "Make we use the form do am."},
+    "unavailable": {"en": "Voice is not available right now. Please type instead.", "pcm": "Voice no dey work now. Abeg type am."},
+    "balance": {"en": "Your balance is {amount} naira.", "pcm": "Your balance na {amount} naira."}
+  },
+  "dynamic": ["balance"]
+}
