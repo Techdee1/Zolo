@@ -32,6 +32,14 @@ class ErrorCode(StrEnum):
 
 
 class ApiError(Exception):
-    def __init__(self, status: int, code: ErrorCode, title: str, detail: str = "") -> None:
+    def __init__(
+        self,
+        status: int,
+        code: ErrorCode,
+        title: str,
+        detail: str = "",
+        retry_after: int | None = None,
+    ) -> None:
         super().__init__(f"{code}: {title}")
         self.status, self.code, self.title, self.detail = status, code, title, detail
+        self.retry_after = retry_after  # seconds, sent as a Retry-After header on 429

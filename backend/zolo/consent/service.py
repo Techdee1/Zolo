@@ -21,6 +21,7 @@ from zolo.ai.types import Lang
 from zolo.audit.service import record
 from zolo.bank.accounts import customer_account, get_account
 from zolo.bank.adapter import BankAdapter
+from zolo.consent.activity import ActivityItem, activity_line
 from zolo.consent.audio import AudioLookup, NoAudio
 from zolo.consent.intent import Intent, intent_hash
 from zolo.consent.machine import EXPIRABLE, apply_transition, reload
@@ -605,6 +606,35 @@ class ConsentService:
         row = await self._expire_if_due(session, row, self.clock())
         await session.commit()
         return view_of(row)
+
+    async def activity(
+        self, session: AsyncSession, customer_id: uuid.UUID, limit: int = 20
+    ) -> list[ActivityItem]:
+        """The customer's latest payments, newest first, with a readable line for each."""
+        now = self.clock()
+        rows = list(
+            (
+                await session.execute(
+                    select(PaymentRequest)
+                    .where(PaymentRequest.customer_id == customer_id)
+                    .order_by(PaymentRequest.created_at.desc())
+                    .limit(limit)
+                )
+            ).scalars()
+        )
+        items: list[ActivityItem] = []
+        for row in rows:
+            row = await self._expire_if_due(
+                session, row, now
+            )  # a stale live request shows as expired
+            items.append(
+                ActivityItem(
+                    row.id, row.state, row.amount_kobo, row.payee_verified_name, row.created_at,
+                    activity_line(row.state, row.amount_kobo, row.payee_verified_name),
+                )
+            )  # fmt: skip
+        await session.commit()
+        return items
 
     # ------------------------------------------------------------------ money
 

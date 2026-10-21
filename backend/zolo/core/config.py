@@ -7,7 +7,7 @@ off always returns Phase 1 behaviour.
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 _ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
@@ -58,6 +58,9 @@ class Settings(BaseSettings):
     claim_lock_wrong_tries: int = 5
     claim_lock_seconds: int = 300
     approve_attempts_per_minute: int = 10
+    challenge_attempts_per_minute: int = 10
+    create_requests_per_minute: int = 10
+    trust_forwarded_for: bool = False  # behind a proxy or tunnel, use X-Forwarded-For for the IP
     login_attempts_per_minute: int = 10
 
     # --- demo console: exists only when DEMO_MODE is true and a demo token is sent ---
@@ -78,6 +81,13 @@ class Settings(BaseSettings):
         if not v.startswith("postgresql+asyncpg://"):
             raise ValueError("DATABASE_URL must use the postgresql+asyncpg:// driver")
         return v
+
+    @model_validator(mode="after")
+    def _demo_needs_a_token(self) -> "Settings":
+        # Demo mode opens mock login and the demo console; never without a real token.
+        if self.demo_mode and len(self.demo_token) < 8:
+            raise ValueError("DEMO_MODE=true requires DEMO_TOKEN of at least 8 characters")
+        return self
 
     @property
     def origins(self) -> list[str]:
