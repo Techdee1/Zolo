@@ -29,8 +29,9 @@ from zolo.consent.readback import build_readback, readback_lang
 from zolo.consent.states import State
 from zolo.core.config import Settings
 from zolo.core.errors import ApiError, ErrorCode
-from zolo.risk.rules import check_per_payment
-from zolo.risk.service import day_window, global_limits
+from zolo.passkeys.service import PasskeyService
+from zolo.risk.rules import check_per_payment, evaluate
+from zolo.risk.service import customer_limits, day_window, global_limits
 
 Clock = Callable[[], datetime]
 MAX_CODE_TRIES = 25
@@ -115,10 +116,12 @@ class ConsentService:
         bank: BankAdapter,
         audio: AudioLookup | None = None,
         clock: Clock = utcnow,
+        passkeys: PasskeyService | None = None,
     ) -> None:
         self.settings, self.bank = settings, bank
         self.audio: AudioLookup = audio or NoAudio()
         self.clock = clock
+        self.passkeys = passkeys or PasskeyService(settings, clock)
 
     # ------------------------------------------------------------------ helpers
 
@@ -436,6 +439,160 @@ class ConsentService:
         )  # fmt: skip
         await session.commit()
         return view_of(done)
+
+    # ------------------------------------------------------------------ challenge and approval
+
+    async def issue_challenge(
+        self, session: AsyncSession, customer_id: uuid.UUID, request_id: uuid.UUID
+    ) -> dict[str, Any]:
+        """WebAuthn options whose challenge is the request's intent hash.
+
+        Re-checks the row against the hash stored at readback first: if anything changed since
+        the customer heard it, they are told now instead of after they sign.
+        """
+        row = await self._load(session, request_id)
+        if row.customer_id != customer_id:
+            raise _not_found()
+        row = await self._expire_if_due(session, row, self.clock())
+        if row.state == State.EXPIRED.value:
+            await session.commit()
+            raise _expired()
+        if row.state != State.READ_BACK.value or row.intent_hash is None:
+            raise _conflict("Listen to the readback before approving")
+        digest = intent_hash(await self.intent_for(session, row))
+        if digest != row.intent_hash:
+            await record(
+                session, "request.intent_changed", "system", request_id=row.id,
+                customer_id=customer_id, code="INTENT_CHANGED",
+            )  # fmt: skip
+            await session.commit()
+            raise ApiError(409, ErrorCode.INTENT_CHANGED, "This payment changed after you heard it")
+        options = await self.passkeys.issue_challenge(
+            session, customer_id, row.id, row.intent_hash, row.expires_at
+        )
+        await record(
+            session, "challenge.issued", f"customer:{customer_id}", request_id=row.id,
+            customer_id=customer_id,
+        )  # fmt: skip
+        await session.commit()
+        return options
+
+    async def approve(
+        self,
+        session: AsyncSession,
+        customer_id: uuid.UUID,
+        request_id: uuid.UUID,
+        assertion: dict[str, Any],
+    ) -> RequestView:
+        """Verify the passkey assertion and, in ONE transaction, consume the challenge and move
+        READ_BACK -> APPROVED; then send the transfer. Returns the final or pending state.
+
+        Checks run in a fixed order: the request, expiry, the challenge, the recomputed hash
+        (INTENT_CHANGED), the signature, the signature counter, then risk.
+        """
+        try:
+            return await self._approve(session, customer_id, request_id, assertion)
+        except BaseException:
+            await session.rollback()  # never leave the row lock held after a refusal
+            raise
+
+    async def _approve(
+        self,
+        session: AsyncSession,
+        customer_id: uuid.UUID,
+        request_id: uuid.UUID,
+        assertion: dict[str, Any],
+    ) -> RequestView:
+        # Look before locking: it tells a replay of an old approval (ALREADY_USED) apart from
+        # losing a race to a simultaneous approval (STATE_CONFLICT).
+        seen = await self._load(session, request_id)
+        if seen.customer_id != customer_id:
+            raise _not_found()
+        arrived_after_approval = seen.state != State.READ_BACK.value
+
+        row = (
+            await session.execute(
+                select(PaymentRequest)
+                .where(PaymentRequest.id == request_id)
+                .with_for_update()
+                .execution_options(populate_existing=True)
+            )
+        ).scalar_one()
+        now = self.clock()
+
+        if row.state != State.READ_BACK.value:
+            if row.state == State.EXPIRED.value:
+                raise _expired()
+            if arrived_after_approval and await self.passkeys.challenge_was_used(session, row.id):
+                await record(
+                    session, "approve.replayed", f"customer:{customer_id}", request_id=row.id,
+                    customer_id=customer_id, code="ALREADY_USED",
+                )  # fmt: skip
+                await session.commit()
+                raise ApiError(409, ErrorCode.ALREADY_USED, "This approval was already used")
+            raise _conflict()
+        if row.expires_at <= now:
+            raise await self._expired_error(session, row)
+
+        challenge = await self.passkeys.current_challenge(session, row.id)
+        if challenge is None:
+            raise ApiError(409, ErrorCode.CHALLENGE_NOT_FOUND, "Ask for a challenge first")
+
+        # The heart of it: rebuild the intent from the row as it is NOW and compare it with
+        # what the customer heard (stored hash) and what the challenge carries.
+        digest = intent_hash(await self.intent_for(session, row))
+        if digest != row.intent_hash or digest != challenge.challenge:
+            await record(
+                session, "approve.intent_changed", "system", request_id=row.id,
+                customer_id=customer_id, code="INTENT_CHANGED",
+            )  # fmt: skip
+            await session.commit()
+            raise ApiError(409, ErrorCode.INTENT_CHANGED, "This payment changed after you heard it")
+
+        try:
+            verified = await self.passkeys.verify_assertion(
+                session, customer_id, challenge.challenge, assertion
+            )
+        except ApiError:
+            await record(
+                session, "approve.signature_invalid", f"customer:{customer_id}",
+                request_id=row.id, customer_id=customer_id, code="SIGNATURE_INVALID",
+            )  # fmt: skip
+            await session.commit()
+            raise
+
+        limits = await customer_limits(session, customer_id, self.settings)
+        decision = evaluate(
+            row.amount_kobo, await self.approved_today_kobo(session, customer_id, now), limits
+        )
+        if not decision.allowed:
+            await record(
+                session, "approve.blocked", "system", request_id=row.id,
+                customer_id=customer_id, code=decision.code,
+            )  # fmt: skip
+            await session.commit()
+            raise ApiError(422, ErrorCode.LIMIT_EXCEEDED, "This payment is over your limit")
+
+        if not await self.passkeys.consume_challenge(session, challenge.id):
+            raise ApiError(409, ErrorCode.ALREADY_USED, "This approval was already used")
+        moved = await apply_transition(
+            session, row.id, State.READ_BACK, State.APPROVED,
+            guards=[
+                PaymentRequest.customer_id == customer_id,
+                PaymentRequest.expires_at > now,
+                PaymentRequest.intent_hash == digest,
+            ],
+            values={"approved_at": now},
+        )  # fmt: skip
+        if moved is None:
+            raise _conflict()
+        await self.passkeys.record_use(session, verified.credential_pk, verified.new_sign_count)
+        await record(
+            session, "request.approved", f"customer:{customer_id}", request_id=row.id,
+            customer_id=customer_id, from_state="READ_BACK", to_state="APPROVED",
+        )  # fmt: skip
+        await session.commit()
+        return await self.settle(session, request_id)
 
     # ------------------------------------------------------------------ status
 
