@@ -27,7 +27,7 @@ export default defineConfig({
   webServer: [
     // A stand-in for the Zolo API. The production build proxies /api/* to it (BACKEND_URL, read at runtime).
     {
-      command: "node tests/e2e/fake-api.mjs",
+      command: "pnpm exec tsx tests/e2e/fake-api.ts",
       url: `http://localhost:${API_PORT}/healthz`,
       ignoreHTTPSErrors: true,
       reuseExistingServer: !CI,

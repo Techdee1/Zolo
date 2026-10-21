@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { expect, test } from "@playwright/test";
 
 // These go through the real production server and its /api proxy to a fake backend
-// (tests/e2e/fake-api.mjs). They protect decision 2: one origin for the browser.
+// (tests/e2e/fake-api.ts). They protect decision 2: one origin for the browser.
 
 const LOGIN = { phone: "+2348011111111", otp: "123456" };
 
