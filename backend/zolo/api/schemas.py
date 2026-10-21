@@ -111,3 +111,29 @@ class AssertionIn(BaseModel):
     """The PublicKeyCredential JSON from navigator.credentials.get(), passed through as-is."""
 
     model_config = ConfigDict(extra="allow")
+
+
+class TamperIn(BaseModel):
+    amount_kobo: int = Field(
+        default=5_100_000, gt=0, le=10**12, description="The new amount (default: N51,000)"
+    )
+
+
+class DemoResetOut(BaseModel):
+    customers: int
+    agents: int
+    accounts: int
+    recipients: int
+
+
+class TimelineEventOut(BaseModel):
+    id: int
+    at: datetime
+    event: str
+    actor: str
+    details: dict[str, Any] = Field(description="Ids, states and reason codes only")
+
+
+class TimelineOut(BaseModel):
+    request: RequestOut
+    events: list[TimelineEventOut]

@@ -11,6 +11,7 @@ from zolo.api import (
     routes_agent,
     routes_audio,
     routes_auth,
+    routes_demo,
     routes_dev,
     routes_me,
     routes_passkeys,
@@ -68,4 +69,5 @@ def create_app(settings: Settings | None = None, *, overrides: Overrides | None 
         # Mock login and the dev page exist only in demo mode: without it the routes are absent.
         app.include_router(routes_auth.router)
         app.include_router(routes_dev.router)
+        app.include_router(routes_demo.router)
     return app

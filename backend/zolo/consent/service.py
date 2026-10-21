@@ -12,13 +12,14 @@ from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from zolo.agents.service import get_agent
 from zolo.ai.types import Lang
-from zolo.audit.service import record
+from zolo.audit.models import AuditEvent
+from zolo.audit.service import events_for_request, record
 from zolo.bank.accounts import customer_account, get_account
 from zolo.bank.adapter import BankAdapter
 from zolo.consent.activity import ActivityItem, activity_line
@@ -36,6 +37,7 @@ from zolo.risk.service import customer_limits, day_window, global_limits
 
 Clock = Callable[[], datetime]
 MAX_CODE_TRIES = 25
+EXPIRABLE_VALUES = tuple(s.value for s in EXPIRABLE)
 SIGNED_STATES = (State.APPROVED.value, State.SUBMITTED.value, State.SETTLED.value)
 
 
@@ -81,6 +83,12 @@ class ReadbackView:
     payee_name: str
     amount_kobo: int
     expires_at: datetime
+
+
+@dataclass(frozen=True)
+class Timeline:
+    request: "RequestView"
+    events: list[AuditEvent]
 
 
 def _not_found() -> ApiError:
@@ -310,8 +318,6 @@ class ConsentService:
     async def _bind(
         self, session: AsyncSession, request_id: uuid.UUID, customer_id: uuid.UUID, now: datetime
     ) -> PaymentRequest | None:
-        from sqlalchemy import update
-
         return (
             await session.execute(
                 update(PaymentRequest)
@@ -595,6 +601,93 @@ class ConsentService:
         )  # fmt: skip
         await session.commit()
         return await self.settle(session, request_id)
+
+    # ------------------------------------------------------------------ demo console
+    # Used only by the demo endpoints. They live here because only the consent module may change
+    # request data, and each one refuses to run unless DEMO_MODE is on.
+
+    def _demo_only(self) -> None:
+        if not self.settings.demo_mode:
+            raise ApiError(404, ErrorCode.NOT_FOUND, "Not found")
+
+    async def demo_tamper(
+        self, session: AsyncSession, request_id: uuid.UUID, amount_kobo: int
+    ) -> RequestView:
+        """Change the amount AFTER the readback, so approval must fail with INTENT_CHANGED."""
+        self._demo_only()
+        if isinstance(amount_kobo, bool) or amount_kobo <= 0 or amount_kobo % 100 != 0:
+            raise ApiError(
+                422, ErrorCode.VALIDATION_ERROR, "Amount must be a whole number of naira"
+            )
+        row = await self._load(session, request_id)
+        if row.state != State.READ_BACK.value:
+            raise _conflict("Tampering only makes sense after the readback")
+        done = (
+            await session.execute(
+                update(PaymentRequest)
+                .where(
+                    PaymentRequest.id == request_id, PaymentRequest.state == State.READ_BACK.value
+                )
+                .values(amount_kobo=amount_kobo)
+                .returning(PaymentRequest)
+                .execution_options(synchronize_session=False, populate_existing=True)
+            )
+        ).scalar_one_or_none()
+        if done is None:
+            await session.rollback()
+            raise _conflict()
+        await record(
+            session, "demo.tampered", "demo", request_id=request_id,
+            customer_id=done.customer_id, changed="amount",
+        )  # fmt: skip
+        await session.commit()
+        return view_of(done)
+
+    async def demo_expire(self, session: AsyncSession, request_id: uuid.UUID) -> RequestView:
+        """Set expires_at to now. The request becomes EXPIRED the next time anything touches it
+        (lazy expiry), so a claim or approval then answers 410, exactly as in real life."""
+        self._demo_only()
+        done = (
+            await session.execute(
+                update(PaymentRequest)
+                .where(PaymentRequest.id == request_id, PaymentRequest.state.in_(EXPIRABLE_VALUES))
+                .values(expires_at=self.clock())
+                .returning(PaymentRequest)
+                .execution_options(synchronize_session=False, populate_existing=True)
+            )
+        ).scalar_one_or_none()
+        if done is None:
+            await session.rollback()
+            if await reload(session, request_id) is None:
+                raise _not_found()
+            raise _conflict("Only a live request can be expired")
+        await record(
+            session, "demo.expire_now", "demo", request_id=request_id,
+            customer_id=done.customer_id, changed="expires_at",
+        )  # fmt: skip
+        await session.commit()
+        return view_of(done)
+
+    async def demo_replay(
+        self, session: AsyncSession, request_id: uuid.UUID, assertion: dict[str, Any] | None
+    ) -> RequestView:
+        """Send the last valid assertion through the normal approve path again. After a real
+        approval this is refused with ALREADY_USED, which is the point of the demo."""
+        self._demo_only()
+        row = await self._load(session, request_id)
+        if assertion is None or row.customer_id is None:
+            await session.rollback()
+            raise _conflict("There is no approval to replay yet")
+        return await self.approve(session, row.customer_id, request_id, assertion)
+
+    async def demo_timeline(self, session: AsyncSession, request_id: uuid.UUID) -> Timeline:
+        self._demo_only()
+        row = await self._expire_if_due(
+            session, await self._load(session, request_id), self.clock()
+        )
+        events = await events_for_request(session, request_id)
+        await session.commit()
+        return Timeline(view_of(row), events)
 
     # ------------------------------------------------------------------ status
 

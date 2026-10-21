@@ -160,6 +160,34 @@
         "title": "ClaimIn",
         "type": "object"
       },
+      "DemoResetOut": {
+        "properties": {
+          "accounts": {
+            "title": "Accounts",
+            "type": "integer"
+          },
+          "agents": {
+            "title": "Agents",
+            "type": "integer"
+          },
+          "customers": {
+            "title": "Customers",
+            "type": "integer"
+          },
+          "recipients": {
+            "title": "Recipients",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "customers",
+          "agents",
+          "accounts",
+          "recipients"
+        ],
+        "title": "DemoResetOut",
+        "type": "object"
+      },
       "ErrorCode": {
         "enum": [
           "LIMIT_EXCEEDED",
@@ -506,6 +534,76 @@
         "title": "SessionOut",
         "type": "object"
       },
+      "TamperIn": {
+        "properties": {
+          "amount_kobo": {
+            "default": 5100000,
+            "description": "The new amount (default: N51,000)",
+            "exclusiveMinimum": 0.0,
+            "maximum": 1000000000000.0,
+            "title": "Amount Kobo",
+            "type": "integer"
+          }
+        },
+        "title": "TamperIn",
+        "type": "object"
+      },
+      "TimelineEventOut": {
+        "properties": {
+          "actor": {
+            "title": "Actor",
+            "type": "string"
+          },
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "details": {
+            "additionalProperties": true,
+            "description": "Ids, states and reason codes only",
+            "title": "Details",
+            "type": "object"
+          },
+          "event": {
+            "title": "Event",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "at",
+          "event",
+          "actor",
+          "details"
+        ],
+        "title": "TimelineEventOut",
+        "type": "object"
+      },
+      "TimelineOut": {
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/TimelineEventOut"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "request": {
+            "$ref": "#/components/schemas/RequestOut"
+          }
+        },
+        "required": [
+          "request",
+          "events"
+        ],
+        "title": "TimelineOut",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -712,6 +810,502 @@
         "summary": "Mock login (demo only)",
         "tags": [
           "auth"
+        ]
+      }
+    },
+    "/demo/requests/{request_id}/expire": {
+      "post": {
+        "description": "It becomes EXPIRED the next time anything reads or acts on it (lazy expiry).",
+        "operationId": "expire_demo_requests__request_id__expire_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+            "in": "header",
+            "name": "x-demo-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+              "title": "X-Demo-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: missing or wrong X-Demo-Token"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: DEMO_MODE is off, or no such request"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "STATE_CONFLICT: only a live request can be expired"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "Set the request's expiry to now",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/demo/requests/{request_id}/replay": {
+      "post": {
+        "description": "Sends the last accepted assertion through the normal approve path again. After a real approval the answer is 409 ALREADY_USED, and no money moves a second time.",
+        "operationId": "replay_demo_requests__request_id__replay_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+            "in": "header",
+            "name": "x-demo-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+              "title": "X-Demo-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: missing or wrong X-Demo-Token"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: DEMO_MODE is off, or no such request"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "ALREADY_USED, or STATE_CONFLICT when there is nothing to replay"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "Re-submit the last valid approval",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/demo/requests/{request_id}/tamper": {
+      "post": {
+        "description": "Approval then fails with INTENT_CHANGED and nothing is sent.",
+        "operationId": "tamper_demo_requests__request_id__tamper_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+            "in": "header",
+            "name": "x-demo-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+              "title": "X-Demo-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/TamperIn"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: missing or wrong X-Demo-Token"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: DEMO_MODE is off, or no such request"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "STATE_CONFLICT: the request is not in READ_BACK"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "VALIDATION_ERROR"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "Change the amount after the readback",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/demo/requests/{request_id}/timeline": {
+      "get": {
+        "operationId": "timeline_demo_requests__request_id__timeline_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+            "in": "header",
+            "name": "x-demo-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+              "title": "X-Demo-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimelineOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: missing or wrong X-Demo-Token"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: DEMO_MODE is off, or no such request"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "State changes and audit events, for the projector",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/demo/reset": {
+      "post": {
+        "description": "Re-seeds customers, agents, accounts and balances and clears requests, challenges, the audit trail and transfers. **Registered passkeys are kept**, so the passkey on the demo phone survives every reset. Also forgets rate-limit counts and captured assertions.",
+        "operationId": "reset_demo_reset_post",
+        "parameters": [
+          {
+            "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+            "in": "header",
+            "name": "x-demo-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+              "title": "X-Demo-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoResetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: missing or wrong X-Demo-Token"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: DEMO_MODE is off, or no such request"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "Put the demo back to its starting state",
+        "tags": [
+          "demo"
         ]
       }
     },

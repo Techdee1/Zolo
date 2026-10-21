@@ -38,6 +38,7 @@ class Services:
     limiter: RateLimiter
     codec: SessionCodec
     audio_cache: AudioCache
+    sessionmaker: Any
     demo: DemoStore | None  # only when DEMO_MODE=true
 
 
@@ -63,5 +64,6 @@ def build_services(app: FastAPI) -> Services:
         limiter=overrides.limiter or RateLimiter(),
         codec=SessionCodec(settings.session_secret, settings.session_ttl_seconds),
         audio_cache=AudioCache(ai.audio_cache_dir),
+        sessionmaker=app.state.sessionmaker,
         demo=DemoStore() if settings.demo_mode else None,
     )

@@ -8,6 +8,7 @@ instead of leaking later on the demo projector.
 import uuid
 from typing import Any
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from zolo.audit.models import AuditEvent
@@ -50,3 +51,16 @@ async def record(
         )
     )
     await session.flush()
+
+
+async def events_for_request(session: AsyncSession, request_id: uuid.UUID) -> list[AuditEvent]:
+    """A request's events in the order they happened (for the demo timeline)."""
+    return list(
+        (
+            await session.execute(
+                select(AuditEvent)
+                .where(AuditEvent.request_id == request_id)
+                .order_by(AuditEvent.id)
+            )
+        ).scalars()
+    )

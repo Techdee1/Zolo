@@ -19,6 +19,22 @@ frontend generates its types from it). Errors are RFC 9457 problem JSON with an 
   A bad signature is always a bare `SIGNATURE_INVALID`; the reason is logged server-side only.
 - **Real phone:** see `../docs/REAL_DEVICE_TEST.md` (not yet run on a phone).
 
+## Demo console (`DEMO_MODE=true` only)
+
+Five endpoints make every failure repeatable on stage. They are mounted only in demo mode, each
+needs the `X-Demo-Token` header (header only; ten wrong tokens lock the caller out for 5 minutes),
+and they go through the consent service, never straight to a table:
+
+| Endpoint | Does |
+| --- | --- |
+| `POST /demo/reset` | Re-seeds people, accounts and balances; clears requests, audit and transfers. **Keeps registered passkeys.** |
+| `POST /demo/requests/{id}/tamper` | Changes the amount after the readback (default ₦51,000): approval then returns `INTENT_CHANGED`. |
+| `POST /demo/requests/{id}/replay` | Re-sends the last accepted approval: `409 ALREADY_USED`, no second payment. |
+| `POST /demo/requests/{id}/expire` | Sets `expires_at` to now; the next action gets `410 REQUEST_EXPIRED`. |
+| `GET /demo/requests/{id}/timeline` | Audit events in order, for the projector (includes internal reason codes, so demo only). |
+
+Phase 2 demo endpoints (bank failure, cloned voice, card swap) are not built.
+
 ## Run
 
 ```

@@ -22,6 +22,14 @@ PRD_PHASE_1 = {
     ("get", "/me/activity"),
 }
 SUPPORT = {("get", "/healthz"), ("get", "/readyz"), ("get", "/voice/audio/{key}.mp3")}
+# The Phase 1 demo endpoints (Backend PRD "Demo endpoints": reset, tamper, replay, expire, timeline).
+DEMO_PHASE_1 = {
+    ("post", "/demo/reset"),
+    ("post", "/demo/requests/{request_id}/tamper"),
+    ("post", "/demo/requests/{request_id}/replay"),
+    ("post", "/demo/requests/{request_id}/expire"),
+    ("get", "/demo/requests/{request_id}/timeline"),
+}
 PHASE_2_3 = [
     "/events",
     "/renew",
@@ -46,7 +54,7 @@ def test_the_committed_openapi_json_is_current() -> None:
 
 
 def test_every_phase_1_endpoint_in_the_prd_table_exists_and_nothing_else_does() -> None:
-    assert operations() == PRD_PHASE_1 | SUPPORT
+    assert operations() == PRD_PHASE_1 | DEMO_PHASE_1 | SUPPORT
 
 
 def test_no_phase_2_or_3_endpoint_is_exposed() -> None:

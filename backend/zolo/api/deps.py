@@ -1,7 +1,8 @@
+import hmac
 from collections.abc import AsyncIterator
 from typing import Annotated
 
-from fastapi import Depends, Request
+from fastapi import Depends, Header, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from zolo.api.services import Services, build_services
@@ -60,3 +61,36 @@ def client_ip(request: Request, services: Services) -> str:
         if forwarded:
             return forwarded
     return request.client.host if request.client else "unknown"
+
+
+DEMO_TOKEN_MAX_FAILURES = 10
+DEMO_TOKEN_LOCK_SECONDS = 300
+
+
+def require_demo(
+    request: Request,
+    services: ServicesDep,
+    x_demo_token: Annotated[
+        str | None, Header(description="The demo token (DEMO_TOKEN). Demo mode only.")
+    ] = None,
+) -> None:
+    """Guards every /demo endpoint: demo mode must be on AND the right token sent in a header.
+
+    A header only: not a query string (that lands in logs) and not a cookie (a logged-in
+    customer or agent is not the demo operator). Wrong tokens are counted and locked out.
+    """
+    settings = services.settings
+    if not settings.demo_mode:
+        raise ApiError(404, ErrorCode.NOT_FOUND, "Not found")
+    who = client_ip(request, services)
+    services.limiter.assert_unlocked("demo-token", who)
+    given = (x_demo_token or "").encode()
+    if not x_demo_token or not hmac.compare_digest(given, settings.demo_token.encode()):
+        services.limiter.fail(
+            "demo-token",
+            who,
+            max_failures=DEMO_TOKEN_MAX_FAILURES,
+            lock_seconds=DEMO_TOKEN_LOCK_SECONDS,
+        )
+        raise ApiError(401, ErrorCode.UNAUTHENTICATED, "A valid demo token is required")
+    services.limiter.succeed("demo-token", who)
