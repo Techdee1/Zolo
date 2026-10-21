@@ -10,6 +10,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
 
+from zolo.api.errors import problem_response
+from zolo.core.errors import ErrorCode
 from zolo.core.logging import request_id_var
 
 log = logging.getLogger("zolo.access")
@@ -34,7 +36,13 @@ class RequestContextMiddleware(BaseHTTPMiddleware):
         started = time.perf_counter()
         status = 500
         try:
-            response = await call_next(request)
+            try:
+                response = await call_next(request)
+            except Exception as exc:  # noqa: BLE001 - answer here so the log keeps the request id
+                logging.getLogger("zolo.api").error(
+                    "unhandled", extra={"event": "unhandled", "error_type": type(exc).__name__}
+                )
+                response = problem_response(500, ErrorCode.INTERNAL_ERROR, "Something went wrong")
             status = response.status_code
         finally:
             route = request.scope.get("route")

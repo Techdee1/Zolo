@@ -6,15 +6,25 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from zolo.api import health
+from zolo.api import (
+    health,
+    routes_agent,
+    routes_audio,
+    routes_auth,
+    routes_dev,
+    routes_me,
+    routes_passkeys,
+    routes_requests,
+)
 from zolo.api.errors import install_error_handlers
 from zolo.api.middleware import RequestContextMiddleware
+from zolo.api.services import Overrides
 from zolo.core.config import Settings, get_settings
 from zolo.core.db import make_engine, make_sessionmaker
 from zolo.core.logging import configure_logging
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
+def create_app(settings: Settings | None = None, *, overrides: Overrides | None = None) -> FastAPI:
     settings = settings or get_settings()
     configure_logging(settings.log_level)
 
@@ -35,6 +45,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         redoc_url=None,
     )
     app.state.settings = settings
+    app.state.overrides = overrides or Overrides()
 
     # Added last runs first: CORS answers preflights before anything else touches them.
     app.add_middleware(RequestContextMiddleware)
@@ -48,4 +59,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     install_error_handlers(app)
     app.include_router(health.router)
+    app.include_router(routes_passkeys.router)
+    app.include_router(routes_agent.router)
+    app.include_router(routes_requests.router)
+    app.include_router(routes_me.router)
+    app.include_router(routes_audio.router)
+    if settings.demo_mode:
+        # Mock login and the dev page exist only in demo mode: without it the routes are absent.
+        app.include_router(routes_auth.router)
+        app.include_router(routes_dev.router)
     return app

@@ -23,12 +23,17 @@ class Problem(BaseModel):
     detail: str = ""
 
 
-def problem_response(status: int, code: ErrorCode, title: str, detail: str = "") -> JSONResponse:
+def problem_response(
+    status: int, code: ErrorCode, title: str, detail: str = "", retry_after: int | None = None
+) -> JSONResponse:
     body = Problem(
         type=f"https://zolo.app/problems/{code.value.lower().replace('_', '-')}",
         title=title, status=status, code=code, detail=detail,
     )  # fmt: skip
-    return JSONResponse(body.model_dump(mode="json"), status_code=status, media_type=PROBLEM_JSON)
+    headers = {"Retry-After": str(retry_after)} if retry_after is not None else None
+    return JSONResponse(
+        body.model_dump(mode="json"), status_code=status, media_type=PROBLEM_JSON, headers=headers
+    )
 
 
 _HTTP_CODES = {
@@ -42,7 +47,7 @@ _HTTP_CODES = {
 def install_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(ApiError)
     async def _api_error(_: Request, exc: ApiError) -> JSONResponse:
-        return problem_response(exc.status, exc.code, exc.title, exc.detail)
+        return problem_response(exc.status, exc.code, exc.title, exc.detail, exc.retry_after)
 
     @app.exception_handler(RequestValidationError)
     async def _validation(_: Request, exc: RequestValidationError) -> JSONResponse:
