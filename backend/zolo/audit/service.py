@@ -15,7 +15,7 @@ from zolo.audit.models import AuditEvent
 ALLOWED_DETAIL_KEYS = frozenset(
     {
         "state", "from_state", "to_state", "code", "reason", "initiator", "channel", "lang",
-        "attempt", "bank_reference", "credential", "field", "changed", "replayed", "ok",
+        "attempt", "bank_reference", "credential", "field", "changed", "replayed", "replaced", "ok",
     }
 )  # fmt: skip
 
