@@ -44,3 +44,6 @@ next-env.d.ts
 /playwright-report/
 /test-results/
 /coverage/
+
+# keep the documented template, ignore real env files
+!.env.example

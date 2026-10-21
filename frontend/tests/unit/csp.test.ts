@@ -24,9 +24,10 @@ describe("Content Security Policy", () => {
     );
   });
 
-  it("limits network and audio to this origin and the API", () => {
-    expect(directive(prod, "connect-src")).toBe("'self' http://localhost:8000");
-    expect(directive(prod, "media-src")).toContain("http://localhost:8000");
+  it("limits network and audio to THIS origin: the API is reached through the /api proxy", () => {
+    expect(directive(prod, "connect-src")).toBe("'self'");
+    expect(directive(prod, "media-src")).toBe("'self' blob:");
+    expect(prod).not.toMatch(/https?:\/\//); // no other host appears anywhere in the policy
     expect(directive(prod, "default-src")).toBe("'self'");
   });
 

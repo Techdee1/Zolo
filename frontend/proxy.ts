@@ -5,22 +5,14 @@ import { NextResponse, type NextRequest } from "next/server";
  *
  * - Scripts: only this origin plus a fresh per-request nonce ('strict-dynamic' lets those scripts
  *   load their own chunks). No 'unsafe-inline' and no 'unsafe-eval' in production.
- * - connect-src / media-src: this origin and the Zolo API origin only (readback audio is served by
- *   the API).
+ * - connect-src / media-src: this origin only. The API is reached through the /api proxy, so the
+ *   browser never talks to another origin (readback audio arrives as /api/voice/audio/...).
  * - style-src-attr 'unsafe-inline': style ATTRIBUTES only (React and animation libraries set
  *   them); style elements still need the nonce. Scripts stay strict. This is a deliberate trade.
  *
- * The API origin comes from NEXT_PUBLIC_API_BASE_URL. Set CSP_UPGRADE_INSECURE=1 in real (https)
+ * Set CSP_UPGRADE_INSECURE=1 in real (https)
  * deployments so any stray http sub-resource is upgraded; leave it off for http://localhost runs.
  */
-const apiOrigin = (() => {
-  try {
-    return new URL(process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000").origin;
-  } catch {
-    return "";
-  }
-})();
-
 export function buildCsp(nonce: string, opts: { dev: boolean; upgrade: boolean }): string {
   const directives = [
     "default-src 'self'",
@@ -29,8 +21,8 @@ export function buildCsp(nonce: string, opts: { dev: boolean; upgrade: boolean }
     "style-src-attr 'unsafe-inline'",
     "img-src 'self' blob: data:",
     "font-src 'self'",
-    `connect-src 'self' ${apiOrigin}${opts.dev ? " ws:" : ""}`.trim(),
-    `media-src 'self' blob: ${apiOrigin}`.trim(),
+    `connect-src 'self'${opts.dev ? " ws:" : ""}`,
+    "media-src 'self' blob:",
     "worker-src 'self'",
     "manifest-src 'self'",
     "object-src 'none'",
