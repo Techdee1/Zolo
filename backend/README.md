@@ -42,7 +42,7 @@ limit-changing method exists.
 ```python
 class DraftService(Protocol):
     def create_draft(self, customer_id: str, recipient_ref: str, amount_kobo: int) -> str: ...
-    def get_balance(self, customer_id: str) -> int: ...            # kobo
+    def get_balance(self, customer_id: str) -> int: ...  # kobo
     def list_saved_recipients(self, customer_id: str) -> list[SavedRecipient]: ...
 ```
 
@@ -54,7 +54,7 @@ class DraftService(Protocol):
 - `zolo.ai.fakes.FakeBackend` is an in-memory implementation for tests and local runs.
 
 ```python
-VoiceService(stt, RoutingTTS(settings), settings, backend)   # then .voice_turn(...)
+VoiceService(stt, RoutingTTS(settings), settings, backend)  # then .voice_turn(...)
 ```
 
 ## Readback audio (`zolo/ai/tts/readback.py`)

@@ -1,0 +1,47 @@
+name: ci
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: zolo
+          POSTGRES_PASSWORD: zolo
+          POSTGRES_DB: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U zolo" --health-interval 3s --health-timeout 3s --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgresql+asyncpg://zolo:zolo@localhost:5432/zolo_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.13.4"
+      - run: uv python install 3.12
+      - run: uv sync --frozen
+      - name: Lint
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+      - name: Types
+        run: uv run mypy
+      - name: Tests
+        run: uv run pytest -q --cov=zolo --cov-report=term-missing
+      - name: OpenAPI schema is up to date
+        run: |
+          uv run python -m zolo.api.export_openapi > /tmp/openapi.json
+          diff -u openapi.json /tmp/openapi.json || {
+            echo "openapi.json is stale: run 'uv run python -m zolo.api.export_openapi > openapi.json', commit it, and regenerate the frontend types."; exit 1; }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openapi
+          path: backend/openapi.json
