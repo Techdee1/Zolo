@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Any, Literal
 from urllib.parse import parse_qs, urlparse
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictInt, model_validator
 
 CLAIM_CODE = re.compile(r"^\d{4}$")
 
@@ -37,7 +37,8 @@ class PasskeyOut(BaseModel):
 
 
 class AgentRequestIn(BaseModel):
-    amount_kobo: int = Field(
+    # StrictInt: money is an integer. "1500000", 1500000.0 and 1e6 are rejected, not converted.
+    amount_kobo: StrictInt = Field(
         gt=0, le=10**12, description="Whole naira, in kobo", examples=[1_500_000]
     )
 
@@ -114,7 +115,7 @@ class AssertionIn(BaseModel):
 
 
 class TamperIn(BaseModel):
-    amount_kobo: int = Field(
+    amount_kobo: StrictInt = Field(
         default=5_100_000, gt=0, le=10**12, description="The new amount (default: N51,000)"
     )
 

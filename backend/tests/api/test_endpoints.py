@@ -812,3 +812,27 @@ async def test_the_dev_page_exists_in_demo_mode_with_a_tight_csp(anonymous: Asyn
         assert endpoint in r.text
     assert "navigator.credentials.create" in r.text and "navigator.credentials.get" in r.text
     assert "location.hostname" in r.text  # shows the host that must equal RP_ID
+
+
+# ======================================================================= money is strictly an integer over HTTP
+
+
+@pytest.mark.parametrize(
+    "sneaky", ["1500000", 1500000.0, 1e6, "1.5e6", True, None, [1500000], {"kobo": 1}]
+)
+async def test_an_agent_cannot_create_a_request_with_a_non_integer_amount(
+    agent: AsyncClient, sneaky: object
+) -> None:
+    r = await agent.post("/agent/requests", json={"amount_kobo": sneaky})
+    assert problem(r) == (422, "VALIDATION_ERROR")
+
+
+async def test_nothing_is_stored_when_the_amount_is_not_an_integer(
+    agent: AsyncClient, sessionmaker
+) -> None:  # type: ignore[no-untyped-def]
+    from sqlalchemy import func, select
+
+    for bad in ("1500000", 1500000.0, 1e6):
+        await agent.post("/agent/requests", json={"amount_kobo": bad})
+    async with sessionmaker() as s:
+        assert (await s.execute(select(func.count()).select_from(PaymentRequest))).scalar_one() == 0
