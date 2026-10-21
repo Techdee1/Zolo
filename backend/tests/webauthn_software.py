@@ -55,9 +55,11 @@ class SoftwareAuthenticator:
 
     # --------------------------------------------------------------- registration
 
-    def register(self, options: dict[str, Any], *, origin: str | None = None) -> dict[str, Any]:
+    def register(
+        self, options: dict[str, Any], *, origin: str | None = None, user_verified: bool = True
+    ) -> dict[str, Any]:
         challenge = base64url_to_bytes(options["challenge"])
-        flags = FLAG_UP | FLAG_UV | FLAG_AT
+        flags = FLAG_UP | (FLAG_UV if user_verified else 0) | FLAG_AT
         auth_data = (
             self._rp_hash(options.get("rp", {}).get("id"))
             + bytes([flags])

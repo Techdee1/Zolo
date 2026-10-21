@@ -652,3 +652,40 @@ def test_only_the_consent_module_calls_transfer_or_changes_state() -> None:
 
 def test_transfer_results_are_plain_values() -> None:
     assert TransferResult(status="SUCCESS", reference="R").replayed is False
+
+
+# ======================================================================= the deadline is exact
+
+
+async def test_a_request_expires_at_exactly_its_deadline_not_a_moment_after(world, clock) -> None:  # type: ignore[no-untyped-def]
+    made = await create(world)  # expires START + 120s
+    clock.advance(119.999)
+    async with world[2]() as s:
+        assert (await world[0].get_request(s, Viewer("agent", BISI), made.id)).state == "CREATED"
+    clock.advance(0.001)  # now == expires_at exactly
+    async with world[2]() as s:
+        assert (await world[0].get_request(s, Viewer("agent", BISI), made.id)).state == "EXPIRED"
+
+
+async def test_claiming_at_exactly_the_deadline_is_too_late(world, clock) -> None:  # type: ignore[no-untyped-def]
+    made = await create(world)
+    clock.advance(120)
+    with pytest.raises(ApiError) as exc:
+        await claim(world, made.claim_code)  # type: ignore[arg-type]
+    assert await code_of(exc) == (410, "REQUEST_EXPIRED")
+
+
+async def test_declining_and_reading_back_at_exactly_the_deadline_are_too_late(
+    world, clock
+) -> None:  # type: ignore[no-untyped-def]
+    svc, _, sm = world
+    made = await to_read_back(world)
+    clock.advance(120)
+    for call in (
+        lambda s: svc.decline(s, AMAKA, made.id),
+        lambda s: svc.get_readback(s, AMAKA, made.id, "pcm"),
+    ):
+        async with sm() as s:
+            with pytest.raises(ApiError) as exc:
+                await call(s)
+        assert await code_of(exc) == (410, "REQUEST_EXPIRED")

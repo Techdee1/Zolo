@@ -829,3 +829,76 @@ async def test_garbage_registration_is_a_clean_failure_not_a_crash(world, caplog
                 await svc.passkeys.verify_registration(s, AMAKA, garbage, None)
     assert code(exc) == (400, "PASSKEY_REGISTRATION_FAILED")
     assert [r.code for r in caplog.records] == ["malformed_assertion"]  # type: ignore[attr-defined]
+
+
+# ======================================================================= registration safety
+
+
+async def test_a_passkey_without_user_verification_cannot_be_registered(
+    world, phone, caplog
+) -> None:  # type: ignore[no-untyped-def]
+    """A passkey that never checks the person (no fingerprint, face or PIN) is no better than a
+    key lying around, so registration insists on user verification, not only approval."""
+    svc, _, sm = world
+    async with sm() as s:
+        options = await svc.passkeys.registration_options(s, AMAKA, "u", "U")
+    with caplog.at_level(logging.WARNING, logger="zolo.passkeys"):
+        async with sm() as s:
+            with pytest.raises(ApiError) as exc:
+                await svc.passkeys.verify_registration(
+                    s, AMAKA, phone.register(options, user_verified=False), None
+                )
+    assert code(exc) == (400, "PASSKEY_REGISTRATION_FAILED")
+    assert [r.code for r in caplog.records] == ["uv_missing"]  # type: ignore[attr-defined]
+    assert not await _has_passkey(sm)
+
+
+async def test_the_same_registration_sent_twice_at_once_registers_once(world, phone) -> None:  # type: ignore[no-untyped-def]
+    svc, _, sm = world
+    async with sm() as s:
+        options = await svc.passkeys.registration_options(s, AMAKA, "u", "U")
+    credential = phone.register(options)
+
+    async def go() -> object:
+        async with sm() as s:
+            return await svc.passkeys.verify_registration(s, AMAKA, credential, None)
+
+    results = await asyncio.gather(go(), go(), return_exceptions=True)
+    wins = [r for r in results if not isinstance(r, BaseException)]
+    losses = [r for r in results if isinstance(r, ApiError)]
+    assert len(wins) == 1 and len(losses) == 1 and losses[0].status == 409
+    async with sm() as s:
+        assert (
+            await s.execute(select(func.count()).select_from(PasskeyCredential))
+        ).scalar_one() == 1
+
+
+# ======================================================================= a stranger cannot interfere with someone else's challenge
+
+
+async def test_a_stranger_cannot_ask_for_a_challenge_on_someone_elses_request(world, phone) -> None:  # type: ignore[no-untyped-def]
+    """Without an ownership check here, a stranger could replace (and so destroy) the owner's
+    pending challenge, and learn the request's intent hash. They get NOT_FOUND, and the owner's
+    already-signed assertion still works."""
+    from zolo.core.models import Customer
+
+    svc, _, sm = world
+    made, options = await ready_to_sign(world, phone)  # registers the owner's passkey first
+    owners_assertion = phone.assert_(options)  # the owner has signed what they heard
+    stranger_id = uuid.uuid4()
+    async with sm() as s:
+        s.add(Customer(id=stranger_id, display_name="Stranger", phone="+2348077777777"))
+        await s.commit()
+    await register(world, SoftwareAuthenticator(), customer=stranger_id)  # they have a passkey too
+    async with sm() as s:
+        with pytest.raises(ApiError) as exc:
+            await svc.issue_challenge(s, stranger_id, made.id)
+    assert code(exc) == (404, "NOT_FOUND")
+    async with sm() as s:  # the owner's challenge row is untouched: still theirs, still unused
+        challenge = (
+            await s.execute(
+                select(WebAuthnChallenge).where(WebAuthnChallenge.request_id == made.id)
+            )
+        ).scalar_one()
+    assert challenge.customer_id == AMAKA and challenge.used_at is None
+    assert (await approve(world, made.id, owners_assertion)).state == "SETTLED"
