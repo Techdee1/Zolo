@@ -3,6 +3,7 @@ from datetime import datetime
 
 from sqlalchemy import (
     CHAR,
+    BigInteger,
     CheckConstraint,
     DateTime,
     ForeignKey,
@@ -40,4 +41,45 @@ class BankAccount(Base):
     account_number: Mapped[str] = mapped_column(CHAR(10))
     bank_code: Mapped[str] = mapped_column(Text)
     verified_name: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class MockAccount(Base):
+    """The MOCK bank's own directory and ledger (a real bank holds this itself). Name enquiry
+    reads `account_name`; transfers move `balance_kobo`. The balance can never go negative."""
+
+    __tablename__ = "mock_accounts"
+    __table_args__ = (
+        CheckConstraint("balance_kobo >= 0", name="balance_non_negative"),
+        CheckConstraint("account_number ~ '^[0-9]{10}$'", name="account_number_10_digits"),
+    )
+
+    account_number: Mapped[str] = mapped_column(CHAR(10), primary_key=True)
+    bank_code: Mapped[str] = mapped_column(Text, primary_key=True)
+    account_name: Mapped[str] = mapped_column(Text)
+    balance_kobo: Mapped[int] = mapped_column(BigInteger)
+
+
+class MockTransfer(Base):
+    """One row per idempotency key: the stored result a retry gets back."""
+
+    __tablename__ = "mock_transfers"
+    __table_args__ = (
+        CheckConstraint("amount_kobo > 0", name="amount_positive"),
+        CheckConstraint("status IN ('SUCCESS', 'REJECTED')", name="status_known"),
+        CheckConstraint(
+            "status <> 'SUCCESS' OR reference IS NOT NULL", name="success_has_reference"
+        ),
+        CheckConstraint("status <> 'REJECTED' OR reason IS NOT NULL", name="rejected_has_reason"),
+    )
+
+    idempotency_key: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    from_account: Mapped[str] = mapped_column(CHAR(10))
+    to_account: Mapped[str] = mapped_column(CHAR(10))
+    to_bank: Mapped[str] = mapped_column(Text)
+    amount_kobo: Mapped[int] = mapped_column(BigInteger)
+    narration: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(Text)
+    reference: Mapped[str | None] = mapped_column(Text, nullable=True, unique=True)
+    reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

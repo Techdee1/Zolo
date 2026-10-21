@@ -37,6 +37,11 @@ class Settings(BaseSettings):
     session_ttl_seconds: int = 12 * 60 * 60
     mock_otp: str = "123456"  # the fixed OTP for mock login (Phases 1 and 2)
 
+    # --- mock bank ---
+    mock_bank_code: str = "057"  # the bank Zolo sits in front of; from_account lives here
+    mock_bank_latency_min_ms: int = 300
+    mock_bank_latency_max_ms: int = 800
+
     # --- risk (Phase 1): hard caps, in kobo ---
     per_payment_cap_kobo: int = 100_000 * NAIRA
     daily_cap_kobo: int = 200_000 * NAIRA

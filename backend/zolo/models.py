@@ -2,7 +2,7 @@
 
 from zolo.agents.models import Agent
 from zolo.audit.models import AuditEvent
-from zolo.bank.models import BankAccount
+from zolo.bank.models import BankAccount, MockAccount, MockTransfer
 from zolo.consent.models import PaymentRequest
 from zolo.core.base import Base
 from zolo.core.models import Customer, SavedRecipient
@@ -10,6 +10,17 @@ from zolo.passkeys.models import PasskeyCredential, WebAuthnChallenge
 from zolo.risk.models import CardGuardWindow, RiskLimit
 
 __all__ = [
-    "Agent", "AuditEvent", "BankAccount", "Base", "CardGuardWindow", "Customer",
-    "PasskeyCredential", "PaymentRequest", "RiskLimit", "SavedRecipient", "WebAuthnChallenge",
-]  # fmt: skip
+    "Agent",
+    "AuditEvent",
+    "BankAccount",
+    "Base",
+    "CardGuardWindow",
+    "Customer",
+    "MockAccount",
+    "MockTransfer",
+    "PasskeyCredential",
+    "PaymentRequest",
+    "RiskLimit",
+    "SavedRecipient",
+    "WebAuthnChallenge",
+]
