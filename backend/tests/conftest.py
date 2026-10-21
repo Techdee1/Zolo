@@ -35,6 +35,8 @@ def make_settings(**overrides: object) -> Settings:
         "cookie_secure": False,
         "demo_mode": True,
         "demo_token": "test-demo-token",
+        "mock_bank_latency_min_ms": 0,
+        "mock_bank_latency_max_ms": 0,
     }
     return Settings(**{**base, **overrides})  # type: ignore[arg-type]
 
