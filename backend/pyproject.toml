@@ -59,6 +59,7 @@ ignore = ["UP047"]  # keep TypeVar helpers readable
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["E501"]
 "migrations/*" = ["E501"]
+"scripts/*" = ["E501"]  # the mutation table has long literal strings
 "zolo/api/routes_dev.py" = ["E501"]  # the embedded test page has long JavaScript lines
 
 [tool.mypy]

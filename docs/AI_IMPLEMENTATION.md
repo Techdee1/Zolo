@@ -8,7 +8,7 @@ Living document. Updated as each phase lands. Source of truth for what the AI pa
 
 | Phase | State | Notes |
 | --- | --- | --- |
-| 1. Voice MVP (no language model) | **Built and tested** | Not yet wired into the backend (waits on the backend implementing `DraftService`). |
+| 1. Voice MVP (no language model) | **Built and tested** | Not yet wired into the backend: the backend's Phase 1 (consent engine, passkeys, mock bank, HTTP API) exists on branch `backend-phase-1` but does not implement `DraftService` yet (that is backend Phase 2; see section 7). |
 | 2. Smart agent (LLM, tools) | Not started | Behind `AI_AGENT_ENABLED`, default off. `agent/` and `eval/` do not exist yet. |
 | 3. Final-ready | Not started | Native-speaker review of Pidgin, Yoruba, Hausa, Igbo wording; phone-call prompts. |
 
@@ -143,6 +143,11 @@ class DraftService(Protocol):
 - `zolo.ai.fakes.FakeBackend` is the in-memory version used in tests.
 - **The signature was designed by the AI team without reading the backend spec; the backend should confirm or change it.**
 
+**Backend status (branch `backend-phase-1`, as of 2026-10-21):**
+- The backend reuses this package's readback templates and number-to-words (`render_readback`), so the words on screen, the words in the pre-rendered audio and the words in the signed intent come from one place. It looks readback audio up in this package's cache; for that to hit, the bank's capitals are title-cased ("BISI VENTURES" becomes "Bisi Ventures"). Verified against the real pre-rendered clips for the demo amounts.
+- A `saved_recipients` table and a tested mapper to this package's `SavedRecipient` exist (`zolo/voice/recipients.py`); nothing is wired to a `DraftService` yet.
+- **Known mismatch to resolve in backend Phase 2:** `create_draft(recipient_ref, ...)` takes a saved-recipient id, but a payment request's payee must be a `bank_accounts` row. Creating a draft from a saved recipient therefore has to run a name enquiry and upsert an outside bank account first.
+
 ## 8. Configuration
 
 Keys come from environment variables only. See [.env.example](../backend/.env.example).
@@ -223,6 +228,7 @@ Add a row whenever credits are spent.
 | Date | Change |
 | --- | --- |
 | 2026-10-21 | **Phase 1 built.** Package, interfaces and fakes; amount parser and number-to-words; recipient matching; grammar; Spitch STT with ffmpeg conversion; YarnGPT TTS with byte cache and pre-render tools; `voice_turn()`. 206 tests. |
+| 2026-10-21 | **Backend integration notes.** Backend Phase 1 built separately (see `backend/README.md`); readback text and audio keys verified against it. No AI code changed. |
 | 2026-10-21 | **Phase 1 follow-ups.** Confusable by value (words and digits). `DraftService` backend contract and `FakeBackend`. Readback fallback chain and scenario pre-render. Yoruba numerals. Phonetic recipient matching with a 58-case set. Committed on `ai-phase-1` in 7 commits. 383 tests. |
 
 ## 14. Next

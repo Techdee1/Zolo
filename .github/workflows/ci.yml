@@ -35,7 +35,9 @@ jobs:
       - name: Types
         run: uv run mypy
       - name: Tests
-        run: uv run pytest -q --cov=zolo --cov-report=term-missing
+        run: uv run pytest -q --cov=zolo --cov-report=term-missing --cov-report=json:coverage.json
+      - name: Coverage gate (90% on consent and passkeys, per the PRD)
+        run: uv run python -m zolo.tools.check_coverage coverage.json --min 90
       - name: OpenAPI schema is up to date
         run: |
           uv run python -m zolo.api.export_openapi > /tmp/openapi.json

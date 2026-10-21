@@ -35,6 +35,27 @@ and they go through the consent service, never straight to a table:
 
 Phase 2 demo endpoints (bank failure, cloned voice, card swap) are not built.
 
+## Tests
+
+`docker compose up -d postgres`, then `uv run pytest`. Tests use their own database (`zolo_test`,
+created and migrated on demand) and never call Spitch or YarnGPT.
+
+| Layer | Where | What it proves |
+| --- | --- | --- |
+| Golden fixtures | `tests/unit/test_intent.py` | The canonical bytes and SHA-256 never change (strings typed by hand, hashed with `sha256sum`). |
+| Properties | `tests/unit/test_intent.py`, `test_money_is_integer.py` | Any change to amount, payee or expiry changes the hash; only a true integer is ever an amount. |
+| State table | `tests/unit/test_machine_and_rules.py`, `tests/integration/test_state_matrix.py` | The table is exactly the PRD's; every real action in every state gives the expected outcome and moves money only where it should. |
+| Ceremony | `tests/integration/test_passkeys.py` | A software WebAuthn authenticator (a real P-256 key) drives registration and approval, incl. tamper, replay, expiry, counters, caps and races. |
+| Failure cases | `tests/api/test_failure_cases.py` | All twelve cases from the brief, each a test or an explicit, reasoned deferral. A test fails if one is missing. |
+| Random storms | `tests/integration/test_chaos_invariants.py` | 4 seeded storms of hundreds of mixed operations; money is conserved, nothing is paid twice, finished requests never change. |
+| HTTP | `tests/api/` | Every endpoint, role, limit and error code; the OpenAPI contract is pinned. |
+
+**Coverage gate:** CI fails below 90% on `consent` and `passkeys` (`python -m zolo.tools.check_coverage`).
+
+**Do the tests catch bugs?** `uv run python scripts/mutation_sweep.py` plants one deliberate bug at a
+time (in a throwaway copy) in the security-critical code and lists any that no test notices. It uses
+its own database (`zolo_mutation`) and takes about half an hour.
+
 ## Run
 
 ```
