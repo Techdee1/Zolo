@@ -28,7 +28,7 @@ def ffmpeg_binary() -> str:
     if found:
         return found
     try:  # dev and CI: the bundled binary from imageio-ffmpeg
-        import imageio_ffmpeg  # type: ignore[import-untyped]
+        import imageio_ffmpeg
 
         return str(imageio_ffmpeg.get_ffmpeg_exe())
     except Exception as exc:

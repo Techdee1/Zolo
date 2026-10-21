@@ -1,22 +1,53 @@
 [project]
 name = "zolo"
 version = "0.1.0"
-requires-python = ">=3.12"
-dependencies = ["httpx>=0.27", "spitch>=1.50"]
+description = "Zolo: a voice-first consent layer. Anyone can propose a payment; only the account holder approves it."
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "sqlalchemy[asyncio]>=2.0.36",
+    "asyncpg>=0.30",
+    "alembic>=1.14",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "webauthn>=2.5",
+    "itsdangerous>=2.2",
+    "httpx>=0.27",
+    "spitch>=1.50",  # AI package (zolo.ai)
+]
 
-[project.optional-dependencies]
-dev = ["pytest>=8", "ruff", "mypy", "imageio-ffmpeg"]
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=6",
+    "hypothesis>=6.115",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "imageio-ffmpeg",  # bundled ffmpeg for AI audio tests
+]
+
+[tool.uv]
+package = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+
+[tool.coverage.run]
+source = ["zolo"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
 
 [tool.ruff]
 line-length = 100
-
-[tool.mypy]
-strict = true
-files = ["zolo/ai/nlu", "zolo/ai/stt", "zolo/ai/tts"]
+target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
@@ -24,3 +55,13 @@ ignore = ["UP047"]  # keep TypeVar helpers readable
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["E501"]
+"migrations/*" = ["E501"]
+
+[tool.mypy]
+strict = true
+files = ["zolo"]
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["imageio_ffmpeg", "spitch", "spitch.*"]
+ignore_missing_imports = true
