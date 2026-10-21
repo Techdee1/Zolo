@@ -1,73 +1,151 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
 
-/* Placeholder base styles for the scaffold. Step 2 replaces these with styles/tokens.css. */
-:root {
-  color-scheme: light dark;
-  --bg: #ffffff;
-  --text: #1c1c1e;
-  --text-secondary: #6e6e73;
-  --focus: #1c1c1e;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #000000;
-    --text: #f5f5f7;
-    --text-secondary: #a1a1a6;
-    --focus: #ffffff;
-  }
+/*
+ * Tailwind utilities for the tokens, under a `zolo-` prefix so they never clash with Tailwind's
+ * own palette (bg-zolo-brand, text-zolo-secondary, rounded-zolo-card ...). The tokens themselves
+ * live in styles/tokens.css and stay the source of truth.
+ */
+@theme inline {
+  --color-zolo-brand: var(--color-brand);
+  --color-zolo-brand-pressed: var(--color-brand-pressed);
+  --color-zolo-brand-text: var(--color-brand-text);
+  --color-zolo-graphite: var(--color-graphite);
+  --color-zolo-bg: var(--color-bg);
+  --color-zolo-grouped: var(--color-bg-grouped);
+  --color-zolo-elevated: var(--color-bg-elevated);
+  --color-zolo-text: var(--color-text);
+  --color-zolo-secondary: var(--color-text-secondary);
+  --color-zolo-separator: var(--color-separator);
+  --color-zolo-success: var(--color-success);
+  --color-zolo-warning: var(--color-warning);
+  --color-zolo-critical: var(--color-critical);
+  --color-zolo-focus: var(--color-focus);
+  --color-zolo-on-brand: var(--color-on-brand);
+  --radius-zolo-control: var(--radius-control);
+  --radius-zolo-card: var(--radius-card);
+  --radius-zolo-sheet: var(--radius-sheet);
+  --font-sans: var(--font-sans);
 }
 
 html {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Roboto, "Segoe UI", sans-serif;
+  font-family: var(--font-sans);
   font-optical-sizing: auto;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   min-height: 100dvh;
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-leading);
 }
 
+/* The focus ring: 3px, 2px offset, high contrast in both themes (4px with more contrast). */
 :focus-visible {
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--focus-offset);
 }
 
+/* ── Type styles. Size, weight, leading and tracking always travel together. ───────────────── */
+.type-amount {
+  font-size: var(--type-amount-size);
+  font-weight: var(--type-amount-weight);
+  line-height: var(--type-amount-leading);
+  letter-spacing: var(--type-amount-tracking);
+  font-variant-numeric: tabular-nums;
+}
+.type-code {
+  font-size: var(--type-code-size);
+  font-weight: var(--type-code-weight);
+  line-height: var(--type-code-leading);
+  letter-spacing: var(--type-code-tracking);
+  font-variant-numeric: tabular-nums;
+}
+.type-title {
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-leading);
+  letter-spacing: var(--type-title-tracking);
+}
+.type-headline {
+  font-size: var(--type-headline-size);
+  font-weight: var(--type-headline-weight);
+  line-height: var(--type-headline-leading);
+  letter-spacing: var(--type-headline-tracking);
+}
+.type-body {
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-leading);
+  letter-spacing: var(--type-body-tracking);
+}
+.type-secondary {
+  font-size: var(--type-secondary-size);
+  font-weight: var(--type-secondary-weight);
+  line-height: var(--type-secondary-leading);
+  letter-spacing: var(--type-secondary-tracking);
+  color: var(--color-text-secondary);
+}
+.type-caption {
+  font-size: var(--type-caption-size);
+  font-weight: var(--type-caption-weight);
+  line-height: var(--type-caption-leading);
+  letter-spacing: var(--type-caption-tracking);
+}
+
+/* ── Layout ─────────────────────────────────────────────────────────────────────────────────── */
+.screen {
+  max-width: var(--layout-max);
+  margin-inline: auto;
+  padding-inline: var(--space-screen-x);
+  padding-block: var(--space-8);
+}
+
+/* ── Visually hidden but read by screen readers ────────────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Skip link ─────────────────────────────────────────────────────────────────────────────── */
 .skip-link {
   position: absolute;
-  left: 1.25rem;
-  top: -4rem;
-  padding: 0.75rem 1rem;
-  background: var(--bg);
-  color: var(--text);
-  border: 2px solid var(--focus);
-  border-radius: 12px;
+  inset-inline-start: var(--space-screen-x);
+  inset-block-start: -4rem;
+  z-index: 100;
+  min-height: var(--target-min);
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--space-4);
+  background: var(--color-bg-elevated);
+  color: var(--color-text);
+  border: var(--border-width) solid var(--color-focus);
+  border-radius: var(--radius-control);
 }
 .skip-link:focus {
-  top: 1rem;
+  inset-block-start: var(--space-4);
 }
 
-.shell {
-  max-width: 30rem;
-  margin: 0 auto;
-  padding: 3rem 1.25rem;
-}
+/* ── The scaffold's placeholder page (replaced by real screens) ─────────────────────────────── */
 .wordmark {
   font-weight: 700;
-  margin: 0 0 2rem;
+  margin: 0 0 var(--space-8);
 }
 .wordmark-sub {
-  font-weight: 500;
-  font-size: 0.8125rem;
-  color: var(--text-secondary);
-  margin-inline-start: 0.5rem;
-}
-.shell-title {
-  font-size: 1.75rem;
-  line-height: 1.15;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  margin: 0 0 1rem;
+  font-size: var(--type-caption-size);
+  font-weight: var(--type-caption-weight);
+  letter-spacing: var(--type-caption-tracking);
+  color: var(--color-text-secondary);
+  margin-inline-start: var(--space-2);
 }

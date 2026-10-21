@@ -1,0 +1,161 @@
+/*
+ * Zolo design tokens. The source of truth is the Frontend PRD tables (colour, type, layout, motion).
+ * Every text pair here is checked against WCAG AA by tests/unit/tokens.test.ts, in both themes.
+ *
+ * Light is the default; dark follows the system (prefers-color-scheme). There is no theme toggle.
+ * The red (--color-brand) marks ONE thing per screen: the primary action or the brand mark.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* ── Colour: light ──────────────────────────────────────────────────────────────────────── */
+  --color-brand: #d7191e; /* primary button fill, brand mark (white text on it: 5.19:1) */
+  --color-brand-pressed: #b3141a;
+  --color-brand-text: #d7191e; /* red text and icons on the page background */
+  --color-graphite: #3a3a3c; /* brand secondary surfaces: agent header, chips */
+  --color-bg: #ffffff;
+  --color-bg-grouped: #f5f5f7;
+  --color-bg-elevated: #ffffff;
+  --color-text: #1c1c1e;
+  --color-text-secondary: #6e6e73;
+  --color-separator: rgb(60 60 67 / 0.18);
+  --color-success: #137333;
+  --color-warning: #a15c00;
+  --color-critical: #b3141a; /* always with an icon and words, never colour alone */
+  --color-focus: #1c1c1e;
+  --color-on-brand: #ffffff; /* text on --color-brand and --color-graphite */
+
+  /* ── Typography ─────────────────────────────────────────────────────────────────────────────
+     System fonts only (no web fonts). All sizes in rem so they follow the user's text size. */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", Roboto, "Segoe UI", sans-serif;
+
+  --type-amount-size: 3.5rem;
+  --type-amount-weight: 700;
+  --type-amount-leading: 1.05;
+  --type-amount-tracking: -0.02em;
+
+  --type-code-size: 3rem;
+  --type-code-weight: 600;
+  --type-code-leading: 1.1;
+  --type-code-tracking: 0.08em;
+
+  --type-title-size: 1.75rem;
+  --type-title-weight: 600;
+  --type-title-leading: 1.15;
+  --type-title-tracking: -0.01em;
+
+  --type-headline-size: 1.25rem;
+  --type-headline-weight: 600;
+  --type-headline-leading: 1.25;
+  --type-headline-tracking: 0;
+
+  --type-body-size: 1.0625rem;
+  --type-body-weight: 400;
+  --type-body-leading: 1.47;
+  --type-body-tracking: 0;
+
+  --type-secondary-size: 0.9375rem;
+  --type-secondary-weight: 400;
+  --type-secondary-leading: 1.4;
+  --type-secondary-tracking: 0;
+
+  --type-caption-size: 0.8125rem; /* badges only; nothing smaller */
+  --type-caption-weight: 500;
+  --type-caption-leading: 1.35;
+  --type-caption-tracking: 0.01em;
+
+  /* ── Spacing: 0.25rem steps (4, 8, 12, 16, 24, 32, 48, 64 px) ─────────────────────────────── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-screen-x: 1.25rem; /* side padding on every screen */
+
+  /* ── Targets and layout ─────────────────────────────────────────────────────────────────── */
+  --target-min: 3rem; /* 48px: nothing tappable is smaller */
+  --target-primary: 3.5rem; /* primary buttons: full width, at the bottom, within thumb reach */
+  --target-gap: 0.5rem; /* at least 8px between targets */
+  --layout-max: 30rem; /* single centred column */
+
+  /* ── Shape ──────────────────────────────────────────────────────────────────────────────── */
+  --radius-control: 12px;
+  --radius-card: 20px;
+  --radius-sheet: 28px;
+  --border-width: 1px;
+  --focus-width: 3px; /* 3px ring ... */
+  --focus-offset: 2px; /* ... with 2px offset */
+
+  /* ── Materials: translucent chrome (top bar, bottom action area). The amount card and buttons
+        are always solid. Solid again under reduced transparency and more contrast (below). ── */
+  --material-opacity: 0.72;
+  --material-bg: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  --material-filter: blur(20px) saturate(180%);
+
+  /* ── Motion: springs for anything that moves; only transform and opacity are animated. ─────
+        damping 1.0 = critically damped, no overshoot. Response is seconds, not a duration.
+        These numbers are mirrored in lib/motion.ts, and a test keeps the two in step. ── */
+  --motion-spring-damping: 1;
+  --motion-spring-response: 0.4;
+  --motion-sheet-damping: 0.8;
+  --motion-sheet-response: 0.3;
+  --motion-press-scale: 0.97; /* feedback on pointer-down, not on release */
+  --motion-press-duration: 100ms;
+  --motion-fade-duration: 150ms; /* what motion becomes under reduced motion: a short fade */
+}
+
+/* ── Colour: dark ──────────────────────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-brand-text: #ff5a5f;
+    --color-bg: #000000;
+    --color-bg-grouped: #111113;
+    --color-bg-elevated: #1c1c1e;
+    --color-text: #f5f5f7;
+    --color-text-secondary: #a1a1a6;
+    --color-separator: rgb(84 84 88 / 0.6);
+    --color-success: #32d74b;
+    --color-warning: #ffb340;
+    --color-critical: #ff5a5f;
+    --color-focus: #ffffff;
+    /* --color-brand, --color-brand-pressed and --color-graphite are the same in both themes */
+  }
+}
+
+/* ── Reduced motion: slides and springs become short fades; no press scale, no shake. ───────── */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-press-scale: 1;
+  }
+}
+
+/* ── Reduced transparency, and more contrast: solid surfaces instead of frosted glass. ──────── */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --material-bg: var(--color-bg);
+    --material-filter: none;
+  }
+}
+
+/* ── More contrast: solid chrome, opaque hairlines, secondary text as strong as primary text,
+      and a thicker focus ring. ───────────────────────────────────────────────────────────── */
+@media (prefers-contrast: more) {
+  :root {
+    --material-bg: var(--color-bg);
+    --material-filter: none;
+    --color-separator: #6e6e73;
+    --color-text-secondary: var(--color-text);
+    --border-width: 2px;
+    --focus-width: 4px;
+  }
+}
+
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  :root {
+    --color-separator: #a1a1a6;
+  }
+}
