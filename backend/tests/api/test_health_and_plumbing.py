@@ -19,6 +19,16 @@ async def test_readyz_reports_not_ready_until_the_seed_exists(client: AsyncClien
     assert r.status_code == 503 and body["status"] == "not_ready" and body["seed"] is False
 
 
+async def test_readyz_is_200_once_the_database_is_seeded(client: AsyncClient, sessionmaker) -> None:  # type: ignore[no-untyped-def]
+    from tests import factories as f
+
+    async with sessionmaker() as s:
+        await f.agent_with_account(s)
+        await s.commit()
+    r = await client.get("/readyz")
+    assert r.status_code == 200 and r.json() == {"status": "ready", "database": True, "seed": True}
+
+
 async def test_request_id_is_echoed_or_generated(client: AsyncClient) -> None:
     given = await client.get("/healthz", headers={"X-Request-Id": "abcd1234-req"})
     assert given.headers["x-request-id"] == "abcd1234-req"
