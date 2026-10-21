@@ -29,7 +29,7 @@ from zolo.consent.readback import build_readback, readback_lang
 from zolo.consent.states import State
 from zolo.core.config import Settings
 from zolo.core.errors import ApiError, ErrorCode
-from zolo.passkeys.service import PasskeyService
+from zolo.passkeys.service import PasskeyService, SignatureInvalid
 from zolo.risk.rules import check_per_payment, evaluate
 from zolo.risk.service import customer_limits, day_window, global_limits
 
@@ -553,10 +553,11 @@ class ConsentService:
             verified = await self.passkeys.verify_assertion(
                 session, customer_id, challenge.challenge, assertion
             )
-        except ApiError:
+        except SignatureInvalid as exc:
             await record(
                 session, "approve.signature_invalid", f"customer:{customer_id}",
                 request_id=row.id, customer_id=customer_id, code="SIGNATURE_INVALID",
+                reason=exc.reason,
             )  # fmt: skip
             await session.commit()
             raise

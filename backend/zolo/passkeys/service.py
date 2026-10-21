@@ -5,6 +5,7 @@ amount and payee. This module verifies signatures; the consent module decides wh
 """
 
 import json
+import logging
 import uuid
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -38,6 +39,7 @@ from zolo.core.config import Settings
 from zolo.core.errors import ApiError, ErrorCode
 from zolo.passkeys.models import PasskeyCredential, WebAuthnChallenge
 
+log = logging.getLogger("zolo.passkeys")
 REGISTRATION_TTL = timedelta(minutes=5)
 _TRANSPORTS = {t.value for t in AuthenticatorTransport}
 
@@ -59,8 +61,41 @@ class VerifiedAssertion:
     new_sign_count: int
 
 
-def _signature_invalid() -> ApiError:
-    return ApiError(401, ErrorCode.SIGNATURE_INVALID, "The passkey signature is not valid")
+class SignatureInvalid(ApiError):
+    """The client only ever sees SIGNATURE_INVALID. `reason` is for the server's own logs and
+    audit trail and never goes into a response."""
+
+    def __init__(self, reason: str) -> None:
+        super().__init__(401, ErrorCode.SIGNATURE_INVALID, "The passkey signature is not valid")
+        self.reason = reason
+
+
+# Why py_webauthn refused, by the start of its message. Only the code we choose is ever
+# recorded; the message itself can contain the attacker's origin or other payload data.
+_REASONS = (
+    ("Unexpected client data origin", "wrong_origin"),
+    ("Unexpected RP ID hash", "wrong_rp"),
+    ("User verification is required", "uv_missing"),
+    ("User was not present", "up_missing"),
+    ("Client data challenge was not expected", "wrong_challenge"),
+    ("Could not verify authentication signature", "bad_signature"),
+    ("Unexpected client data type", "wrong_type"),
+)
+
+
+def reason_for(exc: Exception) -> str:
+    message = str(exc)
+    for prefix, reason in _REASONS:
+        if message.startswith(prefix):
+            return reason
+    if "malformed" in message or "raw_id" in message:
+        return "malformed_assertion"
+    return "invalid_response"
+
+
+def _reject(reason: str) -> SignatureInvalid:
+    log.warning("signature rejected", extra={"event": "signature_invalid", "code": reason})
+    return SignatureInvalid(reason)
 
 
 class PasskeyService:
@@ -173,7 +208,11 @@ class PasskeyService:
                 expected_origin=self.settings.origins,
                 require_user_verification=True,
             )
-        except (InvalidRegistrationResponse, ValueError, KeyError, TypeError):
+        except (InvalidRegistrationResponse, ValueError, KeyError, TypeError) as exc:
+            log.warning(
+                "registration rejected",
+                extra={"event": "registration_failed", "code": reason_for(exc)},
+            )
             await record(
                 session,
                 "passkey.registration_failed",
@@ -319,7 +358,9 @@ class PasskeyService:
         try:
             raw_id = base64url_to_bytes(str(assertion["rawId"]))
         except (KeyError, ValueError, TypeError):
-            raise _signature_invalid() from None
+            raise _reject("malformed_assertion") from None
+        if not raw_id:  # base64url decoding is lenient: junk can decode to nothing
+            raise _reject("malformed_assertion")
         credential = (
             await session.execute(
                 select(PasskeyCredential).where(
@@ -330,7 +371,7 @@ class PasskeyService:
             )
         ).scalar_one_or_none()
         if credential is None:
-            raise _signature_invalid()
+            raise _reject("revoked_or_foreign_passkey")
         try:
             verified = verify_authentication_response(
                 credential=assertion,
@@ -338,12 +379,31 @@ class PasskeyService:
                 expected_rp_id=self.settings.rp_id,
                 expected_origin=self.settings.origins,
                 credential_public_key=credential.public_key,
-                credential_current_sign_count=credential.sign_count,
+                # py_webauthn's own counter rule is always strict; we apply ours below, so the
+                # strictness can be a setting. 0 here turns its check off.
+                credential_current_sign_count=0,
                 require_user_verification=True,
             )
-        except (InvalidAuthenticationResponse, ValueError, KeyError, TypeError):
-            raise _signature_invalid() from None
+        except (InvalidAuthenticationResponse, ValueError, KeyError, TypeError) as exc:
+            raise _reject(reason_for(exc)) from None
+        self._check_counter(credential.sign_count, verified.new_sign_count)
         return VerifiedAssertion(credential.id, verified.new_sign_count)
+
+    def _check_counter(self, stored: int, new: int) -> None:
+        """Zero stays zero (many platform passkeys never count). Otherwise the count must go up.
+        Backwards is always refused. Equal and non-zero is refused when strict, and allowed with
+        a warning when not (demo environments)."""
+        if new == 0 and stored == 0:
+            return
+        if new > stored:
+            return
+        if new == stored and not self.settings.webauthn_strict_counter:
+            log.warning(
+                "signature counter did not increase (allowed: strict counter is off)",
+                extra={"event": "counter_not_increased", "code": "equal_counter"},
+            )
+            return
+        raise _reject("stale_counter")
 
     async def record_use(
         self, session: AsyncSession, credential_pk: uuid.UUID, new_sign_count: int

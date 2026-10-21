@@ -32,6 +32,12 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     cookie_secure: bool = True  # Secure cookies (HTTPS). Turn off only for plain-http localhost.
 
+    # --- passkeys: signature counter ---
+    # True (default): the counter must strictly increase once it is non-zero, so an equal count
+    # (a possible cloned authenticator) is refused. False (demo only): an equal non-zero count is
+    # allowed and logged as a warning. A count that goes BACKWARDS is refused in both modes.
+    webauthn_strict_counter: bool = True
+
     # --- consent ---
     request_ttl_seconds: int = 120
     session_ttl_seconds: int = 12 * 60 * 60

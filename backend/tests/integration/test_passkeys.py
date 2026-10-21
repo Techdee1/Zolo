@@ -1,6 +1,7 @@
 """Registration and the approval ceremony, with a software authenticator."""
 
 import asyncio
+import logging
 import uuid
 from datetime import UTC, datetime, timedelta
 
@@ -9,6 +10,7 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from tests.conftest import make_settings
 from tests.integration.test_consent_engine import (
     AMAKA,
     NAIRA,
@@ -618,3 +620,168 @@ def test_clock_helper_is_frozen_by_default() -> None:
     assert (
         Clock().now == START and timedelta(0) == timedelta(seconds=0) and PasskeyService is not None
     )
+
+
+# ======================================================================= counter strictness
+
+
+def test_strict_counter_is_the_default() -> None:
+    assert Settings.model_fields["webauthn_strict_counter"].default is True
+
+
+async def _second_request_challenge(world):  # type: ignore[no-untyped-def]
+    second = await create(world, 5_000 * NAIRA)
+    await claim(world, second.claim_code)  # type: ignore[arg-type]
+    await readback(world, second.id)
+    async with world[2]() as s:
+        return second, await world[0].issue_challenge(s, AMAKA, second.id)
+
+
+@pytest.fixture(params=[True, False], ids=["strict", "lenient"])
+async def either_mode(request, sessionmaker, clock):  # type: ignore[no-untyped-def]
+    cfg = make_settings(webauthn_strict_counter=request.param)
+    await reset_demo(sessionmaker, cfg)
+    bank = MockBankAdapter(sessionmaker, latency=Latency(0, 0))
+    svc = ConsentService(cfg, bank, audio=StubAudio(), clock=clock)  # type: ignore[arg-type]
+    return (svc, bank, sessionmaker), request.param
+
+
+async def test_a_counter_that_goes_backwards_is_refused_in_both_modes(either_mode, caplog) -> None:  # type: ignore[no-untyped-def]
+    world, _ = either_mode
+    phone = SoftwareAuthenticator()
+    made, options = await ready_to_sign(world, phone)
+    await approve(world, made.id, phone.assert_(options, sign_count=10))
+    second, options2 = await _second_request_challenge(world)
+    with caplog.at_level(logging.WARNING, logger="zolo.passkeys"):
+        with pytest.raises(ApiError) as exc:
+            await approve(world, second.id, phone.assert_(options2, sign_count=9))
+    assert code(exc) == (401, "SIGNATURE_INVALID")
+    assert [r.code for r in caplog.records if r.name == "zolo.passkeys"] == ["stale_counter"]  # type: ignore[attr-defined]
+
+
+async def test_dropping_back_to_zero_after_counting_is_also_backwards(either_mode) -> None:  # type: ignore[no-untyped-def]
+    world, _ = either_mode
+    phone = SoftwareAuthenticator()
+    made, options = await ready_to_sign(world, phone)
+    await approve(world, made.id, phone.assert_(options, sign_count=5))
+    second, options2 = await _second_request_challenge(world)
+    with pytest.raises(ApiError) as exc:
+        await approve(world, second.id, phone.assert_(options2, sign_count=0))
+    assert code(exc) == (401, "SIGNATURE_INVALID")
+
+
+async def test_a_counter_that_stays_zero_is_fine_in_both_modes(either_mode) -> None:  # type: ignore[no-untyped-def]
+    world, _ = either_mode
+    phone = SoftwareAuthenticator()
+    phone.counter_mode = "zero"
+    made, options = await ready_to_sign(world, phone)
+    assert (await approve(world, made.id, phone.assert_(options))).state == "SETTLED"
+    second, options2 = await _second_request_challenge(world)
+    assert (await approve(world, second.id, phone.assert_(options2))).state == "SETTLED"
+
+
+async def test_an_equal_non_zero_counter_depends_on_the_mode(either_mode, caplog) -> None:  # type: ignore[no-untyped-def]
+    world, strict = either_mode
+    phone = SoftwareAuthenticator()
+    made, options = await ready_to_sign(world, phone)
+    await approve(world, made.id, phone.assert_(options, sign_count=10))
+    second, options2 = await _second_request_challenge(world)
+    with caplog.at_level(logging.WARNING, logger="zolo.passkeys"):
+        if strict:
+            with pytest.raises(ApiError) as exc:
+                await approve(world, second.id, phone.assert_(options2, sign_count=10))
+            assert code(exc) == (401, "SIGNATURE_INVALID")
+            assert [r.code for r in caplog.records] == ["stale_counter"]  # type: ignore[attr-defined]
+        else:
+            done = await approve(world, second.id, phone.assert_(options2, sign_count=10))
+            assert done.state == "SETTLED"  # allowed, but not silently
+            warning = [r for r in caplog.records if r.name == "zolo.passkeys"]
+            assert len(warning) == 1 and warning[0].levelno == logging.WARNING
+            assert warning[0].code == "equal_counter"  # type: ignore[attr-defined]
+
+
+# ======================================================================= opaque to the client, logged on the server
+
+
+def _revoke(world):  # type: ignore[no-untyped-def]
+    async def go() -> None:
+        async with world[2]() as s:
+            await s.execute(update(PasskeyCredential).values(revoked_at=datetime.now(UTC)))
+            await s.commit()
+
+    return go()
+
+
+CASES = [
+    ("wrong_origin", {"origin": "https://evil.example"}),
+    ("wrong_rp", {"rp_id": "evil.example"}),
+    ("uv_missing", {"user_verified": False}),
+    ("bad_signature", {"corrupt_signature": True}),
+    ("wrong_challenge", {"challenge": b"\x00" * 32}),
+    ("bad_signature", {"key": ec.generate_private_key(ec.SECP256R1())}),
+]
+
+
+@pytest.mark.parametrize("reason,tweak", CASES, ids=[f"{r}-{i}" for i, (r, _) in enumerate(CASES)])
+async def test_the_reason_is_logged_and_audited_but_the_client_learns_nothing(
+    world, phone, caplog, reason, tweak
+) -> None:  # type: ignore[no-untyped-def]
+    made, options = await ready_to_sign(world, phone)
+    with caplog.at_level(logging.WARNING):
+        with pytest.raises(ApiError) as exc:
+            await approve(world, made.id, phone.assert_(options, **tweak))
+    # what the caller sees: a generic code and title, with no reason anywhere
+    err = exc.value
+    assert (err.status, err.code.value, err.detail) == (401, "SIGNATURE_INVALID", "")
+    assert reason not in f"{err} {err.title} {err.detail}"
+    # what the server records: the reason code, and nothing from the payload
+    logged = [r for r in caplog.records if r.name == "zolo.passkeys"]
+    assert [r.code for r in logged] == [reason]  # type: ignore[attr-defined]
+    everything = " ".join(r.getMessage() + str(r.__dict__) for r in logged)
+    for payload in ("evil.example", phone.credential_id.hex(), "localhost:3000"):
+        assert payload not in everything
+    async with world[2]() as s:
+        audit = (
+            await s.execute(
+                select(AuditEvent).where(AuditEvent.event == "approve.signature_invalid")
+            )
+        ).scalar_one()
+    assert audit.details == {"code": "SIGNATURE_INVALID", "reason": reason}
+
+
+async def test_unknown_and_revoked_passkeys_are_logged_as_revoked_or_foreign(
+    world, phone, caplog
+) -> None:  # type: ignore[no-untyped-def]
+    made, options = await ready_to_sign(world, phone)
+    with caplog.at_level(logging.WARNING, logger="zolo.passkeys"):
+        with pytest.raises(ApiError):
+            await approve(
+                world, made.id, SoftwareAuthenticator().assert_(options)
+            )  # never registered
+        await _revoke(world)
+        with pytest.raises(ApiError):
+            await approve(world, made.id, phone.assert_(options))
+    assert [r.code for r in caplog.records] == ["revoked_or_foreign_passkey"] * 2  # type: ignore[attr-defined]
+
+
+@pytest.mark.parametrize("garbage", [{}, {"rawId": "!!!"}, {"rawId": 5}])
+async def test_garbage_is_logged_as_malformed(world, phone, caplog, garbage) -> None:  # type: ignore[no-untyped-def]
+    made, _ = await ready_to_sign(world, phone)
+    with caplog.at_level(logging.WARNING, logger="zolo.passkeys"):
+        with pytest.raises(ApiError):
+            await approve(world, made.id, garbage)
+    assert [r.code for r in caplog.records] == ["malformed_assertion"]  # type: ignore[attr-defined]
+
+
+async def test_a_refused_registration_logs_a_reason_code_only(world, phone, caplog) -> None:  # type: ignore[no-untyped-def]
+    svc, _, sm = world
+    async with sm() as s:
+        options = await svc.passkeys.registration_options(s, AMAKA, "u", "U")
+    with caplog.at_level(logging.WARNING, logger="zolo.passkeys"):
+        async with sm() as s:
+            with pytest.raises(ApiError):
+                await svc.passkeys.verify_registration(
+                    s, AMAKA, phone.register(options, origin="https://evil.example"), None
+                )
+    assert [r.code for r in caplog.records] == ["wrong_origin"]  # type: ignore[attr-defined]
+    assert "evil.example" not in " ".join(r.getMessage() for r in caplog.records)
