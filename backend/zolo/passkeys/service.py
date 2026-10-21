@@ -23,7 +23,7 @@ from webauthn import (
     verify_registration_response,
 )
 from webauthn.helpers import base64url_to_bytes
-from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidRegistrationResponse
+from webauthn.helpers.exceptions import InvalidJSONStructure, WebAuthnException
 from webauthn.helpers.structs import (
     AttestationConveyancePreference,
     AuthenticatorAttachment,
@@ -84,6 +84,8 @@ _REASONS = (
 
 
 def reason_for(exc: Exception) -> str:
+    if isinstance(exc, InvalidJSONStructure):
+        return "malformed_assertion"
     message = str(exc)
     for prefix, reason in _REASONS:
         if message.startswith(prefix):
@@ -208,7 +210,7 @@ class PasskeyService:
                 expected_origin=self.settings.origins,
                 require_user_verification=True,
             )
-        except (InvalidRegistrationResponse, ValueError, KeyError, TypeError) as exc:
+        except (WebAuthnException, ValueError, KeyError, TypeError) as exc:
             log.warning(
                 "registration rejected",
                 extra={"event": "registration_failed", "code": reason_for(exc)},
@@ -384,7 +386,7 @@ class PasskeyService:
                 credential_current_sign_count=0,
                 require_user_verification=True,
             )
-        except (InvalidAuthenticationResponse, ValueError, KeyError, TypeError) as exc:
+        except (WebAuthnException, ValueError, KeyError, TypeError) as exc:
             raise _reject(reason_for(exc)) from None
         self._check_counter(credential.sign_count, verified.new_sign_count)
         return VerifiedAssertion(credential.id, verified.new_sign_count)

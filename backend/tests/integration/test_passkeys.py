@@ -785,3 +785,47 @@ async def test_a_refused_registration_logs_a_reason_code_only(world, phone, capl
                 )
     assert [r.code for r in caplog.records] == ["wrong_origin"]  # type: ignore[attr-defined]
     assert "evil.example" not in " ".join(r.getMessage() for r in caplog.records)
+
+
+# ======================================================================= regression: structural garbage must never be a 500
+
+
+GARBAGE_RESPONSES = [
+    {},
+    {"response": {}},
+    {"response": {"clientDataJSON": 5}},
+    {"response": "text"},
+    {"type": 7},
+]
+
+
+@pytest.mark.parametrize("garbage", GARBAGE_RESPONSES)
+async def test_garbage_around_a_real_credential_id_is_signature_invalid_not_a_crash(
+    world, phone, caplog, garbage
+) -> None:  # type: ignore[no-untyped-def]
+    from webauthn.helpers import bytes_to_base64url
+
+    made, _ = await ready_to_sign(world, phone)
+    cid = bytes_to_base64url(phone.credential_id)  # the customer's REAL, registered credential id
+    with caplog.at_level(logging.WARNING, logger="zolo.passkeys"):
+        with pytest.raises(ApiError) as exc:
+            await approve(
+                world, made.id, {"id": cid, "rawId": cid, "type": "public-key", **garbage}
+            )
+    assert code(exc) == (401, "SIGNATURE_INVALID")
+    assert [r.code for r in caplog.records] == ["malformed_assertion"]  # type: ignore[attr-defined]
+
+
+@pytest.mark.parametrize(
+    "garbage", [{}, {"response": {}}, {"response": {"attestationObject": 5}}, {"id": 1}]
+)
+async def test_garbage_registration_is_a_clean_failure_not_a_crash(world, caplog, garbage) -> None:  # type: ignore[no-untyped-def]
+    svc, _, sm = world
+    async with sm() as s:
+        await svc.passkeys.registration_options(s, AMAKA, "u", "U")
+    with caplog.at_level(logging.WARNING, logger="zolo.passkeys"):
+        async with sm() as s:
+            with pytest.raises(ApiError) as exc:
+                await svc.passkeys.verify_registration(s, AMAKA, garbage, None)
+    assert code(exc) == (400, "PASSKEY_REGISTRATION_FAILED")
+    assert [r.code for r in caplog.records] == ["malformed_assertion"]  # type: ignore[attr-defined]
