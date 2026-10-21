@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+/* Placeholder base styles for the scaffold. Step 2 replaces these with styles/tokens.css. */
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --text: #1c1c1e;
+  --text-secondary: #6e6e73;
+  --focus: #1c1c1e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --text: #f5f5f7;
+    --text-secondary: #a1a1a6;
+    --focus: #ffffff;
+  }
+}
+
+html {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Roboto, "Segoe UI", sans-serif;
+  font-optical-sizing: auto;
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1.25rem;
+  top: -4rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg);
+  color: var(--text);
+  border: 2px solid var(--focus);
+  border-radius: 12px;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+.shell {
+  max-width: 30rem;
+  margin: 0 auto;
+  padding: 3rem 1.25rem;
+}
+.wordmark {
+  font-weight: 700;
+  margin: 0 0 2rem;
+}
+.wordmark-sub {
+  font-weight: 500;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  margin-inline-start: 0.5rem;
+}
+.shell-title {
+  font-size: 1.75rem;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 1rem;
+}
