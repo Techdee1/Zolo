@@ -30,6 +30,25 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  {
+    // Money is integer kobo. No floating-point tools where amounts are formatted.
+    files: ["lib/format/**/*.ts"],
+    rules: {
+      "no-restricted-globals": [
+        "error",
+        { name: "parseFloat", message: "Money is integer kobo: no floats." },
+      ],
+      "no-restricted-properties": [
+        "error",
+        { object: "Number", property: "parseFloat", message: "Money is integer kobo: no floats." },
+        { property: "toFixed", message: "Money is integer kobo: no floats." },
+        { property: "toLocaleString", message: "Use groupDigits: a fixed format, no locale." },
+        { object: "Math", property: "round", message: "Money is integer kobo: no rounding." },
+        { object: "Math", property: "floor", message: "Use BigInt or integer arithmetic." },
+        { object: "Math", property: "ceil", message: "Use BigInt or integer arithmetic." },
+      ],
+    },
+  },
   globalIgnores([
     ".next/**",
     "out/**",

@@ -1,0 +1,2873 @@
+{
+  "generated_by": "backend/zolo/ai/nlu/words.py kobo_to_naira_words (whole naira)",
+  "cases": [
+    {
+      "kobo": 0,
+      "words": "zero"
+    },
+    {
+      "kobo": 100,
+      "words": "one"
+    },
+    {
+      "kobo": 200,
+      "words": "two"
+    },
+    {
+      "kobo": 300,
+      "words": "three"
+    },
+    {
+      "kobo": 400,
+      "words": "four"
+    },
+    {
+      "kobo": 500,
+      "words": "five"
+    },
+    {
+      "kobo": 600,
+      "words": "six"
+    },
+    {
+      "kobo": 700,
+      "words": "seven"
+    },
+    {
+      "kobo": 800,
+      "words": "eight"
+    },
+    {
+      "kobo": 900,
+      "words": "nine"
+    },
+    {
+      "kobo": 1000,
+      "words": "ten"
+    },
+    {
+      "kobo": 1100,
+      "words": "eleven"
+    },
+    {
+      "kobo": 1200,
+      "words": "twelve"
+    },
+    {
+      "kobo": 1300,
+      "words": "thirteen"
+    },
+    {
+      "kobo": 1400,
+      "words": "fourteen"
+    },
+    {
+      "kobo": 1500,
+      "words": "fifteen"
+    },
+    {
+      "kobo": 1600,
+      "words": "sixteen"
+    },
+    {
+      "kobo": 1700,
+      "words": "seventeen"
+    },
+    {
+      "kobo": 1800,
+      "words": "eighteen"
+    },
+    {
+      "kobo": 1900,
+      "words": "nineteen"
+    },
+    {
+      "kobo": 2000,
+      "words": "twenty"
+    },
+    {
+      "kobo": 2100,
+      "words": "twenty one"
+    },
+    {
+      "kobo": 2200,
+      "words": "twenty two"
+    },
+    {
+      "kobo": 2300,
+      "words": "twenty three"
+    },
+    {
+      "kobo": 2400,
+      "words": "twenty four"
+    },
+    {
+      "kobo": 2500,
+      "words": "twenty five"
+    },
+    {
+      "kobo": 2600,
+      "words": "twenty six"
+    },
+    {
+      "kobo": 2700,
+      "words": "twenty seven"
+    },
+    {
+      "kobo": 2800,
+      "words": "twenty eight"
+    },
+    {
+      "kobo": 2900,
+      "words": "twenty nine"
+    },
+    {
+      "kobo": 3000,
+      "words": "thirty"
+    },
+    {
+      "kobo": 3100,
+      "words": "thirty one"
+    },
+    {
+      "kobo": 3200,
+      "words": "thirty two"
+    },
+    {
+      "kobo": 3300,
+      "words": "thirty three"
+    },
+    {
+      "kobo": 3400,
+      "words": "thirty four"
+    },
+    {
+      "kobo": 3500,
+      "words": "thirty five"
+    },
+    {
+      "kobo": 3600,
+      "words": "thirty six"
+    },
+    {
+      "kobo": 3700,
+      "words": "thirty seven"
+    },
+    {
+      "kobo": 3800,
+      "words": "thirty eight"
+    },
+    {
+      "kobo": 3900,
+      "words": "thirty nine"
+    },
+    {
+      "kobo": 4000,
+      "words": "forty"
+    },
+    {
+      "kobo": 4100,
+      "words": "forty one"
+    },
+    {
+      "kobo": 4200,
+      "words": "forty two"
+    },
+    {
+      "kobo": 4300,
+      "words": "forty three"
+    },
+    {
+      "kobo": 4400,
+      "words": "forty four"
+    },
+    {
+      "kobo": 4500,
+      "words": "forty five"
+    },
+    {
+      "kobo": 4600,
+      "words": "forty six"
+    },
+    {
+      "kobo": 4700,
+      "words": "forty seven"
+    },
+    {
+      "kobo": 4800,
+      "words": "forty eight"
+    },
+    {
+      "kobo": 4900,
+      "words": "forty nine"
+    },
+    {
+      "kobo": 5000,
+      "words": "fifty"
+    },
+    {
+      "kobo": 5100,
+      "words": "fifty one"
+    },
+    {
+      "kobo": 5200,
+      "words": "fifty two"
+    },
+    {
+      "kobo": 5300,
+      "words": "fifty three"
+    },
+    {
+      "kobo": 5400,
+      "words": "fifty four"
+    },
+    {
+      "kobo": 5500,
+      "words": "fifty five"
+    },
+    {
+      "kobo": 5600,
+      "words": "fifty six"
+    },
+    {
+      "kobo": 5700,
+      "words": "fifty seven"
+    },
+    {
+      "kobo": 5800,
+      "words": "fifty eight"
+    },
+    {
+      "kobo": 5900,
+      "words": "fifty nine"
+    },
+    {
+      "kobo": 6000,
+      "words": "sixty"
+    },
+    {
+      "kobo": 6100,
+      "words": "sixty one"
+    },
+    {
+      "kobo": 6200,
+      "words": "sixty two"
+    },
+    {
+      "kobo": 6300,
+      "words": "sixty three"
+    },
+    {
+      "kobo": 6400,
+      "words": "sixty four"
+    },
+    {
+      "kobo": 6500,
+      "words": "sixty five"
+    },
+    {
+      "kobo": 6600,
+      "words": "sixty six"
+    },
+    {
+      "kobo": 6700,
+      "words": "sixty seven"
+    },
+    {
+      "kobo": 6800,
+      "words": "sixty eight"
+    },
+    {
+      "kobo": 6900,
+      "words": "sixty nine"
+    },
+    {
+      "kobo": 7000,
+      "words": "seventy"
+    },
+    {
+      "kobo": 7100,
+      "words": "seventy one"
+    },
+    {
+      "kobo": 7200,
+      "words": "seventy two"
+    },
+    {
+      "kobo": 7300,
+      "words": "seventy three"
+    },
+    {
+      "kobo": 7400,
+      "words": "seventy four"
+    },
+    {
+      "kobo": 7500,
+      "words": "seventy five"
+    },
+    {
+      "kobo": 7600,
+      "words": "seventy six"
+    },
+    {
+      "kobo": 7700,
+      "words": "seventy seven"
+    },
+    {
+      "kobo": 7800,
+      "words": "seventy eight"
+    },
+    {
+      "kobo": 7900,
+      "words": "seventy nine"
+    },
+    {
+      "kobo": 8000,
+      "words": "eighty"
+    },
+    {
+      "kobo": 8100,
+      "words": "eighty one"
+    },
+    {
+      "kobo": 8200,
+      "words": "eighty two"
+    },
+    {
+      "kobo": 8300,
+      "words": "eighty three"
+    },
+    {
+      "kobo": 8400,
+      "words": "eighty four"
+    },
+    {
+      "kobo": 8500,
+      "words": "eighty five"
+    },
+    {
+      "kobo": 8600,
+      "words": "eighty six"
+    },
+    {
+      "kobo": 8700,
+      "words": "eighty seven"
+    },
+    {
+      "kobo": 8800,
+      "words": "eighty eight"
+    },
+    {
+      "kobo": 8900,
+      "words": "eighty nine"
+    },
+    {
+      "kobo": 9000,
+      "words": "ninety"
+    },
+    {
+      "kobo": 9100,
+      "words": "ninety one"
+    },
+    {
+      "kobo": 9200,
+      "words": "ninety two"
+    },
+    {
+      "kobo": 9300,
+      "words": "ninety three"
+    },
+    {
+      "kobo": 9400,
+      "words": "ninety four"
+    },
+    {
+      "kobo": 9500,
+      "words": "ninety five"
+    },
+    {
+      "kobo": 9600,
+      "words": "ninety six"
+    },
+    {
+      "kobo": 9700,
+      "words": "ninety seven"
+    },
+    {
+      "kobo": 9800,
+      "words": "ninety eight"
+    },
+    {
+      "kobo": 9900,
+      "words": "ninety nine"
+    },
+    {
+      "kobo": 10000,
+      "words": "one hundred"
+    },
+    {
+      "kobo": 10100,
+      "words": "one hundred one"
+    },
+    {
+      "kobo": 10200,
+      "words": "one hundred two"
+    },
+    {
+      "kobo": 10300,
+      "words": "one hundred three"
+    },
+    {
+      "kobo": 10400,
+      "words": "one hundred four"
+    },
+    {
+      "kobo": 10500,
+      "words": "one hundred five"
+    },
+    {
+      "kobo": 10600,
+      "words": "one hundred six"
+    },
+    {
+      "kobo": 10700,
+      "words": "one hundred seven"
+    },
+    {
+      "kobo": 10800,
+      "words": "one hundred eight"
+    },
+    {
+      "kobo": 10900,
+      "words": "one hundred nine"
+    },
+    {
+      "kobo": 11000,
+      "words": "one hundred ten"
+    },
+    {
+      "kobo": 11100,
+      "words": "one hundred eleven"
+    },
+    {
+      "kobo": 11200,
+      "words": "one hundred twelve"
+    },
+    {
+      "kobo": 11300,
+      "words": "one hundred thirteen"
+    },
+    {
+      "kobo": 11400,
+      "words": "one hundred fourteen"
+    },
+    {
+      "kobo": 11500,
+      "words": "one hundred fifteen"
+    },
+    {
+      "kobo": 11600,
+      "words": "one hundred sixteen"
+    },
+    {
+      "kobo": 11700,
+      "words": "one hundred seventeen"
+    },
+    {
+      "kobo": 11800,
+      "words": "one hundred eighteen"
+    },
+    {
+      "kobo": 11900,
+      "words": "one hundred nineteen"
+    },
+    {
+      "kobo": 12000,
+      "words": "one hundred twenty"
+    },
+    {
+      "kobo": 12100,
+      "words": "one hundred twenty one"
+    },
+    {
+      "kobo": 12200,
+      "words": "one hundred twenty two"
+    },
+    {
+      "kobo": 12300,
+      "words": "one hundred twenty three"
+    },
+    {
+      "kobo": 12400,
+      "words": "one hundred twenty four"
+    },
+    {
+      "kobo": 12500,
+      "words": "one hundred twenty five"
+    },
+    {
+      "kobo": 12600,
+      "words": "one hundred twenty six"
+    },
+    {
+      "kobo": 12700,
+      "words": "one hundred twenty seven"
+    },
+    {
+      "kobo": 12800,
+      "words": "one hundred twenty eight"
+    },
+    {
+      "kobo": 12900,
+      "words": "one hundred twenty nine"
+    },
+    {
+      "kobo": 20000,
+      "words": "two hundred"
+    },
+    {
+      "kobo": 25000,
+      "words": "two hundred fifty"
+    },
+    {
+      "kobo": 30000,
+      "words": "three hundred"
+    },
+    {
+      "kobo": 99900,
+      "words": "nine hundred ninety nine"
+    },
+    {
+      "kobo": 100000,
+      "words": "one thousand"
+    },
+    {
+      "kobo": 100100,
+      "words": "one thousand one"
+    },
+    {
+      "kobo": 101000,
+      "words": "one thousand ten"
+    },
+    {
+      "kobo": 110000,
+      "words": "one thousand one hundred"
+    },
+    {
+      "kobo": 150000,
+      "words": "one thousand five hundred"
+    },
+    {
+      "kobo": 250000,
+      "words": "two thousand five hundred"
+    },
+    {
+      "kobo": 500000,
+      "words": "five thousand"
+    },
+    {
+      "kobo": 999900,
+      "words": "nine thousand nine hundred ninety nine"
+    },
+    {
+      "kobo": 1000000,
+      "words": "ten thousand"
+    },
+    {
+      "kobo": 1000100,
+      "words": "ten thousand one"
+    },
+    {
+      "kobo": 1100000,
+      "words": "eleven thousand"
+    },
+    {
+      "kobo": 1234500,
+      "words": "twelve thousand three hundred forty five"
+    },
+    {
+      "kobo": 1500000,
+      "words": "fifteen thousand"
+    },
+    {
+      "kobo": 1550000,
+      "words": "fifteen thousand five hundred"
+    },
+    {
+      "kobo": 1870000,
+      "words": "eighteen thousand seven hundred"
+    },
+    {
+      "kobo": 1900000,
+      "words": "nineteen thousand"
+    },
+    {
+      "kobo": 2000000,
+      "words": "twenty thousand"
+    },
+    {
+      "kobo": 2280000,
+      "words": "twenty two thousand eight hundred"
+    },
+    {
+      "kobo": 2500000,
+      "words": "twenty five thousand"
+    },
+    {
+      "kobo": 2530000,
+      "words": "twenty five thousand three hundred"
+    },
+    {
+      "kobo": 2720000,
+      "words": "twenty seven thousand two hundred"
+    },
+    {
+      "kobo": 3330000,
+      "words": "thirty three thousand three hundred"
+    },
+    {
+      "kobo": 3770000,
+      "words": "thirty seven thousand seven hundred"
+    },
+    {
+      "kobo": 3830000,
+      "words": "thirty eight thousand three hundred"
+    },
+    {
+      "kobo": 3880000,
+      "words": "thirty eight thousand eight hundred"
+    },
+    {
+      "kobo": 4460000,
+      "words": "forty four thousand six hundred"
+    },
+    {
+      "kobo": 4660000,
+      "words": "forty six thousand six hundred"
+    },
+    {
+      "kobo": 4720000,
+      "words": "forty seven thousand two hundred"
+    },
+    {
+      "kobo": 5000000,
+      "words": "fifty thousand"
+    },
+    {
+      "kobo": 5100000,
+      "words": "fifty one thousand"
+    },
+    {
+      "kobo": 6120000,
+      "words": "sixty one thousand two hundred"
+    },
+    {
+      "kobo": 6230000,
+      "words": "sixty two thousand three hundred"
+    },
+    {
+      "kobo": 9200000,
+      "words": "ninety two thousand"
+    },
+    {
+      "kobo": 9220000,
+      "words": "ninety two thousand two hundred"
+    },
+    {
+      "kobo": 9390000,
+      "words": "ninety three thousand nine hundred"
+    },
+    {
+      "kobo": 9450000,
+      "words": "ninety four thousand five hundred"
+    },
+    {
+      "kobo": 9560000,
+      "words": "ninety five thousand six hundred"
+    },
+    {
+      "kobo": 9910000,
+      "words": "ninety nine thousand one hundred"
+    },
+    {
+      "kobo": 9999900,
+      "words": "ninety nine thousand nine hundred ninety nine"
+    },
+    {
+      "kobo": 10000000,
+      "words": "one hundred thousand"
+    },
+    {
+      "kobo": 10000100,
+      "words": "one hundred thousand one"
+    },
+    {
+      "kobo": 10310000,
+      "words": "one hundred three thousand one hundred"
+    },
+    {
+      "kobo": 10480000,
+      "words": "one hundred four thousand eight hundred"
+    },
+    {
+      "kobo": 12345600,
+      "words": "one hundred twenty three thousand four hundred fifty six"
+    },
+    {
+      "kobo": 14660000,
+      "words": "one hundred forty six thousand six hundred"
+    },
+    {
+      "kobo": 15000000,
+      "words": "one hundred fifty thousand"
+    },
+    {
+      "kobo": 15380000,
+      "words": "one hundred fifty three thousand eight hundred"
+    },
+    {
+      "kobo": 15800000,
+      "words": "one hundred fifty eight thousand"
+    },
+    {
+      "kobo": 15810000,
+      "words": "one hundred fifty eight thousand one hundred"
+    },
+    {
+      "kobo": 16630000,
+      "words": "one hundred sixty six thousand three hundred"
+    },
+    {
+      "kobo": 17380000,
+      "words": "one hundred seventy three thousand eight hundred"
+    },
+    {
+      "kobo": 17420000,
+      "words": "one hundred seventy four thousand two hundred"
+    },
+    {
+      "kobo": 17980000,
+      "words": "one hundred seventy nine thousand eight hundred"
+    },
+    {
+      "kobo": 18450000,
+      "words": "one hundred eighty four thousand five hundred"
+    },
+    {
+      "kobo": 19380000,
+      "words": "one hundred ninety three thousand eight hundred"
+    },
+    {
+      "kobo": 19570000,
+      "words": "one hundred ninety five thousand seven hundred"
+    },
+    {
+      "kobo": 20050000,
+      "words": "two hundred thousand five hundred"
+    },
+    {
+      "kobo": 20110000,
+      "words": "two hundred one thousand one hundred"
+    },
+    {
+      "kobo": 20160000,
+      "words": "two hundred one thousand six hundred"
+    },
+    {
+      "kobo": 20520000,
+      "words": "two hundred five thousand two hundred"
+    },
+    {
+      "kobo": 20600000,
+      "words": "two hundred six thousand"
+    },
+    {
+      "kobo": 20700000,
+      "words": "two hundred seven thousand"
+    },
+    {
+      "kobo": 21730000,
+      "words": "two hundred seventeen thousand three hundred"
+    },
+    {
+      "kobo": 22720000,
+      "words": "two hundred twenty seven thousand two hundred"
+    },
+    {
+      "kobo": 22974900,
+      "words": "two hundred twenty nine thousand seven hundred forty nine"
+    },
+    {
+      "kobo": 24200000,
+      "words": "two hundred forty two thousand"
+    },
+    {
+      "kobo": 24720000,
+      "words": "two hundred forty seven thousand two hundred"
+    },
+    {
+      "kobo": 25690000,
+      "words": "two hundred fifty six thousand nine hundred"
+    },
+    {
+      "kobo": 26450000,
+      "words": "two hundred sixty four thousand five hundred"
+    },
+    {
+      "kobo": 26570000,
+      "words": "two hundred sixty five thousand seven hundred"
+    },
+    {
+      "kobo": 28070000,
+      "words": "two hundred eighty thousand seven hundred"
+    },
+    {
+      "kobo": 29380000,
+      "words": "two hundred ninety three thousand eight hundred"
+    },
+    {
+      "kobo": 29900000,
+      "words": "two hundred ninety nine thousand"
+    },
+    {
+      "kobo": 30060000,
+      "words": "three hundred thousand six hundred"
+    },
+    {
+      "kobo": 30400000,
+      "words": "three hundred four thousand"
+    },
+    {
+      "kobo": 32350000,
+      "words": "three hundred twenty three thousand five hundred"
+    },
+    {
+      "kobo": 35140000,
+      "words": "three hundred fifty one thousand four hundred"
+    },
+    {
+      "kobo": 35330000,
+      "words": "three hundred fifty three thousand three hundred"
+    },
+    {
+      "kobo": 35480000,
+      "words": "three hundred fifty four thousand eight hundred"
+    },
+    {
+      "kobo": 35980000,
+      "words": "three hundred fifty nine thousand eight hundred"
+    },
+    {
+      "kobo": 36350000,
+      "words": "three hundred sixty three thousand five hundred"
+    },
+    {
+      "kobo": 37400000,
+      "words": "three hundred seventy four thousand"
+    },
+    {
+      "kobo": 38540000,
+      "words": "three hundred eighty five thousand four hundred"
+    },
+    {
+      "kobo": 39210000,
+      "words": "three hundred ninety two thousand one hundred"
+    },
+    {
+      "kobo": 39790000,
+      "words": "three hundred ninety seven thousand nine hundred"
+    },
+    {
+      "kobo": 41220000,
+      "words": "four hundred twelve thousand two hundred"
+    },
+    {
+      "kobo": 41780000,
+      "words": "four hundred seventeen thousand eight hundred"
+    },
+    {
+      "kobo": 41970000,
+      "words": "four hundred nineteen thousand seven hundred"
+    },
+    {
+      "kobo": 42120000,
+      "words": "four hundred twenty one thousand two hundred"
+    },
+    {
+      "kobo": 42740000,
+      "words": "four hundred twenty seven thousand four hundred"
+    },
+    {
+      "kobo": 43210000,
+      "words": "four hundred thirty two thousand one hundred"
+    },
+    {
+      "kobo": 43230000,
+      "words": "four hundred thirty two thousand three hundred"
+    },
+    {
+      "kobo": 43460000,
+      "words": "four hundred thirty four thousand six hundred"
+    },
+    {
+      "kobo": 43930000,
+      "words": "four hundred thirty nine thousand three hundred"
+    },
+    {
+      "kobo": 45350000,
+      "words": "four hundred fifty three thousand five hundred"
+    },
+    {
+      "kobo": 45360000,
+      "words": "four hundred fifty three thousand six hundred"
+    },
+    {
+      "kobo": 45960000,
+      "words": "four hundred fifty nine thousand six hundred"
+    },
+    {
+      "kobo": 46110000,
+      "words": "four hundred sixty one thousand one hundred"
+    },
+    {
+      "kobo": 47450000,
+      "words": "four hundred seventy four thousand five hundred"
+    },
+    {
+      "kobo": 47690000,
+      "words": "four hundred seventy six thousand nine hundred"
+    },
+    {
+      "kobo": 47830000,
+      "words": "four hundred seventy eight thousand three hundred"
+    },
+    {
+      "kobo": 48290000,
+      "words": "four hundred eighty two thousand nine hundred"
+    },
+    {
+      "kobo": 48660000,
+      "words": "four hundred eighty six thousand six hundred"
+    },
+    {
+      "kobo": 49520000,
+      "words": "four hundred ninety five thousand two hundred"
+    },
+    {
+      "kobo": 50000000,
+      "words": "five hundred thousand"
+    },
+    {
+      "kobo": 50780000,
+      "words": "five hundred seven thousand eight hundred"
+    },
+    {
+      "kobo": 51380000,
+      "words": "five hundred thirteen thousand eight hundred"
+    },
+    {
+      "kobo": 51550000,
+      "words": "five hundred fifteen thousand five hundred"
+    },
+    {
+      "kobo": 51570000,
+      "words": "five hundred fifteen thousand seven hundred"
+    },
+    {
+      "kobo": 51610000,
+      "words": "five hundred sixteen thousand one hundred"
+    },
+    {
+      "kobo": 51790000,
+      "words": "five hundred seventeen thousand nine hundred"
+    },
+    {
+      "kobo": 52020000,
+      "words": "five hundred twenty thousand two hundred"
+    },
+    {
+      "kobo": 52250000,
+      "words": "five hundred twenty two thousand five hundred"
+    },
+    {
+      "kobo": 54160000,
+      "words": "five hundred forty one thousand six hundred"
+    },
+    {
+      "kobo": 55830000,
+      "words": "five hundred fifty eight thousand three hundred"
+    },
+    {
+      "kobo": 56120000,
+      "words": "five hundred sixty one thousand two hundred"
+    },
+    {
+      "kobo": 57400000,
+      "words": "five hundred seventy four thousand"
+    },
+    {
+      "kobo": 57630000,
+      "words": "five hundred seventy six thousand three hundred"
+    },
+    {
+      "kobo": 57670000,
+      "words": "five hundred seventy six thousand seven hundred"
+    },
+    {
+      "kobo": 58010000,
+      "words": "five hundred eighty thousand one hundred"
+    },
+    {
+      "kobo": 58330000,
+      "words": "five hundred eighty three thousand three hundred"
+    },
+    {
+      "kobo": 58370000,
+      "words": "five hundred eighty three thousand seven hundred"
+    },
+    {
+      "kobo": 58380000,
+      "words": "five hundred eighty three thousand eight hundred"
+    },
+    {
+      "kobo": 61310000,
+      "words": "six hundred thirteen thousand one hundred"
+    },
+    {
+      "kobo": 61800000,
+      "words": "six hundred eighteen thousand"
+    },
+    {
+      "kobo": 62940000,
+      "words": "six hundred twenty nine thousand four hundred"
+    },
+    {
+      "kobo": 63750000,
+      "words": "six hundred thirty seven thousand five hundred"
+    },
+    {
+      "kobo": 65030000,
+      "words": "six hundred fifty thousand three hundred"
+    },
+    {
+      "kobo": 66230000,
+      "words": "six hundred sixty two thousand three hundred"
+    },
+    {
+      "kobo": 67450000,
+      "words": "six hundred seventy four thousand five hundred"
+    },
+    {
+      "kobo": 67920000,
+      "words": "six hundred seventy nine thousand two hundred"
+    },
+    {
+      "kobo": 68050000,
+      "words": "six hundred eighty thousand five hundred"
+    },
+    {
+      "kobo": 68270000,
+      "words": "six hundred eighty two thousand seven hundred"
+    },
+    {
+      "kobo": 68470000,
+      "words": "six hundred eighty four thousand seven hundred"
+    },
+    {
+      "kobo": 68980000,
+      "words": "six hundred eighty nine thousand eight hundred"
+    },
+    {
+      "kobo": 69600000,
+      "words": "six hundred ninety six thousand"
+    },
+    {
+      "kobo": 69820000,
+      "words": "six hundred ninety eight thousand two hundred"
+    },
+    {
+      "kobo": 71450000,
+      "words": "seven hundred fourteen thousand five hundred"
+    },
+    {
+      "kobo": 71560000,
+      "words": "seven hundred fifteen thousand six hundred"
+    },
+    {
+      "kobo": 74720000,
+      "words": "seven hundred forty seven thousand two hundred"
+    },
+    {
+      "kobo": 75810000,
+      "words": "seven hundred fifty eight thousand one hundred"
+    },
+    {
+      "kobo": 77100000,
+      "words": "seven hundred seventy one thousand"
+    },
+    {
+      "kobo": 78460000,
+      "words": "seven hundred eighty four thousand six hundred"
+    },
+    {
+      "kobo": 82130000,
+      "words": "eight hundred twenty one thousand three hundred"
+    },
+    {
+      "kobo": 83010000,
+      "words": "eight hundred thirty thousand one hundred"
+    },
+    {
+      "kobo": 83340000,
+      "words": "eight hundred thirty three thousand four hundred"
+    },
+    {
+      "kobo": 84230000,
+      "words": "eight hundred forty two thousand three hundred"
+    },
+    {
+      "kobo": 85280000,
+      "words": "eight hundred fifty two thousand eight hundred"
+    },
+    {
+      "kobo": 85630000,
+      "words": "eight hundred fifty six thousand three hundred"
+    },
+    {
+      "kobo": 88210000,
+      "words": "eight hundred eighty two thousand one hundred"
+    },
+    {
+      "kobo": 88670000,
+      "words": "eight hundred eighty six thousand seven hundred"
+    },
+    {
+      "kobo": 88700000,
+      "words": "eight hundred eighty seven thousand"
+    },
+    {
+      "kobo": 88830000,
+      "words": "eight hundred eighty eight thousand three hundred"
+    },
+    {
+      "kobo": 88960000,
+      "words": "eight hundred eighty nine thousand six hundred"
+    },
+    {
+      "kobo": 89310000,
+      "words": "eight hundred ninety three thousand one hundred"
+    },
+    {
+      "kobo": 90610000,
+      "words": "nine hundred six thousand one hundred"
+    },
+    {
+      "kobo": 90920000,
+      "words": "nine hundred nine thousand two hundred"
+    },
+    {
+      "kobo": 91060000,
+      "words": "nine hundred ten thousand six hundred"
+    },
+    {
+      "kobo": 91070000,
+      "words": "nine hundred ten thousand seven hundred"
+    },
+    {
+      "kobo": 91900000,
+      "words": "nine hundred nineteen thousand"
+    },
+    {
+      "kobo": 91950000,
+      "words": "nine hundred nineteen thousand five hundred"
+    },
+    {
+      "kobo": 92080000,
+      "words": "nine hundred twenty thousand eight hundred"
+    },
+    {
+      "kobo": 92220000,
+      "words": "nine hundred twenty two thousand two hundred"
+    },
+    {
+      "kobo": 93070000,
+      "words": "nine hundred thirty thousand seven hundred"
+    },
+    {
+      "kobo": 93370000,
+      "words": "nine hundred thirty three thousand seven hundred"
+    },
+    {
+      "kobo": 93780000,
+      "words": "nine hundred thirty seven thousand eight hundred"
+    },
+    {
+      "kobo": 94460000,
+      "words": "nine hundred forty four thousand six hundred"
+    },
+    {
+      "kobo": 94730000,
+      "words": "nine hundred forty seven thousand three hundred"
+    },
+    {
+      "kobo": 95950000,
+      "words": "nine hundred fifty nine thousand five hundred"
+    },
+    {
+      "kobo": 96360000,
+      "words": "nine hundred sixty three thousand six hundred"
+    },
+    {
+      "kobo": 97270000,
+      "words": "nine hundred seventy two thousand seven hundred"
+    },
+    {
+      "kobo": 97340000,
+      "words": "nine hundred seventy three thousand four hundred"
+    },
+    {
+      "kobo": 97810000,
+      "words": "nine hundred seventy eight thousand one hundred"
+    },
+    {
+      "kobo": 99500000,
+      "words": "nine hundred ninety five thousand"
+    },
+    {
+      "kobo": 99580000,
+      "words": "nine hundred ninety five thousand eight hundred"
+    },
+    {
+      "kobo": 99999900,
+      "words": "nine hundred ninety nine thousand nine hundred ninety nine"
+    },
+    {
+      "kobo": 100000000,
+      "words": "one million"
+    },
+    {
+      "kobo": 100000100,
+      "words": "one million one"
+    },
+    {
+      "kobo": 150000000,
+      "words": "one million five hundred thousand"
+    },
+    {
+      "kobo": 200000000,
+      "words": "two million"
+    },
+    {
+      "kobo": 272176500,
+      "words": "two million seven hundred twenty one thousand seven hundred sixty five"
+    },
+    {
+      "kobo": 526759300,
+      "words": "five million two hundred sixty seven thousand five hundred ninety three"
+    },
+    {
+      "kobo": 550947400,
+      "words": "five million five hundred nine thousand four hundred seventy four"
+    },
+    {
+      "kobo": 996099200,
+      "words": "nine million nine hundred sixty thousand nine hundred ninety two"
+    },
+    {
+      "kobo": 1233603900,
+      "words": "twelve million three hundred thirty six thousand thirty nine"
+    },
+    {
+      "kobo": 1234567800,
+      "words": "twelve million three hundred forty five thousand six hundred seventy eight"
+    },
+    {
+      "kobo": 1506733600,
+      "words": "fifteen million sixty seven thousand three hundred thirty six"
+    },
+    {
+      "kobo": 1517398300,
+      "words": "fifteen million one hundred seventy three thousand nine hundred eighty three"
+    },
+    {
+      "kobo": 2197931500,
+      "words": "twenty one million nine hundred seventy nine thousand three hundred fifteen"
+    },
+    {
+      "kobo": 2656362200,
+      "words": "twenty six million five hundred sixty three thousand six hundred twenty two"
+    },
+    {
+      "kobo": 2724742400,
+      "words": "twenty seven million two hundred forty seven thousand four hundred twenty four"
+    },
+    {
+      "kobo": 2746877300,
+      "words": "twenty seven million four hundred sixty eight thousand seven hundred seventy three"
+    },
+    {
+      "kobo": 2769206000,
+      "words": "twenty seven million six hundred ninety two thousand sixty"
+    },
+    {
+      "kobo": 3555080600,
+      "words": "thirty five million five hundred fifty thousand eight hundred six"
+    },
+    {
+      "kobo": 3609914500,
+      "words": "thirty six million ninety nine thousand one hundred forty five"
+    },
+    {
+      "kobo": 3667117000,
+      "words": "thirty six million six hundred seventy one thousand one hundred seventy"
+    },
+    {
+      "kobo": 4795231700,
+      "words": "forty seven million nine hundred fifty two thousand three hundred seventeen"
+    },
+    {
+      "kobo": 4857242200,
+      "words": "forty eight million five hundred seventy two thousand four hundred twenty two"
+    },
+    {
+      "kobo": 5174089600,
+      "words": "fifty one million seven hundred forty thousand eight hundred ninety six"
+    },
+    {
+      "kobo": 5249277000,
+      "words": "fifty two million four hundred ninety two thousand seven hundred seventy"
+    },
+    {
+      "kobo": 5516388100,
+      "words": "fifty five million one hundred sixty three thousand eight hundred eighty one"
+    },
+    {
+      "kobo": 6903639700,
+      "words": "sixty nine million thirty six thousand three hundred ninety seven"
+    },
+    {
+      "kobo": 7463415400,
+      "words": "seventy four million six hundred thirty four thousand one hundred fifty four"
+    },
+    {
+      "kobo": 7884844100,
+      "words": "seventy eight million eight hundred forty eight thousand four hundred forty one"
+    },
+    {
+      "kobo": 8194786900,
+      "words": "eighty one million nine hundred forty seven thousand eight hundred sixty nine"
+    },
+    {
+      "kobo": 8445926000,
+      "words": "eighty four million four hundred fifty nine thousand two hundred sixty"
+    },
+    {
+      "kobo": 8667638100,
+      "words": "eighty six million six hundred seventy six thousand three hundred eighty one"
+    },
+    {
+      "kobo": 8919097200,
+      "words": "eighty nine million one hundred ninety thousand nine hundred seventy two"
+    },
+    {
+      "kobo": 9065947100,
+      "words": "ninety million six hundred fifty nine thousand four hundred seventy one"
+    },
+    {
+      "kobo": 9627702500,
+      "words": "ninety six million two hundred seventy seven thousand twenty five"
+    },
+    {
+      "kobo": 9737142100,
+      "words": "ninety seven million three hundred seventy one thousand four hundred twenty one"
+    },
+    {
+      "kobo": 9896531400,
+      "words": "ninety eight million nine hundred sixty five thousand three hundred fourteen"
+    },
+    {
+      "kobo": 9998640400,
+      "words": "ninety nine million nine hundred eighty six thousand four hundred four"
+    },
+    {
+      "kobo": 10000000000,
+      "words": "one hundred million"
+    },
+    {
+      "kobo": 10153951500,
+      "words": "one hundred one million five hundred thirty nine thousand five hundred fifteen"
+    },
+    {
+      "kobo": 10379062200,
+      "words": "one hundred three million seven hundred ninety thousand six hundred twenty two"
+    },
+    {
+      "kobo": 10528212700,
+      "words": "one hundred five million two hundred eighty two thousand one hundred twenty seven"
+    },
+    {
+      "kobo": 10562826700,
+      "words": "one hundred five million six hundred twenty eight thousand two hundred sixty seven"
+    },
+    {
+      "kobo": 11014055200,
+      "words": "one hundred ten million one hundred forty thousand five hundred fifty two"
+    },
+    {
+      "kobo": 11020547400,
+      "words": "one hundred ten million two hundred five thousand four hundred seventy four"
+    },
+    {
+      "kobo": 11396045200,
+      "words": "one hundred thirteen million nine hundred sixty thousand four hundred fifty two"
+    },
+    {
+      "kobo": 11890246200,
+      "words": "one hundred eighteen million nine hundred two thousand four hundred sixty two"
+    },
+    {
+      "kobo": 12503502800,
+      "words": "one hundred twenty five million thirty five thousand twenty eight"
+    },
+    {
+      "kobo": 12790400700,
+      "words": "one hundred twenty seven million nine hundred four thousand seven"
+    },
+    {
+      "kobo": 12896242700,
+      "words": "one hundred twenty eight million nine hundred sixty two thousand four hundred twenty seven"
+    },
+    {
+      "kobo": 12972832000,
+      "words": "one hundred twenty nine million seven hundred twenty eight thousand three hundred twenty"
+    },
+    {
+      "kobo": 13032310300,
+      "words": "one hundred thirty million three hundred twenty three thousand one hundred three"
+    },
+    {
+      "kobo": 13101073300,
+      "words": "one hundred thirty one million ten thousand seven hundred thirty three"
+    },
+    {
+      "kobo": 13851146400,
+      "words": "one hundred thirty eight million five hundred eleven thousand four hundred sixty four"
+    },
+    {
+      "kobo": 13866277700,
+      "words": "one hundred thirty eight million six hundred sixty two thousand seven hundred seventy seven"
+    },
+    {
+      "kobo": 14089240200,
+      "words": "one hundred forty million eight hundred ninety two thousand four hundred two"
+    },
+    {
+      "kobo": 14480974900,
+      "words": "one hundred forty four million eight hundred nine thousand seven hundred forty nine"
+    },
+    {
+      "kobo": 14532680200,
+      "words": "one hundred forty five million three hundred twenty six thousand eight hundred two"
+    },
+    {
+      "kobo": 14787761600,
+      "words": "one hundred forty seven million eight hundred seventy seven thousand six hundred sixteen"
+    },
+    {
+      "kobo": 15127771900,
+      "words": "one hundred fifty one million two hundred seventy seven thousand seven hundred nineteen"
+    },
+    {
+      "kobo": 15291432000,
+      "words": "one hundred fifty two million nine hundred fourteen thousand three hundred twenty"
+    },
+    {
+      "kobo": 15715143400,
+      "words": "one hundred fifty seven million one hundred fifty one thousand four hundred thirty four"
+    },
+    {
+      "kobo": 15948964000,
+      "words": "one hundred fifty nine million four hundred eighty nine thousand six hundred forty"
+    },
+    {
+      "kobo": 16089349900,
+      "words": "one hundred sixty million eight hundred ninety three thousand four hundred ninety nine"
+    },
+    {
+      "kobo": 16523875700,
+      "words": "one hundred sixty five million two hundred thirty eight thousand seven hundred fifty seven"
+    },
+    {
+      "kobo": 16617326100,
+      "words": "one hundred sixty six million one hundred seventy three thousand two hundred sixty one"
+    },
+    {
+      "kobo": 17192916400,
+      "words": "one hundred seventy one million nine hundred twenty nine thousand one hundred sixty four"
+    },
+    {
+      "kobo": 17221818000,
+      "words": "one hundred seventy two million two hundred eighteen thousand one hundred eighty"
+    },
+    {
+      "kobo": 18332380900,
+      "words": "one hundred eighty three million three hundred twenty three thousand eight hundred nine"
+    },
+    {
+      "kobo": 18614808400,
+      "words": "one hundred eighty six million one hundred forty eight thousand eighty four"
+    },
+    {
+      "kobo": 18757728000,
+      "words": "one hundred eighty seven million five hundred seventy seven thousand two hundred eighty"
+    },
+    {
+      "kobo": 19001180100,
+      "words": "one hundred ninety million eleven thousand eight hundred one"
+    },
+    {
+      "kobo": 19654718500,
+      "words": "one hundred ninety six million five hundred forty seven thousand one hundred eighty five"
+    },
+    {
+      "kobo": 19972158700,
+      "words": "one hundred ninety nine million seven hundred twenty one thousand five hundred eighty seven"
+    },
+    {
+      "kobo": 20100316600,
+      "words": "two hundred one million three thousand one hundred sixty six"
+    },
+    {
+      "kobo": 20243178900,
+      "words": "two hundred two million four hundred thirty one thousand seven hundred eighty nine"
+    },
+    {
+      "kobo": 20893578400,
+      "words": "two hundred eight million nine hundred thirty five thousand seven hundred eighty four"
+    },
+    {
+      "kobo": 20991001500,
+      "words": "two hundred nine million nine hundred ten thousand fifteen"
+    },
+    {
+      "kobo": 21120191600,
+      "words": "two hundred eleven million two hundred one thousand nine hundred sixteen"
+    },
+    {
+      "kobo": 21345096400,
+      "words": "two hundred thirteen million four hundred fifty thousand nine hundred sixty four"
+    },
+    {
+      "kobo": 21457395800,
+      "words": "two hundred fourteen million five hundred seventy three thousand nine hundred fifty eight"
+    },
+    {
+      "kobo": 21746637100,
+      "words": "two hundred seventeen million four hundred sixty six thousand three hundred seventy one"
+    },
+    {
+      "kobo": 22224915000,
+      "words": "two hundred twenty two million two hundred forty nine thousand one hundred fifty"
+    },
+    {
+      "kobo": 22572700900,
+      "words": "two hundred twenty five million seven hundred twenty seven thousand nine"
+    },
+    {
+      "kobo": 23013614700,
+      "words": "two hundred thirty million one hundred thirty six thousand one hundred forty seven"
+    },
+    {
+      "kobo": 23485260300,
+      "words": "two hundred thirty four million eight hundred fifty two thousand six hundred three"
+    },
+    {
+      "kobo": 23936676500,
+      "words": "two hundred thirty nine million three hundred sixty six thousand seven hundred sixty five"
+    },
+    {
+      "kobo": 23974996100,
+      "words": "two hundred thirty nine million seven hundred forty nine thousand nine hundred sixty one"
+    },
+    {
+      "kobo": 24108173700,
+      "words": "two hundred forty one million eighty one thousand seven hundred thirty seven"
+    },
+    {
+      "kobo": 24580878300,
+      "words": "two hundred forty five million eight hundred eight thousand seven hundred eighty three"
+    },
+    {
+      "kobo": 24839387000,
+      "words": "two hundred forty eight million three hundred ninety three thousand eight hundred seventy"
+    },
+    {
+      "kobo": 25053242700,
+      "words": "two hundred fifty million five hundred thirty two thousand four hundred twenty seven"
+    },
+    {
+      "kobo": 25762725700,
+      "words": "two hundred fifty seven million six hundred twenty seven thousand two hundred fifty seven"
+    },
+    {
+      "kobo": 26611361000,
+      "words": "two hundred sixty six million one hundred thirteen thousand six hundred ten"
+    },
+    {
+      "kobo": 26951615600,
+      "words": "two hundred sixty nine million five hundred sixteen thousand one hundred fifty six"
+    },
+    {
+      "kobo": 27006014400,
+      "words": "two hundred seventy million sixty thousand one hundred forty four"
+    },
+    {
+      "kobo": 27771626600,
+      "words": "two hundred seventy seven million seven hundred sixteen thousand two hundred sixty six"
+    },
+    {
+      "kobo": 27791783400,
+      "words": "two hundred seventy seven million nine hundred seventeen thousand eight hundred thirty four"
+    },
+    {
+      "kobo": 27929154100,
+      "words": "two hundred seventy nine million two hundred ninety one thousand five hundred forty one"
+    },
+    {
+      "kobo": 28287050800,
+      "words": "two hundred eighty two million eight hundred seventy thousand five hundred eight"
+    },
+    {
+      "kobo": 28611583700,
+      "words": "two hundred eighty six million one hundred fifteen thousand eight hundred thirty seven"
+    },
+    {
+      "kobo": 28833880400,
+      "words": "two hundred eighty eight million three hundred thirty eight thousand eight hundred four"
+    },
+    {
+      "kobo": 28887514100,
+      "words": "two hundred eighty eight million eight hundred seventy five thousand one hundred forty one"
+    },
+    {
+      "kobo": 29292417700,
+      "words": "two hundred ninety two million nine hundred twenty four thousand one hundred seventy seven"
+    },
+    {
+      "kobo": 29402559100,
+      "words": "two hundred ninety four million twenty five thousand five hundred ninety one"
+    },
+    {
+      "kobo": 30842182900,
+      "words": "three hundred eight million four hundred twenty one thousand eight hundred twenty nine"
+    },
+    {
+      "kobo": 30881023200,
+      "words": "three hundred eight million eight hundred ten thousand two hundred thirty two"
+    },
+    {
+      "kobo": 30888359300,
+      "words": "three hundred eight million eight hundred eighty three thousand five hundred ninety three"
+    },
+    {
+      "kobo": 31145938600,
+      "words": "three hundred eleven million four hundred fifty nine thousand three hundred eighty six"
+    },
+    {
+      "kobo": 31211543700,
+      "words": "three hundred twelve million one hundred fifteen thousand four hundred thirty seven"
+    },
+    {
+      "kobo": 31366347300,
+      "words": "three hundred thirteen million six hundred sixty three thousand four hundred seventy three"
+    },
+    {
+      "kobo": 31608183000,
+      "words": "three hundred sixteen million eighty one thousand eight hundred thirty"
+    },
+    {
+      "kobo": 32606502500,
+      "words": "three hundred twenty six million sixty five thousand twenty five"
+    },
+    {
+      "kobo": 32739383000,
+      "words": "three hundred twenty seven million three hundred ninety three thousand eight hundred thirty"
+    },
+    {
+      "kobo": 32856964800,
+      "words": "three hundred twenty eight million five hundred sixty nine thousand six hundred forty eight"
+    },
+    {
+      "kobo": 33031227800,
+      "words": "three hundred thirty million three hundred twelve thousand two hundred seventy eight"
+    },
+    {
+      "kobo": 33178484000,
+      "words": "three hundred thirty one million seven hundred eighty four thousand eight hundred forty"
+    },
+    {
+      "kobo": 33655657100,
+      "words": "three hundred thirty six million five hundred fifty six thousand five hundred seventy one"
+    },
+    {
+      "kobo": 33740525200,
+      "words": "three hundred thirty seven million four hundred five thousand two hundred fifty two"
+    },
+    {
+      "kobo": 34000797800,
+      "words": "three hundred forty million seven thousand nine hundred seventy eight"
+    },
+    {
+      "kobo": 34304386900,
+      "words": "three hundred forty three million forty three thousand eight hundred sixty nine"
+    },
+    {
+      "kobo": 34981356100,
+      "words": "three hundred forty nine million eight hundred thirteen thousand five hundred sixty one"
+    },
+    {
+      "kobo": 35008573500,
+      "words": "three hundred fifty million eighty five thousand seven hundred thirty five"
+    },
+    {
+      "kobo": 35192967800,
+      "words": "three hundred fifty one million nine hundred twenty nine thousand six hundred seventy eight"
+    },
+    {
+      "kobo": 35480956200,
+      "words": "three hundred fifty four million eight hundred nine thousand five hundred sixty two"
+    },
+    {
+      "kobo": 36122700800,
+      "words": "three hundred sixty one million two hundred twenty seven thousand eight"
+    },
+    {
+      "kobo": 36549589400,
+      "words": "three hundred sixty five million four hundred ninety five thousand eight hundred ninety four"
+    },
+    {
+      "kobo": 36943803200,
+      "words": "three hundred sixty nine million four hundred thirty eight thousand thirty two"
+    },
+    {
+      "kobo": 37260757000,
+      "words": "three hundred seventy two million six hundred seven thousand five hundred seventy"
+    },
+    {
+      "kobo": 37329477100,
+      "words": "three hundred seventy three million two hundred ninety four thousand seven hundred seventy one"
+    },
+    {
+      "kobo": 37946337300,
+      "words": "three hundred seventy nine million four hundred sixty three thousand three hundred seventy three"
+    },
+    {
+      "kobo": 38293504500,
+      "words": "three hundred eighty two million nine hundred thirty five thousand forty five"
+    },
+    {
+      "kobo": 38359495100,
+      "words": "three hundred eighty three million five hundred ninety four thousand nine hundred fifty one"
+    },
+    {
+      "kobo": 38647818800,
+      "words": "three hundred eighty six million four hundred seventy eight thousand one hundred eighty eight"
+    },
+    {
+      "kobo": 39035050400,
+      "words": "three hundred ninety million three hundred fifty thousand five hundred four"
+    },
+    {
+      "kobo": 39604387700,
+      "words": "three hundred ninety six million forty three thousand eight hundred seventy seven"
+    },
+    {
+      "kobo": 39742274500,
+      "words": "three hundred ninety seven million four hundred twenty two thousand seven hundred forty five"
+    },
+    {
+      "kobo": 40373357200,
+      "words": "four hundred three million seven hundred thirty three thousand five hundred seventy two"
+    },
+    {
+      "kobo": 40409681900,
+      "words": "four hundred four million ninety six thousand eight hundred nineteen"
+    },
+    {
+      "kobo": 41144213100,
+      "words": "four hundred eleven million four hundred forty two thousand one hundred thirty one"
+    },
+    {
+      "kobo": 41805920600,
+      "words": "four hundred eighteen million fifty nine thousand two hundred six"
+    },
+    {
+      "kobo": 41872864500,
+      "words": "four hundred eighteen million seven hundred twenty eight thousand six hundred forty five"
+    },
+    {
+      "kobo": 41919665600,
+      "words": "four hundred nineteen million one hundred ninety six thousand six hundred fifty six"
+    },
+    {
+      "kobo": 42650894000,
+      "words": "four hundred twenty six million five hundred eight thousand nine hundred forty"
+    },
+    {
+      "kobo": 42750860200,
+      "words": "four hundred twenty seven million five hundred eight thousand six hundred two"
+    },
+    {
+      "kobo": 42817959400,
+      "words": "four hundred twenty eight million one hundred seventy nine thousand five hundred ninety four"
+    },
+    {
+      "kobo": 42859164300,
+      "words": "four hundred twenty eight million five hundred ninety one thousand six hundred forty three"
+    },
+    {
+      "kobo": 43158842600,
+      "words": "four hundred thirty one million five hundred eighty eight thousand four hundred twenty six"
+    },
+    {
+      "kobo": 43173045400,
+      "words": "four hundred thirty one million seven hundred thirty thousand four hundred fifty four"
+    },
+    {
+      "kobo": 43808930700,
+      "words": "four hundred thirty eight million eighty nine thousand three hundred seven"
+    },
+    {
+      "kobo": 44164165400,
+      "words": "four hundred forty one million six hundred forty one thousand six hundred fifty four"
+    },
+    {
+      "kobo": 44242366700,
+      "words": "four hundred forty two million four hundred twenty three thousand six hundred sixty seven"
+    },
+    {
+      "kobo": 44462230300,
+      "words": "four hundred forty four million six hundred twenty two thousand three hundred three"
+    },
+    {
+      "kobo": 44639462500,
+      "words": "four hundred forty six million three hundred ninety four thousand six hundred twenty five"
+    },
+    {
+      "kobo": 44858671600,
+      "words": "four hundred forty eight million five hundred eighty six thousand seven hundred sixteen"
+    },
+    {
+      "kobo": 45093521900,
+      "words": "four hundred fifty million nine hundred thirty five thousand two hundred nineteen"
+    },
+    {
+      "kobo": 45163186500,
+      "words": "four hundred fifty one million six hundred thirty one thousand eight hundred sixty five"
+    },
+    {
+      "kobo": 45335258700,
+      "words": "four hundred fifty three million three hundred fifty two thousand five hundred eighty seven"
+    },
+    {
+      "kobo": 45672067600,
+      "words": "four hundred fifty six million seven hundred twenty thousand six hundred seventy six"
+    },
+    {
+      "kobo": 45681628200,
+      "words": "four hundred fifty six million eight hundred sixteen thousand two hundred eighty two"
+    },
+    {
+      "kobo": 45717407700,
+      "words": "four hundred fifty seven million one hundred seventy four thousand seventy seven"
+    },
+    {
+      "kobo": 46107497100,
+      "words": "four hundred sixty one million seventy four thousand nine hundred seventy one"
+    },
+    {
+      "kobo": 46500197500,
+      "words": "four hundred sixty five million one thousand nine hundred seventy five"
+    },
+    {
+      "kobo": 46558257800,
+      "words": "four hundred sixty five million five hundred eighty two thousand five hundred seventy eight"
+    },
+    {
+      "kobo": 46625036500,
+      "words": "four hundred sixty six million two hundred fifty thousand three hundred sixty five"
+    },
+    {
+      "kobo": 47078322000,
+      "words": "four hundred seventy million seven hundred eighty three thousand two hundred twenty"
+    },
+    {
+      "kobo": 47362214700,
+      "words": "four hundred seventy three million six hundred twenty two thousand one hundred forty seven"
+    },
+    {
+      "kobo": 47736725300,
+      "words": "four hundred seventy seven million three hundred sixty seven thousand two hundred fifty three"
+    },
+    {
+      "kobo": 48253400800,
+      "words": "four hundred eighty two million five hundred thirty four thousand eight"
+    },
+    {
+      "kobo": 48281320500,
+      "words": "four hundred eighty two million eight hundred thirteen thousand two hundred five"
+    },
+    {
+      "kobo": 48333455800,
+      "words": "four hundred eighty three million three hundred thirty four thousand five hundred fifty eight"
+    },
+    {
+      "kobo": 48450487000,
+      "words": "four hundred eighty four million five hundred four thousand eight hundred seventy"
+    },
+    {
+      "kobo": 48513895200,
+      "words": "four hundred eighty five million one hundred thirty eight thousand nine hundred fifty two"
+    },
+    {
+      "kobo": 48631989900,
+      "words": "four hundred eighty six million three hundred nineteen thousand eight hundred ninety nine"
+    },
+    {
+      "kobo": 48760081600,
+      "words": "four hundred eighty seven million six hundred thousand eight hundred sixteen"
+    },
+    {
+      "kobo": 49048134200,
+      "words": "four hundred ninety million four hundred eighty one thousand three hundred forty two"
+    },
+    {
+      "kobo": 49118083300,
+      "words": "four hundred ninety one million one hundred eighty thousand eight hundred thirty three"
+    },
+    {
+      "kobo": 49140393500,
+      "words": "four hundred ninety one million four hundred three thousand nine hundred thirty five"
+    },
+    {
+      "kobo": 49201798200,
+      "words": "four hundred ninety two million seventeen thousand nine hundred eighty two"
+    },
+    {
+      "kobo": 49265127500,
+      "words": "four hundred ninety two million six hundred fifty one thousand two hundred seventy five"
+    },
+    {
+      "kobo": 49507284900,
+      "words": "four hundred ninety five million seventy two thousand eight hundred forty nine"
+    },
+    {
+      "kobo": 49812520900,
+      "words": "four hundred ninety eight million one hundred twenty five thousand two hundred nine"
+    },
+    {
+      "kobo": 50098947800,
+      "words": "five hundred million nine hundred eighty nine thousand four hundred seventy eight"
+    },
+    {
+      "kobo": 50106818200,
+      "words": "five hundred one million sixty eight thousand one hundred eighty two"
+    },
+    {
+      "kobo": 50218946200,
+      "words": "five hundred two million one hundred eighty nine thousand four hundred sixty two"
+    },
+    {
+      "kobo": 50402089100,
+      "words": "five hundred four million twenty thousand eight hundred ninety one"
+    },
+    {
+      "kobo": 50470195800,
+      "words": "five hundred four million seven hundred one thousand nine hundred fifty eight"
+    },
+    {
+      "kobo": 50786219800,
+      "words": "five hundred seven million eight hundred sixty two thousand one hundred ninety eight"
+    },
+    {
+      "kobo": 51112732900,
+      "words": "five hundred eleven million one hundred twenty seven thousand three hundred twenty nine"
+    },
+    {
+      "kobo": 51420734000,
+      "words": "five hundred fourteen million two hundred seven thousand three hundred forty"
+    },
+    {
+      "kobo": 51447936600,
+      "words": "five hundred fourteen million four hundred seventy nine thousand three hundred sixty six"
+    },
+    {
+      "kobo": 51452631200,
+      "words": "five hundred fourteen million five hundred twenty six thousand three hundred twelve"
+    },
+    {
+      "kobo": 51760023400,
+      "words": "five hundred seventeen million six hundred thousand two hundred thirty four"
+    },
+    {
+      "kobo": 51766501000,
+      "words": "five hundred seventeen million six hundred sixty five thousand ten"
+    },
+    {
+      "kobo": 51952008600,
+      "words": "five hundred nineteen million five hundred twenty thousand eighty six"
+    },
+    {
+      "kobo": 52137589100,
+      "words": "five hundred twenty one million three hundred seventy five thousand eight hundred ninety one"
+    },
+    {
+      "kobo": 52561544600,
+      "words": "five hundred twenty five million six hundred fifteen thousand four hundred forty six"
+    },
+    {
+      "kobo": 52644137400,
+      "words": "five hundred twenty six million four hundred forty one thousand three hundred seventy four"
+    },
+    {
+      "kobo": 52710458700,
+      "words": "five hundred twenty seven million one hundred four thousand five hundred eighty seven"
+    },
+    {
+      "kobo": 52724021200,
+      "words": "five hundred twenty seven million two hundred forty thousand two hundred twelve"
+    },
+    {
+      "kobo": 52826907900,
+      "words": "five hundred twenty eight million two hundred sixty nine thousand seventy nine"
+    },
+    {
+      "kobo": 53381840600,
+      "words": "five hundred thirty three million eight hundred eighteen thousand four hundred six"
+    },
+    {
+      "kobo": 53426137500,
+      "words": "five hundred thirty four million two hundred sixty one thousand three hundred seventy five"
+    },
+    {
+      "kobo": 53429652200,
+      "words": "five hundred thirty four million two hundred ninety six thousand five hundred twenty two"
+    },
+    {
+      "kobo": 53517521000,
+      "words": "five hundred thirty five million one hundred seventy five thousand two hundred ten"
+    },
+    {
+      "kobo": 53521207100,
+      "words": "five hundred thirty five million two hundred twelve thousand seventy one"
+    },
+    {
+      "kobo": 53891060500,
+      "words": "five hundred thirty eight million nine hundred ten thousand six hundred five"
+    },
+    {
+      "kobo": 53957218300,
+      "words": "five hundred thirty nine million five hundred seventy two thousand one hundred eighty three"
+    },
+    {
+      "kobo": 54194046600,
+      "words": "five hundred forty one million nine hundred forty thousand four hundred sixty six"
+    },
+    {
+      "kobo": 54369856200,
+      "words": "five hundred forty three million six hundred ninety eight thousand five hundred sixty two"
+    },
+    {
+      "kobo": 54514075500,
+      "words": "five hundred forty five million one hundred forty thousand seven hundred fifty five"
+    },
+    {
+      "kobo": 54802477300,
+      "words": "five hundred forty eight million twenty four thousand seven hundred seventy three"
+    },
+    {
+      "kobo": 54896852100,
+      "words": "five hundred forty eight million nine hundred sixty eight thousand five hundred twenty one"
+    },
+    {
+      "kobo": 54956545500,
+      "words": "five hundred forty nine million five hundred sixty five thousand four hundred fifty five"
+    },
+    {
+      "kobo": 55077524800,
+      "words": "five hundred fifty million seven hundred seventy five thousand two hundred forty eight"
+    },
+    {
+      "kobo": 55146043000,
+      "words": "five hundred fifty one million four hundred sixty thousand four hundred thirty"
+    },
+    {
+      "kobo": 55316315900,
+      "words": "five hundred fifty three million one hundred sixty three thousand one hundred fifty nine"
+    },
+    {
+      "kobo": 55496631300,
+      "words": "five hundred fifty four million nine hundred sixty six thousand three hundred thirteen"
+    },
+    {
+      "kobo": 55618455800,
+      "words": "five hundred fifty six million one hundred eighty four thousand five hundred fifty eight"
+    },
+    {
+      "kobo": 55763182900,
+      "words": "five hundred fifty seven million six hundred thirty one thousand eight hundred twenty nine"
+    },
+    {
+      "kobo": 55793099300,
+      "words": "five hundred fifty seven million nine hundred thirty thousand nine hundred ninety three"
+    },
+    {
+      "kobo": 55837894800,
+      "words": "five hundred fifty eight million three hundred seventy eight thousand nine hundred forty eight"
+    },
+    {
+      "kobo": 56144757900,
+      "words": "five hundred sixty one million four hundred forty seven thousand five hundred seventy nine"
+    },
+    {
+      "kobo": 56179948100,
+      "words": "five hundred sixty one million seven hundred ninety nine thousand four hundred eighty one"
+    },
+    {
+      "kobo": 56334156500,
+      "words": "five hundred sixty three million three hundred forty one thousand five hundred sixty five"
+    },
+    {
+      "kobo": 56339119500,
+      "words": "five hundred sixty three million three hundred ninety one thousand one hundred ninety five"
+    },
+    {
+      "kobo": 56613236100,
+      "words": "five hundred sixty six million one hundred thirty two thousand three hundred sixty one"
+    },
+    {
+      "kobo": 56901504500,
+      "words": "five hundred sixty nine million fifteen thousand forty five"
+    },
+    {
+      "kobo": 57231611000,
+      "words": "five hundred seventy two million three hundred sixteen thousand one hundred ten"
+    },
+    {
+      "kobo": 57774260000,
+      "words": "five hundred seventy seven million seven hundred forty two thousand six hundred"
+    },
+    {
+      "kobo": 58493850700,
+      "words": "five hundred eighty four million nine hundred thirty eight thousand five hundred seven"
+    },
+    {
+      "kobo": 58586818600,
+      "words": "five hundred eighty five million eight hundred sixty eight thousand one hundred eighty six"
+    },
+    {
+      "kobo": 58605216500,
+      "words": "five hundred eighty six million fifty two thousand one hundred sixty five"
+    },
+    {
+      "kobo": 58674473600,
+      "words": "five hundred eighty six million seven hundred forty four thousand seven hundred thirty six"
+    },
+    {
+      "kobo": 58689711400,
+      "words": "five hundred eighty six million eight hundred ninety seven thousand one hundred fourteen"
+    },
+    {
+      "kobo": 58771683400,
+      "words": "five hundred eighty seven million seven hundred sixteen thousand eight hundred thirty four"
+    },
+    {
+      "kobo": 58820807000,
+      "words": "five hundred eighty eight million two hundred eight thousand seventy"
+    },
+    {
+      "kobo": 58857000800,
+      "words": "five hundred eighty eight million five hundred seventy thousand eight"
+    },
+    {
+      "kobo": 59533511400,
+      "words": "five hundred ninety five million three hundred thirty five thousand one hundred fourteen"
+    },
+    {
+      "kobo": 59760069900,
+      "words": "five hundred ninety seven million six hundred thousand six hundred ninety nine"
+    },
+    {
+      "kobo": 59855795600,
+      "words": "five hundred ninety eight million five hundred fifty seven thousand nine hundred fifty six"
+    },
+    {
+      "kobo": 59897399700,
+      "words": "five hundred ninety eight million nine hundred seventy three thousand nine hundred ninety seven"
+    },
+    {
+      "kobo": 60107643600,
+      "words": "six hundred one million seventy six thousand four hundred thirty six"
+    },
+    {
+      "kobo": 60559052100,
+      "words": "six hundred five million five hundred ninety thousand five hundred twenty one"
+    },
+    {
+      "kobo": 61377038700,
+      "words": "six hundred thirteen million seven hundred seventy thousand three hundred eighty seven"
+    },
+    {
+      "kobo": 61479107600,
+      "words": "six hundred fourteen million seven hundred ninety one thousand seventy six"
+    },
+    {
+      "kobo": 61663230700,
+      "words": "six hundred sixteen million six hundred thirty two thousand three hundred seven"
+    },
+    {
+      "kobo": 61795585700,
+      "words": "six hundred seventeen million nine hundred fifty five thousand eight hundred fifty seven"
+    },
+    {
+      "kobo": 62000361300,
+      "words": "six hundred twenty million three thousand six hundred thirteen"
+    },
+    {
+      "kobo": 62345744800,
+      "words": "six hundred twenty three million four hundred fifty seven thousand four hundred forty eight"
+    },
+    {
+      "kobo": 62606174500,
+      "words": "six hundred twenty six million sixty one thousand seven hundred forty five"
+    },
+    {
+      "kobo": 62890971700,
+      "words": "six hundred twenty eight million nine hundred nine thousand seven hundred seventeen"
+    },
+    {
+      "kobo": 62924405300,
+      "words": "six hundred twenty nine million two hundred forty four thousand fifty three"
+    },
+    {
+      "kobo": 62977196200,
+      "words": "six hundred twenty nine million seven hundred seventy one thousand nine hundred sixty two"
+    },
+    {
+      "kobo": 63128988600,
+      "words": "six hundred thirty one million two hundred eighty nine thousand eight hundred eighty six"
+    },
+    {
+      "kobo": 63486255900,
+      "words": "six hundred thirty four million eight hundred sixty two thousand five hundred fifty nine"
+    },
+    {
+      "kobo": 64131723000,
+      "words": "six hundred forty one million three hundred seventeen thousand two hundred thirty"
+    },
+    {
+      "kobo": 64224408300,
+      "words": "six hundred forty two million two hundred forty four thousand eighty three"
+    },
+    {
+      "kobo": 64233341100,
+      "words": "six hundred forty two million three hundred thirty three thousand four hundred eleven"
+    },
+    {
+      "kobo": 64442252500,
+      "words": "six hundred forty four million four hundred twenty two thousand five hundred twenty five"
+    },
+    {
+      "kobo": 64535175200,
+      "words": "six hundred forty five million three hundred fifty one thousand seven hundred fifty two"
+    },
+    {
+      "kobo": 65512609300,
+      "words": "six hundred fifty five million one hundred twenty six thousand ninety three"
+    },
+    {
+      "kobo": 65949682800,
+      "words": "six hundred fifty nine million four hundred ninety six thousand eight hundred twenty eight"
+    },
+    {
+      "kobo": 66422316300,
+      "words": "six hundred sixty four million two hundred twenty three thousand one hundred sixty three"
+    },
+    {
+      "kobo": 66687384700,
+      "words": "six hundred sixty six million eight hundred seventy three thousand eight hundred forty seven"
+    },
+    {
+      "kobo": 66731347400,
+      "words": "six hundred sixty seven million three hundred thirteen thousand four hundred seventy four"
+    },
+    {
+      "kobo": 66819994700,
+      "words": "six hundred sixty eight million one hundred ninety nine thousand nine hundred forty seven"
+    },
+    {
+      "kobo": 66930952000,
+      "words": "six hundred sixty nine million three hundred nine thousand five hundred twenty"
+    },
+    {
+      "kobo": 67288233100,
+      "words": "six hundred seventy two million eight hundred eighty two thousand three hundred thirty one"
+    },
+    {
+      "kobo": 68226466700,
+      "words": "six hundred eighty two million two hundred sixty four thousand six hundred sixty seven"
+    },
+    {
+      "kobo": 68474390800,
+      "words": "six hundred eighty four million seven hundred forty three thousand nine hundred eight"
+    },
+    {
+      "kobo": 68811038200,
+      "words": "six hundred eighty eight million one hundred ten thousand three hundred eighty two"
+    },
+    {
+      "kobo": 69234340700,
+      "words": "six hundred ninety two million three hundred forty three thousand four hundred seven"
+    },
+    {
+      "kobo": 69326389700,
+      "words": "six hundred ninety three million two hundred sixty three thousand eight hundred ninety seven"
+    },
+    {
+      "kobo": 69329276900,
+      "words": "six hundred ninety three million two hundred ninety two thousand seven hundred sixty nine"
+    },
+    {
+      "kobo": 69392975500,
+      "words": "six hundred ninety three million nine hundred twenty nine thousand seven hundred fifty five"
+    },
+    {
+      "kobo": 69456389500,
+      "words": "six hundred ninety four million five hundred sixty three thousand eight hundred ninety five"
+    },
+    {
+      "kobo": 69492375000,
+      "words": "six hundred ninety four million nine hundred twenty three thousand seven hundred fifty"
+    },
+    {
+      "kobo": 69495841000,
+      "words": "six hundred ninety four million nine hundred fifty eight thousand four hundred ten"
+    },
+    {
+      "kobo": 69603251900,
+      "words": "six hundred ninety six million thirty two thousand five hundred nineteen"
+    },
+    {
+      "kobo": 69637337300,
+      "words": "six hundred ninety six million three hundred seventy three thousand three hundred seventy three"
+    },
+    {
+      "kobo": 70399099700,
+      "words": "seven hundred three million nine hundred ninety thousand nine hundred ninety seven"
+    },
+    {
+      "kobo": 70998270300,
+      "words": "seven hundred nine million nine hundred eighty two thousand seven hundred three"
+    },
+    {
+      "kobo": 71285456000,
+      "words": "seven hundred twelve million eight hundred fifty four thousand five hundred sixty"
+    },
+    {
+      "kobo": 71358876700,
+      "words": "seven hundred thirteen million five hundred eighty eight thousand seven hundred sixty seven"
+    },
+    {
+      "kobo": 71777184900,
+      "words": "seven hundred seventeen million seven hundred seventy one thousand eight hundred forty nine"
+    },
+    {
+      "kobo": 71785532900,
+      "words": "seven hundred seventeen million eight hundred fifty five thousand three hundred twenty nine"
+    },
+    {
+      "kobo": 71914280600,
+      "words": "seven hundred nineteen million one hundred forty two thousand eight hundred six"
+    },
+    {
+      "kobo": 71992570000,
+      "words": "seven hundred nineteen million nine hundred twenty five thousand seven hundred"
+    },
+    {
+      "kobo": 72402751200,
+      "words": "seven hundred twenty four million twenty seven thousand five hundred twelve"
+    },
+    {
+      "kobo": 72853200600,
+      "words": "seven hundred twenty eight million five hundred thirty two thousand six"
+    },
+    {
+      "kobo": 72867832500,
+      "words": "seven hundred twenty eight million six hundred seventy eight thousand three hundred twenty five"
+    },
+    {
+      "kobo": 72948832500,
+      "words": "seven hundred twenty nine million four hundred eighty eight thousand three hundred twenty five"
+    },
+    {
+      "kobo": 73314498700,
+      "words": "seven hundred thirty three million one hundred forty four thousand nine hundred eighty seven"
+    },
+    {
+      "kobo": 73570434500,
+      "words": "seven hundred thirty five million seven hundred four thousand three hundred forty five"
+    },
+    {
+      "kobo": 74016581500,
+      "words": "seven hundred forty million one hundred sixty five thousand eight hundred fifteen"
+    },
+    {
+      "kobo": 74062052600,
+      "words": "seven hundred forty million six hundred twenty thousand five hundred twenty six"
+    },
+    {
+      "kobo": 74361605900,
+      "words": "seven hundred forty three million six hundred sixteen thousand fifty nine"
+    },
+    {
+      "kobo": 74372505600,
+      "words": "seven hundred forty three million seven hundred twenty five thousand fifty six"
+    },
+    {
+      "kobo": 74981920900,
+      "words": "seven hundred forty nine million eight hundred nineteen thousand two hundred nine"
+    },
+    {
+      "kobo": 75237876000,
+      "words": "seven hundred fifty two million three hundred seventy eight thousand seven hundred sixty"
+    },
+    {
+      "kobo": 75588798200,
+      "words": "seven hundred fifty five million eight hundred eighty seven thousand nine hundred eighty two"
+    },
+    {
+      "kobo": 75662575000,
+      "words": "seven hundred fifty six million six hundred twenty five thousand seven hundred fifty"
+    },
+    {
+      "kobo": 76328261700,
+      "words": "seven hundred sixty three million two hundred eighty two thousand six hundred seventeen"
+    },
+    {
+      "kobo": 76330446700,
+      "words": "seven hundred sixty three million three hundred four thousand four hundred sixty seven"
+    },
+    {
+      "kobo": 76337190800,
+      "words": "seven hundred sixty three million three hundred seventy one thousand nine hundred eight"
+    },
+    {
+      "kobo": 76721356600,
+      "words": "seven hundred sixty seven million two hundred thirteen thousand five hundred sixty six"
+    },
+    {
+      "kobo": 76924512500,
+      "words": "seven hundred sixty nine million two hundred forty five thousand one hundred twenty five"
+    },
+    {
+      "kobo": 76935582500,
+      "words": "seven hundred sixty nine million three hundred fifty five thousand eight hundred twenty five"
+    },
+    {
+      "kobo": 77020309200,
+      "words": "seven hundred seventy million two hundred three thousand ninety two"
+    },
+    {
+      "kobo": 77360159300,
+      "words": "seven hundred seventy three million six hundred one thousand five hundred ninety three"
+    },
+    {
+      "kobo": 77643557500,
+      "words": "seven hundred seventy six million four hundred thirty five thousand five hundred seventy five"
+    },
+    {
+      "kobo": 78165653600,
+      "words": "seven hundred eighty one million six hundred fifty six thousand five hundred thirty six"
+    },
+    {
+      "kobo": 78441027100,
+      "words": "seven hundred eighty four million four hundred ten thousand two hundred seventy one"
+    },
+    {
+      "kobo": 80097909900,
+      "words": "eight hundred million nine hundred seventy nine thousand ninety nine"
+    },
+    {
+      "kobo": 80267711300,
+      "words": "eight hundred two million six hundred seventy seven thousand one hundred thirteen"
+    },
+    {
+      "kobo": 80546398300,
+      "words": "eight hundred five million four hundred sixty three thousand nine hundred eighty three"
+    },
+    {
+      "kobo": 80640798400,
+      "words": "eight hundred six million four hundred seven thousand nine hundred eighty four"
+    },
+    {
+      "kobo": 80729816600,
+      "words": "eight hundred seven million two hundred ninety eight thousand one hundred sixty six"
+    },
+    {
+      "kobo": 81036336700,
+      "words": "eight hundred ten million three hundred sixty three thousand three hundred sixty seven"
+    },
+    {
+      "kobo": 81353274700,
+      "words": "eight hundred thirteen million five hundred thirty two thousand seven hundred forty seven"
+    },
+    {
+      "kobo": 82229975800,
+      "words": "eight hundred twenty two million two hundred ninety nine thousand seven hundred fifty eight"
+    },
+    {
+      "kobo": 82324144400,
+      "words": "eight hundred twenty three million two hundred forty one thousand four hundred forty four"
+    },
+    {
+      "kobo": 82475755200,
+      "words": "eight hundred twenty four million seven hundred fifty seven thousand five hundred fifty two"
+    },
+    {
+      "kobo": 82627419600,
+      "words": "eight hundred twenty six million two hundred seventy four thousand one hundred ninety six"
+    },
+    {
+      "kobo": 82628055500,
+      "words": "eight hundred twenty six million two hundred eighty thousand five hundred fifty five"
+    },
+    {
+      "kobo": 83008057500,
+      "words": "eight hundred thirty million eighty thousand five hundred seventy five"
+    },
+    {
+      "kobo": 83383845900,
+      "words": "eight hundred thirty three million eight hundred thirty eight thousand four hundred fifty nine"
+    },
+    {
+      "kobo": 83778496500,
+      "words": "eight hundred thirty seven million seven hundred eighty four thousand nine hundred sixty five"
+    },
+    {
+      "kobo": 84010755400,
+      "words": "eight hundred forty million one hundred seven thousand five hundred fifty four"
+    },
+    {
+      "kobo": 84114076600,
+      "words": "eight hundred forty one million one hundred forty thousand seven hundred sixty six"
+    },
+    {
+      "kobo": 84121010200,
+      "words": "eight hundred forty one million two hundred ten thousand one hundred two"
+    },
+    {
+      "kobo": 84297755800,
+      "words": "eight hundred forty two million nine hundred seventy seven thousand five hundred fifty eight"
+    },
+    {
+      "kobo": 84332643500,
+      "words": "eight hundred forty three million three hundred twenty six thousand four hundred thirty five"
+    },
+    {
+      "kobo": 85230469900,
+      "words": "eight hundred fifty two million three hundred four thousand six hundred ninety nine"
+    },
+    {
+      "kobo": 85534538900,
+      "words": "eight hundred fifty five million three hundred forty five thousand three hundred eighty nine"
+    },
+    {
+      "kobo": 85546299600,
+      "words": "eight hundred fifty five million four hundred sixty two thousand nine hundred ninety six"
+    },
+    {
+      "kobo": 85878086000,
+      "words": "eight hundred fifty eight million seven hundred eighty thousand eight hundred sixty"
+    },
+    {
+      "kobo": 86173068900,
+      "words": "eight hundred sixty one million seven hundred thirty thousand six hundred eighty nine"
+    },
+    {
+      "kobo": 86280195500,
+      "words": "eight hundred sixty two million eight hundred one thousand nine hundred fifty five"
+    },
+    {
+      "kobo": 86424867400,
+      "words": "eight hundred sixty four million two hundred forty eight thousand six hundred seventy four"
+    },
+    {
+      "kobo": 86429625700,
+      "words": "eight hundred sixty four million two hundred ninety six thousand two hundred fifty seven"
+    },
+    {
+      "kobo": 86450808900,
+      "words": "eight hundred sixty four million five hundred eight thousand eighty nine"
+    },
+    {
+      "kobo": 86454808700,
+      "words": "eight hundred sixty four million five hundred forty eight thousand eighty seven"
+    },
+    {
+      "kobo": 86641062700,
+      "words": "eight hundred sixty six million four hundred ten thousand six hundred twenty seven"
+    },
+    {
+      "kobo": 86753966600,
+      "words": "eight hundred sixty seven million five hundred thirty nine thousand six hundred sixty six"
+    },
+    {
+      "kobo": 86757801800,
+      "words": "eight hundred sixty seven million five hundred seventy eight thousand eighteen"
+    },
+    {
+      "kobo": 87177237800,
+      "words": "eight hundred seventy one million seven hundred seventy two thousand three hundred seventy eight"
+    },
+    {
+      "kobo": 87484477400,
+      "words": "eight hundred seventy four million eight hundred forty four thousand seven hundred seventy four"
+    },
+    {
+      "kobo": 87509315200,
+      "words": "eight hundred seventy five million ninety three thousand one hundred fifty two"
+    },
+    {
+      "kobo": 87633691000,
+      "words": "eight hundred seventy six million three hundred thirty six thousand nine hundred ten"
+    },
+    {
+      "kobo": 87699082800,
+      "words": "eight hundred seventy six million nine hundred ninety thousand eight hundred twenty eight"
+    },
+    {
+      "kobo": 87846276800,
+      "words": "eight hundred seventy eight million four hundred sixty two thousand seven hundred sixty eight"
+    },
+    {
+      "kobo": 88709705300,
+      "words": "eight hundred eighty seven million ninety seven thousand fifty three"
+    },
+    {
+      "kobo": 89271209500,
+      "words": "eight hundred ninety two million seven hundred twelve thousand ninety five"
+    },
+    {
+      "kobo": 89318354800,
+      "words": "eight hundred ninety three million one hundred eighty three thousand five hundred forty eight"
+    },
+    {
+      "kobo": 89528574300,
+      "words": "eight hundred ninety five million two hundred eighty five thousand seven hundred forty three"
+    },
+    {
+      "kobo": 89802944300,
+      "words": "eight hundred ninety eight million twenty nine thousand four hundred forty three"
+    },
+    {
+      "kobo": 90084824300,
+      "words": "nine hundred million eight hundred forty eight thousand two hundred forty three"
+    },
+    {
+      "kobo": 90452197200,
+      "words": "nine hundred four million five hundred twenty one thousand nine hundred seventy two"
+    },
+    {
+      "kobo": 90456281900,
+      "words": "nine hundred four million five hundred sixty two thousand eight hundred nineteen"
+    },
+    {
+      "kobo": 90664045700,
+      "words": "nine hundred six million six hundred forty thousand four hundred fifty seven"
+    },
+    {
+      "kobo": 90675103700,
+      "words": "nine hundred six million seven hundred fifty one thousand thirty seven"
+    },
+    {
+      "kobo": 91031216300,
+      "words": "nine hundred ten million three hundred twelve thousand one hundred sixty three"
+    },
+    {
+      "kobo": 91039342300,
+      "words": "nine hundred ten million three hundred ninety three thousand four hundred twenty three"
+    },
+    {
+      "kobo": 91228194300,
+      "words": "nine hundred twelve million two hundred eighty one thousand nine hundred forty three"
+    },
+    {
+      "kobo": 91980726900,
+      "words": "nine hundred nineteen million eight hundred seven thousand two hundred sixty nine"
+    },
+    {
+      "kobo": 92341859700,
+      "words": "nine hundred twenty three million four hundred eighteen thousand five hundred ninety seven"
+    },
+    {
+      "kobo": 92417001800,
+      "words": "nine hundred twenty four million one hundred seventy thousand eighteen"
+    },
+    {
+      "kobo": 93067080900,
+      "words": "nine hundred thirty million six hundred seventy thousand eight hundred nine"
+    },
+    {
+      "kobo": 93117605700,
+      "words": "nine hundred thirty one million one hundred seventy six thousand fifty seven"
+    },
+    {
+      "kobo": 93205724100,
+      "words": "nine hundred thirty two million fifty seven thousand two hundred forty one"
+    },
+    {
+      "kobo": 93211019700,
+      "words": "nine hundred thirty two million one hundred ten thousand one hundred ninety seven"
+    },
+    {
+      "kobo": 93998952000,
+      "words": "nine hundred thirty nine million nine hundred eighty nine thousand five hundred twenty"
+    },
+    {
+      "kobo": 94059117500,
+      "words": "nine hundred forty million five hundred ninety one thousand one hundred seventy five"
+    },
+    {
+      "kobo": 94110765800,
+      "words": "nine hundred forty one million one hundred seven thousand six hundred fifty eight"
+    },
+    {
+      "kobo": 94254872300,
+      "words": "nine hundred forty two million five hundred forty eight thousand seven hundred twenty three"
+    },
+    {
+      "kobo": 94341186500,
+      "words": "nine hundred forty three million four hundred eleven thousand eight hundred sixty five"
+    },
+    {
+      "kobo": 94708505100,
+      "words": "nine hundred forty seven million eighty five thousand fifty one"
+    },
+    {
+      "kobo": 94775579100,
+      "words": "nine hundred forty seven million seven hundred fifty five thousand seven hundred ninety one"
+    },
+    {
+      "kobo": 94931640300,
+      "words": "nine hundred forty nine million three hundred sixteen thousand four hundred three"
+    },
+    {
+      "kobo": 94951649900,
+      "words": "nine hundred forty nine million five hundred sixteen thousand four hundred ninety nine"
+    },
+    {
+      "kobo": 94967105900,
+      "words": "nine hundred forty nine million six hundred seventy one thousand fifty nine"
+    },
+    {
+      "kobo": 95125066100,
+      "words": "nine hundred fifty one million two hundred fifty thousand six hundred sixty one"
+    },
+    {
+      "kobo": 95222072200,
+      "words": "nine hundred fifty two million two hundred twenty thousand seven hundred twenty two"
+    },
+    {
+      "kobo": 95323659300,
+      "words": "nine hundred fifty three million two hundred thirty six thousand five hundred ninety three"
+    },
+    {
+      "kobo": 95666496200,
+      "words": "nine hundred fifty six million six hundred sixty four thousand nine hundred sixty two"
+    },
+    {
+      "kobo": 95667038800,
+      "words": "nine hundred fifty six million six hundred seventy thousand three hundred eighty eight"
+    },
+    {
+      "kobo": 96058628200,
+      "words": "nine hundred sixty million five hundred eighty six thousand two hundred eighty two"
+    },
+    {
+      "kobo": 96079184100,
+      "words": "nine hundred sixty million seven hundred ninety one thousand eight hundred forty one"
+    },
+    {
+      "kobo": 96987199500,
+      "words": "nine hundred sixty nine million eight hundred seventy one thousand nine hundred ninety five"
+    },
+    {
+      "kobo": 97416969600,
+      "words": "nine hundred seventy four million one hundred sixty nine thousand six hundred ninety six"
+    },
+    {
+      "kobo": 98135376200,
+      "words": "nine hundred eighty one million three hundred fifty three thousand seven hundred sixty two"
+    },
+    {
+      "kobo": 98249110100,
+      "words": "nine hundred eighty two million four hundred ninety one thousand one hundred one"
+    },
+    {
+      "kobo": 98406366200,
+      "words": "nine hundred eighty four million sixty three thousand six hundred sixty two"
+    },
+    {
+      "kobo": 98435779900,
+      "words": "nine hundred eighty four million three hundred fifty seven thousand seven hundred ninety nine"
+    },
+    {
+      "kobo": 98441906200,
+      "words": "nine hundred eighty four million four hundred nineteen thousand sixty two"
+    },
+    {
+      "kobo": 98940525700,
+      "words": "nine hundred eighty nine million four hundred five thousand two hundred fifty seven"
+    },
+    {
+      "kobo": 98946353100,
+      "words": "nine hundred eighty nine million four hundred sixty three thousand five hundred thirty one"
+    },
+    {
+      "kobo": 98995838100,
+      "words": "nine hundred eighty nine million nine hundred fifty eight thousand three hundred eighty one"
+    },
+    {
+      "kobo": 99450302700,
+      "words": "nine hundred ninety four million five hundred three thousand twenty seven"
+    },
+    {
+      "kobo": 99453523800,
+      "words": "nine hundred ninety four million five hundred thirty five thousand two hundred thirty eight"
+    },
+    {
+      "kobo": 99531326300,
+      "words": "nine hundred ninety five million three hundred thirteen thousand two hundred sixty three"
+    },
+    {
+      "kobo": 99784685200,
+      "words": "nine hundred ninety seven million eight hundred forty six thousand eight hundred fifty two"
+    },
+    {
+      "kobo": 99800511100,
+      "words": "nine hundred ninety eight million five thousand one hundred eleven"
+    },
+    {
+      "kobo": 99960723300,
+      "words": "nine hundred ninety nine million six hundred seven thousand two hundred thirty three"
+    },
+    {
+      "kobo": 99999999900,
+      "words": "nine hundred ninety nine million nine hundred ninety nine thousand nine hundred ninety nine"
+    },
+    {
+      "kobo": 100000000000,
+      "words": "one billion"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { connection } from "next/server";
+import { LiveRegionProvider } from "@/components/ui/LiveRegion";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -31,7 +32,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <a href="#main" className="skip-link">
           Skip to main content
         </a>
-        {children}
+        <LiveRegionProvider>{children}</LiveRegionProvider>
       </body>
     </html>
   );
