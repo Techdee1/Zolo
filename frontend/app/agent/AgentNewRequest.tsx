@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { PageHeading } from "@/components/PageHeading";
+import { Screen } from "@/components/Screen";
 import { SaidText } from "@/components/SaidText";
 import { AmountDisplay } from "@/components/ui/AmountDisplay";
 import { Button } from "@/components/ui/Button";
@@ -69,11 +70,18 @@ export function AgentNewRequest() {
 
   const kobo = nairaToKobo(naira);
   return (
-    <main id="main" className="screen grid gap-6">
-      <PageHeading title={t("agent.title")}>{t("agent.title")}</PageHeading>
-      {name ? <p className="type-secondary">{t("agent.business", { name })}</p> : null}
+    <Screen who="agent">
+      <div className="grid gap-1">
+        <PageHeading title={t("agent.title")} className="type-display">
+          {t("agent.title")}
+        </PageHeading>
+        {name ? <p className="type-secondary m-0">{t("agent.business", { name })}</p> : null}
+      </div>
 
-      <section aria-label={t("agent.amountLabel")} className="grid gap-1">
+      <section
+        aria-label={t("agent.amountLabel")}
+        className="rounded-zolo-card bg-zolo-elevated p-6 shadow-zolo-card"
+      >
         <AmountDisplay kobo={kobo} unit={t("common.unit")} showWords />
       </section>
 
@@ -107,22 +115,24 @@ export function AgentNewRequest() {
         </p>
       ) : null}
 
-      <Button
-        variant="primary"
-        disabled={naira === 0}
-        disabledReason={t("agent.requestNeedsAmount")}
-        loading={busy}
-        onClick={() => void submit()}
-      >
-        {naira === 0 ? (
-          t("agent.requestEmpty")
-        ) : (
-          <SaidText
-            visible={t("agent.request", { amount: formatNaira(kobo) })}
-            spoken={t("agent.requestSpoken", { amountWords: amountSpoken(kobo) })}
-          />
-        )}
-      </Button>
-    </main>
+      <div className="action-bar">
+        <Button
+          variant="primary"
+          disabled={naira === 0}
+          disabledReason={t("agent.requestNeedsAmount")}
+          loading={busy}
+          onClick={() => void submit()}
+        >
+          {naira === 0 ? (
+            t("agent.requestEmpty")
+          ) : (
+            <SaidText
+              visible={t("agent.request", { amount: formatNaira(kobo) })}
+              spoken={t("agent.requestSpoken", { amountWords: amountSpoken(kobo) })}
+            />
+          )}
+        </Button>
+      </div>
+    </Screen>
   );
 }

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { PageHeading } from "@/components/PageHeading";
+import { Screen } from "@/components/Screen";
 import { Button } from "@/components/ui/Button";
 import { useAnnounce } from "@/components/ui/LiveRegion";
 import { mockLogin } from "@/lib/api/endpoints";
@@ -45,11 +46,10 @@ export function SignIn() {
   }
 
   return (
-    <main id="main" className="screen grid gap-6">
-      <p className="wordmark">
-        {t("app.name")} <span className="wordmark-sub">{t("app.forBank")}</span>
-      </p>
-      <PageHeading title={t("signin.title")}>{t("signin.title")}</PageHeading>
+    <Screen>
+      <PageHeading title={t("signin.title")} className="type-display">
+        {t("signin.title")}
+      </PageHeading>
       <p className="type-body text-zolo-secondary">{t("signin.intro")}</p>
       <div className="grid gap-3">
         {PEOPLE.map((p) => (
@@ -65,6 +65,6 @@ export function SignIn() {
         ))}
       </div>
       {error ? <p className="type-body text-zolo-critical">{error}</p> : null}
-    </main>
+    </Screen>
   );
 }

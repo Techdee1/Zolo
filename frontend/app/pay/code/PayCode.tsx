@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 import { PageHeading } from "@/components/PageHeading";
+import { Screen } from "@/components/Screen";
 import { useAnnounce } from "@/components/ui/LiveRegion";
 import { claimByCode } from "@/lib/api/endpoints";
 import { isApiError } from "@/lib/api/client";
@@ -50,7 +51,7 @@ export function PayCode() {
   }
 
   return (
-    <main id="main" className="screen grid gap-6">
+    <Screen who="customer">
       <PageHeading title={t("pay.title")}>{t("pay.title")}</PageHeading>
       <div className="grid gap-2">
         <label htmlFor={inputId} className="type-headline">
@@ -61,7 +62,7 @@ export function PayCode() {
         </p>
         <input
           id={inputId}
-          className="type-code min-h-(--target-primary) w-full rounded-zolo-control border border-zolo-separator bg-zolo-grouped px-4 text-center tracking-[0.5em] text-zolo-text"
+          className="type-code min-h-(--target-primary) w-full rounded-zolo-card border border-zolo-separator bg-zolo-elevated px-4 text-center tracking-[0.5em] text-zolo-text shadow-zolo-card"
           type="text"
           inputMode="numeric"
           pattern="[0-9]*"
@@ -84,9 +85,12 @@ export function PayCode() {
           {error ? t(error) : busy ? t("pay.checking") : ""}
         </p>
       </div>
-      <Link href="/" className="type-body text-zolo-secondary underline underline-offset-4">
+      <Link
+        href="/"
+        className="type-body inline-flex min-h-(--target-min) items-center text-zolo-secondary underline underline-offset-4"
+      >
         {t("pay.back")}
       </Link>
-    </main>
+    </Screen>
   );
 }

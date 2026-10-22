@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { PageHeading } from "@/components/PageHeading";
+import { Screen } from "@/components/Screen";
 import { Badge, type BadgeVariant } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { useAnnounce } from "@/components/ui/LiveRegion";
@@ -25,7 +26,7 @@ const isResetResult = (r: unknown): r is { customers: number; agents: number } =
   typeof r === "object" && r !== null && "customers" in r && "agents" in r;
 
 const FIELD =
-  "min-h-(--target-min) w-full rounded-zolo-control border border-zolo-separator bg-zolo-grouped px-4 type-body text-zolo-text";
+  "min-h-(--target-min) w-full rounded-zolo-control border border-zolo-separator bg-zolo-elevated px-4 type-body text-zolo-text";
 
 /**
  * The stage operator's controls: break a payment in four ways and watch the state change on a
@@ -99,7 +100,7 @@ export function DemoConsole() {
 
   const request = timeline?.request;
   return (
-    <main id="main" className="screen grid gap-6">
+    <Screen>
       <PageHeading title={t("demo.title")}>{t("demo.title")}</PageHeading>
       <p className="type-body text-zolo-secondary">{t("demo.intro")}</p>
 
@@ -201,6 +202,6 @@ export function DemoConsole() {
           <p className="type-body text-zolo-secondary">{t("demo.noEvents")}</p>
         )}
       </section>
-    </main>
+    </Screen>
   );
 }

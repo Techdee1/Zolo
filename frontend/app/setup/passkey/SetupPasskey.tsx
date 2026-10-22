@@ -4,12 +4,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PageHeading } from "@/components/PageHeading";
+import { Screen } from "@/components/Screen";
 import { Button } from "@/components/ui/Button";
 import { useAnnounce } from "@/components/ui/LiveRegion";
 import { getRegisterOptions, verifyRegistration } from "@/lib/api/endpoints";
 import { isApiError } from "@/lib/api/client";
 import { genericErrorKey, redirectIfSignedOut } from "@/lib/errors";
 import { useT, type MessageKey } from "@/lib/i18n";
+import { LINK_PRIMARY } from "@/lib/styles";
+import { setPasskeyKnown } from "@/lib/passkey-status";
 import { classifyPasskeyError, createPasskey, passkeySupport } from "@/lib/passkeys";
 
 /**
@@ -47,6 +50,7 @@ export function SetupPasskey({ next }: { next: string }) {
       const credential = await createPasskey(options);
       const saved = await verifyRegistration(credential);
       const key: MessageKey = saved.replaced_previous ? "passkey.doneReplaced" : "passkey.done";
+      setPasskeyKnown(true);
       setDone(key);
       say(key, false);
     } catch (e) {
@@ -72,7 +76,7 @@ export function SetupPasskey({ next }: { next: string }) {
 
   const blocked = support === "unsupported" || support === "no-lock";
   return (
-    <main id="main" className="screen grid gap-6">
+    <Screen who="customer">
       <PageHeading title={t("passkey.title")}>{t("passkey.title")}</PageHeading>
       <div className="grid gap-3">
         <p className="type-body">{t("passkey.what")}</p>
@@ -90,10 +94,7 @@ export function SetupPasskey({ next }: { next: string }) {
       {done ? (
         <>
           <p className="type-headline">{t(done)}</p>
-          <Link
-            href={next}
-            className="type-body inline-flex min-h-(--target-primary) w-full touch-manipulation items-center justify-center rounded-zolo-control bg-zolo-brand px-6 font-semibold text-zolo-on-brand"
-          >
+          <Link href={next} className={LINK_PRIMARY}>
             {t("common.done")}
           </Link>
         </>
@@ -108,6 +109,6 @@ export function SetupPasskey({ next }: { next: string }) {
           {busy ? t("passkey.working") : t("passkey.start")}
         </Button>
       )}
-    </main>
+    </Screen>
   );
 }

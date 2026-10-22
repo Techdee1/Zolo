@@ -1,16 +1,18 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
+import { BadgeCheck, ChevronRight, HandCoins, KeyRound, Receipt } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PageHeading } from "@/components/PageHeading";
+import { Screen } from "@/components/Screen";
 import { getActivity } from "@/lib/api/endpoints";
 import { isApiError } from "@/lib/api/client";
 import type { ActivityItemOut } from "@/lib/api/types";
 import { redirectIfSignedOut } from "@/lib/errors";
 import { amountSpoken } from "@/lib/format/words";
 import { useT, type Translate } from "@/lib/i18n";
+import { usePasskeyKnown } from "@/lib/passkey-status";
 
 /** "today", "yesterday", then "14 Oct" (the PRD's wording for dates). */
 export function whenWords(iso: string, now: Date, t: Translate): string {
@@ -33,14 +35,17 @@ function spokenItem(i: ActivityItemOut, t: Translate): string {
   return t("home.itemNotPaid", params);
 }
 
-const TILE =
-  "flex min-h-(--target-primary) items-center justify-between gap-4 rounded-zolo-card border " +
-  "border-zolo-separator bg-zolo-grouped p-4 type-headline text-zolo-text touch-manipulation " +
-  "transition-transform duration-100 ease-out active:scale-(--motion-press-scale)";
+const CARD = "rounded-zolo-card bg-zolo-elevated shadow-zolo-card";
+/** A small icon in a rounded square: quiet, decorative, never the only label. */
+const ICON_BOX =
+  "grid size-11 shrink-0 place-items-center rounded-[12px] bg-zolo-grouped text-zolo-text";
+const ROW =
+  "press flex min-h-(--target-primary) items-center gap-4 p-4 text-zolo-text touch-manipulation";
 
 export function Home() {
   const t = useT();
   const router = useRouter();
+  const passkey = usePasskeyKnown();
   const [items, setItems] = useState<ActivityItemOut[] | null>(null);
 
   useEffect(() => {
@@ -57,57 +62,84 @@ export function Home() {
   }, [router]);
 
   return (
-    <main id="main" className="screen grid gap-8">
-      <p className="wordmark">
-        {t("app.name")} <span className="wordmark-sub">{t("app.forBank")}</span>
-      </p>
-      <PageHeading title={t("home.title")}>{t("home.title")}</PageHeading>
+    <Screen who="customer" className="gap-8">
+      <PageHeading title={t("home.title")} className="type-display">
+        {t("home.title")}
+      </PageHeading>
 
       <nav aria-label={t("home.title")}>
-        <ul className="m-0 grid list-none gap-3 p-0">
-          <li>
-            <Link href="/pay/code" className={TILE}>
-              <span>
-                {t("home.payAgent")}
-                <span className="type-secondary block font-normal text-zolo-secondary">
-                  {t("home.payAgentHint")}
-                </span>
-              </span>
-              <ChevronRight aria-hidden="true" size={24} />
-            </Link>
-          </li>
-        </ul>
+        <Link href="/pay/code" className={`${CARD} ${ROW}`}>
+          <span className="flex flex-1 items-center gap-4">
+            <span className={ICON_BOX}>
+              <HandCoins aria-hidden="true" size={24} strokeWidth={1.75} />
+            </span>
+            <span className="grid flex-1 gap-0.5">
+              <span className="type-headline">{t("home.payAgent")}</span>
+              <span className="type-secondary">{t("home.payAgentHint")}</span>
+            </span>
+            <ChevronRight aria-hidden="true" size={22} className="text-zolo-secondary" />
+          </span>
+        </Link>
       </nav>
 
-      <section aria-labelledby="recent" className="grid gap-3">
-        <h2 id="recent" className="type-headline">
+      <section aria-labelledby="recent" className="grid gap-2">
+        <h2 id="recent" className="type-secondary px-4 font-semibold">
           {t("home.recent")}
         </h2>
-        {items === null ? null : items.length === 0 ? (
-          <p className="type-body text-zolo-secondary">{t("home.recentEmpty")}</p>
-        ) : (
-          <ul className="m-0 grid list-none gap-2 p-0">
-            {items.map((i) => (
-              <li key={i.id} className="type-body">
-                {/* Sighted: the bank's own line. Screen reader: the same, with the amount in words. */}
-                <span aria-hidden="true">
-                  {i.line}, {whenWords(i.created_at, new Date(), t)}
-                </span>
-                <span className="sr-only">{spokenItem(i, t)}</span>
-              </li>
-            ))}
-          </ul>
-        )}
+        <div className={`${CARD} overflow-clip`}>
+          {items === null ? (
+            <div className="min-h-(--target-primary)" />
+          ) : items.length === 0 ? (
+            <div className="grid justify-items-center gap-1 px-4 py-8 text-center">
+              <span className={ICON_BOX}>
+                <Receipt aria-hidden="true" size={22} strokeWidth={1.75} />
+              </span>
+              <p className="type-body mt-2 font-semibold">{t("home.recentEmpty")}</p>
+              <p className="type-secondary">{t("home.recentEmptyHint")}</p>
+            </div>
+          ) : (
+            <ul className="m-0 list-none divide-y divide-zolo-separator p-0">
+              {items.map((i) => (
+                <li key={i.id} className="type-body px-4 py-3">
+                  {/* Sighted: the bank's own line. Screen reader: the same, with the amount in words. */}
+                  <span aria-hidden="true">
+                    {i.line}, {whenWords(i.created_at, new Date(), t)}
+                  </span>
+                  <span className="sr-only">{spokenItem(i, t)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </section>
 
-      <div className="grid gap-2">
-        <Link href="/setup/passkey" className="type-body underline underline-offset-4">
-          {t("home.setupPasskey")}
-        </Link>
-        <Link href="/signin" className="type-body text-zolo-secondary underline underline-offset-4">
-          {t("home.switchUser")}
-        </Link>
-      </div>
-    </main>
+      <section aria-labelledby="account" className="grid gap-2">
+        <h2 id="account" className="sr-only">
+          {t("passkey.rowTitle")}
+        </h2>
+        <div className={CARD}>
+          <Link href="/setup/passkey" className={ROW}>
+            <span className={ICON_BOX}>
+              <KeyRound aria-hidden="true" size={22} strokeWidth={1.75} />
+            </span>
+            <span className="grid flex-1 justify-items-start gap-0.5">
+              <span className="type-body font-semibold">{t("passkey.rowTitle")}</span>
+              {passkey === null ? null : (
+                <span
+                  className={`type-secondary inline-flex items-center gap-1.5 ${passkey ? "text-zolo-success" : ""}`}
+                >
+                  {passkey ? <BadgeCheck aria-hidden="true" size={16} strokeWidth={1.75} /> : null}
+                  {t(passkey ? "passkey.statusOn" : "passkey.statusOff")}
+                </span>
+              )}
+            </span>
+            <span className="type-secondary font-semibold text-zolo-text">
+              {t(passkey ? "passkey.actionOn" : "passkey.actionOff")}
+            </span>
+            <ChevronRight aria-hidden="true" size={22} className="text-zolo-secondary" />
+          </Link>
+        </div>
+      </section>
+    </Screen>
   );
 }

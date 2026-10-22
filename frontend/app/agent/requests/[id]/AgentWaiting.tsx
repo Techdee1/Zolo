@@ -4,22 +4,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { PageHeading } from "@/components/PageHeading";
+import { Screen } from "@/components/Screen";
 import { QrCode } from "@/components/QrCode";
 import { ResultView } from "@/components/ResultView";
-import { AmountDisplay } from "@/components/ui/AmountDisplay";
+import { AmountDisplay, HeroAmount } from "@/components/ui/AmountDisplay";
 import { Badge } from "@/components/ui/Badge";
 import { useAnnounce } from "@/components/ui/LiveRegion";
 import { TimeLeft } from "@/components/ui/TimeLeft";
-import { formatNaira } from "@/lib/format/money";
 import { amountSpoken } from "@/lib/format/words";
 import { useT } from "@/lib/i18n";
 import { getAgentRequest, type StoredAgentRequest } from "@/lib/session-hint";
+import { LINK_PRIMARY } from "@/lib/styles";
 import { useRequestPoll } from "@/lib/use-request-poll";
-
-const buttonLink =
-  "inline-flex min-h-(--target-primary) w-full items-center justify-center rounded-zolo-control " +
-  "bg-zolo-brand px-6 type-body font-semibold text-zolo-on-brand touch-manipulation " +
-  "transition-transform duration-100 ease-out active:scale-(--motion-press-scale)";
 
 /** The agent's page while a customer decides. It shows the code, then the outcome, and never "Paid" early. */
 export function AgentWaiting({ id }: { id: string }) {
@@ -84,41 +80,40 @@ export function AgentWaiting({ id }: { id: string }) {
   }, [phase, request, announce, t]);
 
   const newRequest = (
-    <Link href="/agent" className={buttonLink}>
+    <Link href="/agent" className={LINK_PRIMARY}>
       {t("agent.newRequest")}
     </Link>
   );
 
   if (denied === "not-found")
     return (
-      <ResultView
-        variant="failed"
-        badge={t("agent.badge.failed")}
-        title={t("errors.notFound")}
-        action={newRequest}
-      />
+      <ResultView variant="failed" who="agent" title={t("errors.notFound")} action={newRequest} />
     );
   if (!request)
     return (
-      <main id="main" className="screen">
+      <Screen who="agent">
         <PageHeading title={t("agent.waitingTitle")}>{t("agent.waitingTitle")}</PageHeading>
-      </main>
+      </Screen>
     );
 
-  const amount = formatNaira(request.amount_kobo);
   if (phase === "paid")
     return (
       <ResultView
         quiet
         variant="paid"
-        badge={t("agent.badge.paid")}
+        who="agent"
         title={t("agent.paid")}
-        body={t("agent.paidBody", { amount, time: paidAt ?? "" })}
+        body={t("agent.paidAt", { time: paidAt ?? "" })}
         bodySpoken={t("agent.paidBodySpoken", {
           amountWords: amountSpoken(request.amount_kobo),
           time: paidAt ?? "",
         })}
-        extra={<AmountDisplay kobo={request.amount_kobo} unit={t("common.unit")} showWords />}
+        visual={
+          <>
+            <p className="type-title m-0">{t("agent.paid")}</p>
+            <HeroAmount kobo={request.amount_kobo} unit={t("common.unit")} />
+          </>
+        }
         action={newRequest}
       />
     );
@@ -127,10 +122,10 @@ export function AgentWaiting({ id }: { id: string }) {
       <ResultView
         quiet
         variant="processing"
-        badge={t("agent.badge.processing")}
+        who="agent"
         title={t("agent.processing")}
         body={t("agent.processingBody")}
-        extra={<AmountDisplay kobo={request.amount_kobo} unit={t("common.unit")} showWords />}
+        extra={<HeroAmount kobo={request.amount_kobo} unit={t("common.unit")} />}
         action={null}
       />
     );
@@ -139,7 +134,7 @@ export function AgentWaiting({ id }: { id: string }) {
       <ResultView
         quiet
         variant={phase}
-        badge={t(`agent.badge.${phase}`)}
+        who="agent"
         title={t(`agent.${phase}`)}
         action={newRequest}
       />
@@ -147,31 +142,38 @@ export function AgentWaiting({ id }: { id: string }) {
 
   const code = stored?.claim_code ?? null;
   return (
-    <main id="main" className="screen grid gap-6">
+    <Screen who="agent">
       <PageHeading title={t("agent.waitingTitle")}>{t("agent.waitingTitle")}</PageHeading>
-      <AmountDisplay kobo={request.amount_kobo} unit={t("common.unit")} showWords />
 
-      {code ? (
-        <section aria-labelledby="code-label" className="grid justify-items-start gap-3">
-          <h2 id="code-label" className="type-secondary">
-            {t("agent.yourCode")}
-          </h2>
-          {/* Digits are read one at a time ("4, 0, 0, 1"), not as "four thousand and one". */}
-          <p
-            className="type-code m-0"
-            aria-label={t("agent.codeSpoken", { digits: [...code].join(", ") })}
-            role="img"
+      <section className="grid gap-5 rounded-zolo-card bg-zolo-elevated p-6 shadow-zolo-card">
+        <AmountDisplay kobo={request.amount_kobo} unit={t("common.unit")} size="large" showWords />
+
+        {code ? (
+          <div
+            aria-labelledby="code-label"
+            role="group"
+            className="grid justify-items-center gap-3 border-t border-zolo-separator pt-5 text-center"
           >
-            {code}
-          </p>
-          <p className="type-secondary">{t("agent.codeAloud")}</p>
-          {stored ? <QrCode value={stored.qr_payload} /> : null}
-        </section>
-      ) : stored === null ? (
-        <p className="type-body">{t("agent.noCode")}</p>
-      ) : null}
+            <h2 id="code-label" className="type-secondary m-0 font-semibold">
+              {t("agent.yourCode")}
+            </h2>
+            {/* Digits are read one at a time ("4, 0, 0, 1"), not as "four thousand and one". */}
+            <p
+              className="type-hero m-0 tracking-[0.12em]"
+              aria-label={t("agent.codeSpoken", { digits: [...code].join(", ") })}
+              role="img"
+            >
+              {code}
+            </p>
+            <p className="type-secondary m-0">{t("agent.codeAloud")}</p>
+            {stored ? <QrCode value={stored.qr_payload} /> : null}
+          </div>
+        ) : stored === null ? (
+          <p className="type-body m-0">{t("agent.noCode")}</p>
+        ) : null}
+      </section>
 
-      <div className="grid gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <Badge variant={phase === "reviewing" ? "processing" : "waiting"}>
           {phase === "reviewing" ? t("agent.stateReviewing") : t("agent.stateWaiting")}
         </Badge>
@@ -186,8 +188,10 @@ export function AgentWaiting({ id }: { id: string }) {
         />
       </div>
 
-      <p className="type-headline">{t("agent.waitForPaid")}</p>
+      <p className="type-headline m-0 rounded-zolo-card border border-zolo-separator bg-zolo-elevated p-4">
+        {t("agent.waitForPaid")}
+      </p>
       {offline ? <p className="type-secondary">{t("common.offline")}</p> : null}
-    </main>
+    </Screen>
   );
 }

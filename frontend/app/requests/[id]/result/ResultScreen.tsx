@@ -5,22 +5,16 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { PageHeading } from "@/components/PageHeading";
 import { ResultView } from "@/components/ResultView";
-import { AmountDisplay } from "@/components/ui/AmountDisplay";
+import { Screen } from "@/components/Screen";
+import { HeroAmount } from "@/components/ui/AmountDisplay";
 import { useAnnounce } from "@/components/ui/LiveRegion";
 import type { BadgeVariant } from "@/components/ui/Badge";
 import { formatNaira } from "@/lib/format/money";
 import { amountSpoken } from "@/lib/format/words";
 import { useT, type MessageKey } from "@/lib/i18n";
 import type { ResultReason } from "@/lib/result-reason";
+import { LINK_PRIMARY, LINK_SECONDARY } from "@/lib/styles";
 import { useRequestPoll } from "@/lib/use-request-poll";
-
-const linkButton =
-  "inline-flex min-h-(--target-primary) w-full items-center justify-center rounded-zolo-control " +
-  "bg-zolo-brand px-6 type-body font-semibold text-zolo-on-brand touch-manipulation " +
-  "transition-transform duration-100 ease-out active:scale-(--motion-press-scale)";
-const linkQuiet =
-  "inline-flex min-h-(--target-min) w-full items-center justify-center rounded-zolo-control border " +
-  "border-zolo-separator bg-zolo-grouped px-6 type-body font-semibold text-zolo-text touch-manipulation";
 
 type Outcome = {
   key:
@@ -164,10 +158,10 @@ export function ResultScreen({ id, reason }: { id: string; reason: ResultReason 
     return (
       <ResultView
         variant="failed"
-        badge={t("errors.notFound")}
+        who="customer"
         title={t("errors.notFound")}
         action={
-          <Link href="/" className={linkButton}>
+          <Link href="/" className={LINK_PRIMARY}>
             {t("common.done")}
           </Link>
         }
@@ -175,9 +169,9 @@ export function ResultScreen({ id, reason }: { id: string; reason: ResultReason 
     );
   if (!request || !outcome)
     return (
-      <main id="main" className="screen">
+      <Screen who="customer">
         <PageHeading title={t("result.checking")}>{t("result.checking")}</PageHeading>
-      </main>
+      </Screen>
     );
 
   const params = {
@@ -188,7 +182,7 @@ export function ResultScreen({ id, reason }: { id: string; reason: ResultReason 
   return (
     <ResultView
       variant={outcome.variant}
-      badge={t(`result.badge.${outcome.key}`)}
+      who="customer"
       title={t(outcome.title, params)}
       titleSpoken={outcome.key === "paid" ? t("result.paidAnnounce", params) : undefined}
       body={outcome.body ? t(outcome.body, params) : undefined}
@@ -196,27 +190,36 @@ export function ResultScreen({ id, reason }: { id: string; reason: ResultReason 
         outcome.key === "processing" ? t("result.processingBodySpoken", params) : undefined
       }
       quiet={inPlace}
+      visual={
+        outcome.key === "paid" ? (
+          <>
+            <p className="type-title m-0">{t("result.paidShort")}</p>
+            <HeroAmount kobo={request.amount_kobo} unit={t("common.unit")} />
+            <p className="type-body m-0 text-zolo-secondary">{t("result.paidFrom", params)}</p>
+          </>
+        ) : undefined
+      }
       extra={
-        outcome.variant === "paid" || outcome.variant === "processing" ? (
-          <AmountDisplay kobo={request.amount_kobo} unit={t("common.unit")} showWords />
+        outcome.variant === "processing" ? (
+          <HeroAmount kobo={request.amount_kobo} unit={t("common.unit")} />
         ) : undefined
       }
       action={
         outcome.variant === "processing" ? (
-          <Link href="/" className={linkQuiet}>
+          <Link href="/" className={LINK_SECONDARY}>
             {t("pay.back")}
           </Link>
         ) : outcome.retry ? (
           <>
-            <Link href="/pay/code" className={linkButton}>
+            <Link href="/pay/code" className={LINK_PRIMARY}>
               {t("common.tryAgain")}
             </Link>
-            <Link href="/" className={linkQuiet}>
+            <Link href="/" className={LINK_SECONDARY}>
               {t("common.done")}
             </Link>
           </>
         ) : (
-          <Link href="/" className={linkButton}>
+          <Link href="/" className={LINK_PRIMARY}>
             {t("common.done")}
           </Link>
         )
