@@ -77,7 +77,7 @@ async function claim(customer: Page, code: string) {
 async function setUpPasskey(customer: Page) {
   await customer.goto("/setup/passkey");
   await customer.getByRole("button", { name: "Set up passkey" }).click();
-  await expect(customer.getByText("Your passkey is ready.")).toBeVisible();
+  await expect(customer.locator("main").getByText("Your passkey is ready.")).toBeVisible();
 }
 
 const approveButton = (page: Page) => page.getByRole("button", { name: /^Approve/ });
@@ -222,7 +222,9 @@ test("an expired code is refused with a specific message", async ({ browser }) =
   const field = customer.page.getByRole("textbox", { name: /4-digit code/ });
   await field.pressSequentially("9999");
   await expect(
-    customer.page.getByText("No request has that code. Check the 4 digits with the agent."),
+    customer.page
+      .locator("main")
+      .getByText("No request has that code. Check the 4 digits with the agent."),
   ).toBeVisible();
   await expect(customer.page.locator("[data-live-region=assertive]")).toContainText(
     "No request has that code",
@@ -501,7 +503,7 @@ test("the passkey row on home: Not set up, then Set up on this phone after setup
   await row.click();
   await customer.page.waitForURL("**/setup/passkey");
   await customer.page.getByRole("button", { name: "Set up passkey" }).click();
-  await expect(customer.page.getByText("Your passkey is ready.")).toBeVisible();
+  await expect(customer.page.locator("main").getByText("Your passkey is ready.")).toBeVisible();
   await customer.page.goto("/home");
   await expect(customer.page.getByRole("region", { name: "Passkey" })).toContainText(
     "Set up on this phone",

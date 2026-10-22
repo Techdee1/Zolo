@@ -66,7 +66,7 @@ test("registering works against the real backend; the same phone cannot register
   await customer.page.waitForLoadState("networkidle");
   await customer.page.getByRole("button", { name: "Set up passkey" }).click();
   await expect(
-    customer.page.getByText("This phone already has your passkey.").first(),
+    customer.page.locator("main").getByText("This phone already has your passkey."),
   ).toBeVisible();
   expect(await authenticator.credentials()).toHaveLength(1);
 
@@ -160,7 +160,7 @@ test("cancelling the fingerprint or face prompt sends nothing, and the customer 
   await authenticator.refuse();
   await approveButton(customer.page).click();
   await expect(
-    customer.page.getByText("Cancelled. Nothing was sent. You can try again."),
+    customer.page.locator("main").getByText("Cancelled. Nothing was sent. You can try again."),
   ).toBeVisible({ timeout: 10_000 });
   await expect(customer.page.locator("[data-live-region=assertive]")).toContainText("Cancelled");
   const id = customer.page.url().split("/").pop()!;
@@ -294,7 +294,9 @@ test("the real backend's contract: unsupported readback languages are refused, w
     .getByRole("textbox", { name: /4-digit code/ })
     .pressSequentially(code === "9999" ? "9998" : "9999");
   await expect(
-    customer.page.getByText("No request has that code. Check the 4 digits with the agent."),
+    customer.page
+      .locator("main")
+      .getByText("No request has that code. Check the 4 digits with the agent."),
   ).toBeVisible();
 
   await claim(customer.page, code);
