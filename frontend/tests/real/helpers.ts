@@ -81,6 +81,10 @@ export const approveReady = (page: Page) =>
   expect(approveButton(page)).not.toHaveAttribute("aria-disabled", "true", { timeout: 8000 });
 
 export async function noAxe(page: Page) {
+  // Let the screens' settle-in fades finish: axe reads colours mid-fade as low contrast.
+  await page.waitForFunction(() =>
+    document.getAnimations().every((a) => a.playState !== "running"),
+  );
   const { violations } = await new AxeBuilder({ page }).analyze();
   expect(
     violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(" | ")}`),

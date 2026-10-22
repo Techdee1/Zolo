@@ -45,10 +45,12 @@ async function virtualAuthenticator(context: BrowserContext, page: Page) {
 }
 
 async function noAxeViolations(page: Page) {
-  // Let the "Paid" settle-in finish: axe reads colours mid-fade as low contrast.
+  // Let every settle-in finish (the "Paid" card, and the `.rise` fades on the screens): axe reads
+  // colours mid-fade as low contrast.
   await page.waitForFunction(() => {
     const card = document.querySelector("[data-result]");
-    return !card || getComputedStyle(card).opacity === "1";
+    const settled = document.getAnimations().every((a) => a.playState !== "running");
+    return settled && (!card || getComputedStyle(card).opacity === "1");
   });
   const { violations } = await new AxeBuilder({ page }).analyze();
   expect(

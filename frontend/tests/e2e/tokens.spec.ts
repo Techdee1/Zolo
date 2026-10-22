@@ -47,7 +47,8 @@ test("reduced motion: no press scale", async ({ page }) => {
 test("the title style is 1.75rem: 28px at the default size, 56px at 200% text", async ({
   page,
 }) => {
-  await page.goto("/signin");
+  // The component gallery's h1 uses the plain title style (the app screens use the larger display style).
+  await page.goto("/kitchen-sink");
   const size = () =>
     page
       .getByRole("heading", { level: 1 })
@@ -55,6 +56,19 @@ test("the title style is 1.75rem: 28px at the default size, 56px at 200% text", 
   expect(await size()).toBe(28);
   await zoomText(page);
   expect(await size()).toBe(56); // rem all the way down: it follows the user's text size
+});
+
+test("a screen's heading uses the display style: 34px at the default size, 68px at 200% text", async ({
+  page,
+}) => {
+  await page.goto("/signin");
+  const size = () =>
+    page
+      .getByRole("heading", { level: 1 })
+      .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+  expect(await size()).toBe(34); // 2.125rem; one type class only, so nothing fights over the size
+  await zoomText(page);
+  expect(await size()).toBe(68);
 });
 
 test("system fonts only", async ({ page }) => {

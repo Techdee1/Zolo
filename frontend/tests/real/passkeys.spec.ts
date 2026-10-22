@@ -118,7 +118,17 @@ test("the full journey: ask, hear the real readback, approve with the passkey, P
     timeout: 10_000,
   });
   await customer.page.goto("/home");
-  await expect(customer.page.getByText(/Paid ₦15,000 to bisi ventures/i).first()).toBeVisible();
+  // The recent-payments row: seen as payee, status and amount; heard as one sentence with the amount in words.
+  const row = customer.page
+    .getByRole("listitem")
+    .filter({ hasText: /bisi ventures/i })
+    .first();
+  await expect(row).toBeVisible();
+  await expect(row).toContainText("₦15,000");
+  await expect(row).toContainText("Paid");
+  await expect(row.locator(".sr-only")).toContainText(
+    /Paid fifteen thousand naira to bisi ventures/i,
+  );
   expect([...agent.problems, ...customer.problems]).toEqual([]);
   await agent.context.close();
   await customer.context.close();
