@@ -10,7 +10,7 @@ describe("parseEnv", () => {
       useMocks: false,
       demoVideoUrl: undefined,
       repoUrl: undefined,
-      teamName: "Our team (name to come)",
+      teamName: "Overclock",
     });
   });
 

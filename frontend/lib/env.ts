@@ -19,7 +19,7 @@ const httpsUrl = z.url({ protocol: /^https$/ }).optional();
 const schema = z.object({
   demoVideoUrl: httpsUrl,
   repoUrl: httpsUrl,
-  teamName: z.string().trim().min(1).default("Our team (name to come)"),
+  teamName: z.string().trim().min(1).default("Overclock"),
   featureDemo: flag,
   featureCardGuard: flag,
   featureKitchenSink: flag,
