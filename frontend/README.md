@@ -5,9 +5,10 @@ payment, only the account holder approves it, after hearing it. One Next.js app,
 and low-vision users first. Requirements are in [`Frontend_PRD.md`](../Frontend_PRD.md); the API it
 talks to is [`backend/openapi.json`](../backend/openapi.json).
 
-> **Status: steps 1 to 5 of 7** (scaffold, design tokens, UI kit, typed API client, P0 screens).
-> Passkeys work end to end in Chromium against a fake backend; the real backend and a real phone are
-> step 6. The five languages are step 7 (English only now).
+> **Status: all seven steps built** (scaffold, tokens, UI kit, typed API client, P0 screens, passkeys
+> against the real backend, five languages). Not yet done: a real-phone run, native-speaker review of
+> the translations ([`docs/TRANSLATION_REVIEW.md`](../docs/TRANSLATION_REVIEW.md)), QR scanning, a
+> service worker.
 
 ## Run it
 

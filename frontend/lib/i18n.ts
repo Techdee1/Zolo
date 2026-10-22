@@ -1,3 +1,6 @@
+import { useCallback } from "react";
+import { useLocale as useIntlLocale, useTranslations } from "next-intl";
+import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/locales";
 import en from "@/messages/en.json";
 
 /**
@@ -36,12 +39,17 @@ export type Translate = (key: MessageKey, params?: Params) => string;
 
 export const t: Translate = (key, params) => fill(lookup(en, key), params);
 
-/** The translate function for the current language (English until step 7). */
+/**
+ * The translate function for the current language (next-intl, with the language chosen by cookie).
+ * It has the same shape as the static English `t` above, so a screen reads the same either way.
+ */
 export function useT(): Translate {
-  return t;
+  const intl = useTranslations();
+  return useCallback<Translate>((key, params) => intl(key as never, params as never), [intl]);
 }
 
-/** The language of the screens. English until step 7 adds the switcher. */
-export function useLocale(): import("@/lib/readback-lang").Locale {
-  return "en";
+/** The language of the screens: English, Pidgin, Yoruba, Hausa or Igbo. */
+export function useLocale(): Locale {
+  const locale = useIntlLocale();
+  return isLocale(locale) ? locale : DEFAULT_LOCALE;
 }

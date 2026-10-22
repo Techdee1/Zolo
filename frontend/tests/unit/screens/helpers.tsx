@@ -1,11 +1,20 @@
 import { render } from "@testing-library/react";
+import { NextIntlClientProvider } from "next-intl";
 import type { ReactElement } from "react";
 import { LiveRegionProvider } from "@/components/ui/LiveRegion";
 import { createAgentRequest, claimByCode, getReadback } from "@/lib/api/endpoints";
+import type { Locale } from "@/lib/locales";
 import type { FakeBackend } from "../../fakes/fake-backend";
+import { messagesFor } from "../messages";
 
-export const renderScreen = (ui: ReactElement) =>
-  render(<LiveRegionProvider>{ui}</LiveRegionProvider>);
+/** Renders a screen the way the app does: inside the language provider and the live region. */
+export function renderScreen(ui: ReactElement, locale: Locale = "en") {
+  return render(
+    <NextIntlClientProvider locale={locale} messages={messagesFor(locale)}>
+      <LiveRegionProvider>{ui}</LiveRegionProvider>
+    </NextIntlClientProvider>,
+  );
+}
 
 export const polite = () => document.querySelector("[data-live-region=polite]")?.textContent ?? "";
 export const assertive = () =>

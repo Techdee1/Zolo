@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { connection } from "next/server";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -25,13 +27,21 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   // each response, and a statically prerendered page has no nonce on its scripts, so the browser
   // would block them all and the app would never become interactive.
   await connection();
+  const locale = await getLocale();
+  const t = await getTranslations();
+  // The landing page is English only and renders on the server, so its strings are not sent to the
+  // browser with every screen.
+  const messages = { ...((await getMessages()) as Record<string, unknown>) };
+  delete messages.landing;
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body>
         <a href="#main" className="skip-link">
-          Skip to main content
+          {t("app.skip")}
         </a>
-        {children}
+        <NextIntlClientProvider locale={locale} messages={messages as never}>
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );

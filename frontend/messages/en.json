@@ -279,5 +279,9 @@
       "hands": "A woman in sunglasses and headphones typing at a computer, sitting at a desk.",
       "street": "Four people walking on a paved street, two of them using white canes."
     }
+  },
+  "language": {
+    "label": "Language",
+    "hint": "This changes the words on the screens. The spoken request is in English or Pidgin only for now."
   }
 }

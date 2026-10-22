@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
 /**
  * Deliberately NOT enabled: `cacheComponents` and `partialPrefetching`.
@@ -45,4 +46,5 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Languages without a locale in the URL: see i18n/request.ts.
+export default createNextIntlPlugin("./i18n/request.ts")(nextConfig);

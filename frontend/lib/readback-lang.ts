@@ -1,6 +1,6 @@
 import type { ReadbackLang } from "@/lib/api/endpoints";
-
-export type Locale = "en" | "pcm" | "yo" | "ha" | "ig";
+import type { Locale } from "@/lib/locales";
+export type { Locale };
 
 /**
  * The backend can only SPEAK English and Pidgin; any other `lang` is a 422. So a Yoruba, Hausa or

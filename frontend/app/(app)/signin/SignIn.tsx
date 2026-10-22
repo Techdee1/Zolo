@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { LanguagePicker } from "@/components/LanguagePicker";
 import { PageHeading } from "@/components/PageHeading";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/ui/Button";
@@ -65,6 +66,9 @@ export function SignIn() {
         ))}
       </div>
       {error ? <p className="type-body text-zolo-critical">{error}</p> : null}
+      <section className="rounded-zolo-card bg-zolo-elevated p-4 shadow-zolo-card">
+        <LanguagePicker />
+      </section>
     </Screen>
   );
 }

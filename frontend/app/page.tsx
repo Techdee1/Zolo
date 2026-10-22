@@ -22,7 +22,7 @@ export default function Landing() {
   const demoHref = "/signin";
 
   return (
-    <div className={`landing ${display.variable}`}>
+    <div className={`landing ${display.variable}`} lang="en">
       <header className="land-header">
         <div className="land-wrap">
           <p className="wordmark m-0">

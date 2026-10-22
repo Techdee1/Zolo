@@ -4,31 +4,37 @@ import { BadgeCheck, ChevronRight, HandCoins, KeyRound, Receipt } from "lucide-r
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { LanguagePicker } from "@/components/LanguagePicker";
 import { PageHeading } from "@/components/PageHeading";
 import { Screen } from "@/components/Screen";
 import { getActivity } from "@/lib/api/endpoints";
 import { isApiError } from "@/lib/api/client";
 import type { ActivityItemOut } from "@/lib/api/types";
 import { redirectIfSignedOut } from "@/lib/errors";
+import { formatNaira } from "@/lib/format/money";
 import { amountSpoken } from "@/lib/format/words";
-import { useT, type Translate } from "@/lib/i18n";
+import { useLocale, useT, type Translate } from "@/lib/i18n";
+import { intlLocale, type Locale } from "@/lib/locales";
 import { usePasskeyKnown } from "@/lib/passkey-status";
 
 /** "today", "yesterday", then "14 Oct" (the PRD's wording for dates). */
-export function whenWords(iso: string, now: Date, t: Translate): string {
+export function whenWords(iso: string, now: Date, t: Translate, locale: Locale = "en"): string {
   const then = new Date(iso);
   const day = (d: Date) => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
   const days = Math.round((day(now) - day(then)) / 86_400_000);
   if (days <= 0) return t("home.today");
   if (days === 1) return t("home.yesterday");
-  return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(then);
+  return new Intl.DateTimeFormat(intlLocale(locale), { day: "numeric", month: "short" }).format(
+    then,
+  );
 }
 
-function spokenItem(i: ActivityItemOut, t: Translate): string {
+/** One payment as a sentence in the customer's language: with the amount in digits for the eye, or in words for the ear. */
+function itemText(i: ActivityItemOut, t: Translate, locale: Locale, spoken: boolean): string {
   const params = {
-    amountWords: amountSpoken(i.amount_kobo),
+    amountWords: spoken ? amountSpoken(i.amount_kobo) : formatNaira(i.amount_kobo),
     payee: i.payee_name,
-    when: whenWords(i.created_at, new Date(), t),
+    when: whenWords(i.created_at, new Date(), t, locale),
   };
   if (i.state === "SETTLED") return t("home.itemPaid", params);
   if (i.state === "DECLINED") return t("home.itemDeclined", params);
@@ -65,6 +71,7 @@ function PasskeyRowBody({ passkey, t }: { passkey: boolean | null; t: Translate 
 
 export function Home() {
   const t = useT();
+  const locale = useLocale();
   const router = useRouter();
   const passkey = usePasskeyKnown();
   const [items, setItems] = useState<ActivityItemOut[] | null>(null);
@@ -123,10 +130,8 @@ export function Home() {
               {items.map((i) => (
                 <li key={i.id} className="type-body px-4 py-3">
                   {/* Sighted: the bank's own line. Screen reader: the same, with the amount in words. */}
-                  <span aria-hidden="true">
-                    {i.line}, {whenWords(i.created_at, new Date(), t)}
-                  </span>
-                  <span className="sr-only">{spokenItem(i, t)}</span>
+                  <span aria-hidden="true">{itemText(i, t, locale, false)}</span>
+                  <span className="sr-only">{itemText(i, t, locale, true)}</span>
                 </li>
               ))}
             </ul>
@@ -155,6 +160,10 @@ export function Home() {
             </Link>
           )}
         </div>
+      </section>
+
+      <section className="rounded-zolo-card bg-zolo-elevated p-4 shadow-zolo-card">
+        <LanguagePicker />
       </section>
     </Screen>
   );

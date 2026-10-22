@@ -1,4 +1,6 @@
 allowBuilds:
+  "@parcel/watcher": false # next-intl's optional file watcher: not needed to build or run
+  "@swc/core": false # next-intl's optional extractor: not used
   esbuild: true # tsx (runs the e2e fake API) needs its binary
   sharp: false
   unrs-resolver: false

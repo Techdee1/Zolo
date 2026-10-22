@@ -1,8 +1,10 @@
+"use client";
+
 import type { ReactNode } from "react";
 import { DemoMenu } from "@/components/DemoMenu";
 import { cn } from "@/lib/cn";
 import { env } from "@/lib/env";
-import { t } from "@/lib/i18n";
+import { useT } from "@/lib/i18n";
 
 /**
  * The frame every screen sits in: the Zolo wordmark on the left and, on the right, a small label
@@ -20,6 +22,7 @@ export function Screen({
   className?: string;
   children: ReactNode;
 }) {
+  const t = useT();
   return (
     <main id="main" data-role={who} className={cn("screen grid content-start gap-6", className)}>
       <header className="flex min-h-(--target-min) items-center justify-between gap-3">
