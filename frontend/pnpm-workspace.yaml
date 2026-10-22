@@ -1,4 +1,4 @@
 allowBuilds:
-  esbuild: set this to true or false
+  esbuild: true # tsx (runs the e2e fake API) needs its binary
   sharp: false
   unrs-resolver: false
