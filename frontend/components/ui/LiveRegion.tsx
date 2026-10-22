@@ -21,6 +21,7 @@ import {
 type Announce = (message: string, options?: { assertive?: boolean }) => void;
 
 const LiveRegionContext = createContext<Announce | null>(null);
+const HoldContext = createContext<(() => () => void) | null>(null);
 
 export function LiveRegionProvider({ children }: { children: React.ReactNode }) {
   const [polite, setPolite] = useState("");
@@ -32,25 +33,57 @@ export function LiveRegionProvider({ children }: { children: React.ReactNode }) 
     return () => pending.forEach((t) => window.clearTimeout(t));
   }, []);
 
-  const announce = useCallback<Announce>((message, options) => {
-    const set = options?.assertive ? setAssertive : setPolite;
+  // While Zolo's own voice is speaking, nothing is announced: the screen reader would talk over
+  // it. Messages wait here and are spoken, in order, when the last hold is released.
+  const holds = useRef(0);
+  const queue = useRef<Array<[string, boolean]>>([]);
+
+  const speak = useCallback((message: string, assertiveRegion: boolean) => {
+    const set = assertiveRegion ? setAssertive : setPolite;
     set(""); // clear first, so an identical message is announced again
     timers.current.push(window.setTimeout(() => set(message), 50));
   }, []);
+
+  const announce = useCallback<Announce>(
+    (message, options) => {
+      const assertiveRegion = Boolean(options?.assertive);
+      if (holds.current > 0) queue.current.push([message, assertiveRegion]);
+      else speak(message, assertiveRegion);
+    },
+    [speak],
+  );
+
+  const hold = useCallback(() => {
+    holds.current += 1;
+    let released = false;
+    return () => {
+      if (released) return;
+      released = true;
+      holds.current -= 1;
+      if (holds.current > 0) return;
+      // Only the latest message per region matters: older ones are stale by now.
+      const latest = new Map<boolean, string>();
+      for (const [message, assertiveRegion] of queue.current) latest.set(assertiveRegion, message);
+      queue.current = [];
+      for (const [assertiveRegion, message] of latest) speak(message, assertiveRegion);
+    };
+  }, [speak]);
 
   const value = useMemo(() => announce, [announce]);
 
   return (
     <LiveRegionContext.Provider value={value}>
-      {children}
-      <div className="sr-only">
-        <div role="status" aria-live="polite" aria-atomic="true" data-live-region="polite">
-          {polite}
+      <HoldContext.Provider value={hold}>
+        {children}
+        <div className="sr-only">
+          <div role="status" aria-live="polite" aria-atomic="true" data-live-region="polite">
+            {polite}
+          </div>
+          <div role="alert" aria-live="assertive" aria-atomic="true" data-live-region="assertive">
+            {assertive}
+          </div>
         </div>
-        <div role="alert" aria-live="assertive" aria-atomic="true" data-live-region="assertive">
-          {assertive}
-        </div>
-      </div>
+      </HoldContext.Provider>
     </LiveRegionContext.Provider>
   );
 }
@@ -60,4 +93,14 @@ export function useAnnounce(): Announce {
   const announce = useContext(LiveRegionContext);
   if (!announce) throw new Error("useAnnounce must be used inside <LiveRegionProvider>");
   return announce;
+}
+
+/**
+ * Pause every announcement while Zolo's voice plays. `const release = hold()` when audio starts,
+ * `release()` when it ends (or fails). Safe to call release twice.
+ */
+export function useHoldAnnouncements(): () => () => void {
+  const hold = useContext(HoldContext);
+  if (!hold) throw new Error("useHoldAnnouncements must be used inside <LiveRegionProvider>");
+  return hold;
 }

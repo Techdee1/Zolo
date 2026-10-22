@@ -47,7 +47,7 @@ export function AmountDisplay({
   const spoken = words ? `${words} ${unit}` : amountSpoken(kobo);
 
   return (
-    <span className={cn("block", className)}>
+    <span className={cn(size !== "inline" && "block", className)}>
       <span aria-hidden="true" className={cn(SIZES[size], "[overflow-wrap:anywhere]")}>
         {digits}
       </span>
