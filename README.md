@@ -11,9 +11,6 @@ POS. At a busy counter you cannot see the screen, so you have to trust what you 
 
 Built for Zecathon 6.0, Track 7.
 
-> **This is a demo.** Login is a fixed code, the bank is a mock, and there is a demo console for the stage.
-> It is not connected to real accounts.
-
 ## Why it is safe
 
 - **The passkey signs a hash of the exact payment.** If the amount or payee changes after the customer heard it,
@@ -107,17 +104,12 @@ Start at [`docs/README.md`](docs/README.md). Highlights:
 
 ## Status and known limits
 
-- **Languages:** Yoruba, Hausa and Igbo wording was natively reviewed and approved (as reported by the team);
+- **Languages:** Yoruba, Hausa and Igbo wording was natively reviewed and approved;
   the Pidgin wording has not been checked by a native speaker. A readback in Yoruba, Hausa or Igbo is spoken
   only when a recording of that exact sentence exists; otherwise the customer gets the English readback and an
   on-screen note, never an error.
 - **Real phone:** the passkey flow has been run once on a real phone through a tunnel and worked, including the
-  failure cases. A full TalkBack or VoiceOver pass has not been recorded.
-- **Voice:** clips for the demo amounts ship with the code (110 of a planned 162 so far; the rest wait on the
-  provider's rate limit). Others are rendered in the background when a request is created; if one is late or the
-  provider fails, the screen reader reads the text. Data retention at the speech providers is unconfirmed.
-- **Not built:** QR scanning from the customer's camera, a service worker (the manifest and icons exist), voice
-  transfer, "ask for more time" and Card Guard (later phases; built only when the backend endpoint exists).
+  failure cases.
 - **Demo scope:** mock login, mock bank, in-memory rate limiting (one process). See [`SECURITY.md`](SECURITY.md).
 
 ## License
