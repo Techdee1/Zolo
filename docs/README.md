@@ -12,4 +12,3 @@
 | [`DEPLOY.md`](DEPLOY.md) | Deploying (Render, Render free, one machine) and how the voice works there |
 | [`REAL_DEVICE_TEST.md`](REAL_DEVICE_TEST.md) | Testing passkeys on a real phone; results so far |
 | [`PRD_DEVIATIONS.md`](PRD_DEVIATIONS.md) | Every place the build differs from the PRDs |
-| [`HANDOFF.md`](HANDOFF.md) | State of the work, open items, and gotchas for whoever continues |

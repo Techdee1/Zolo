@@ -102,8 +102,7 @@ Start at [`docs/README.md`](docs/README.md). Highlights:
 [Architecture](docs/ARCHITECTURE.md) · [Design decisions](docs/DESIGN_DECISIONS.md) ·
 [Backend](docs/BACKEND.md) · [Frontend](docs/FRONTEND.md) · [AI](docs/AI.md) ·
 [Security](SECURITY.md) · [Testing](docs/TESTING.md) · [Deploy](docs/DEPLOY.md) ·
-[Real-phone test](docs/REAL_DEVICE_TEST.md) · [PRD deviations](docs/PRD_DEVIATIONS.md) ·
-[Handoff](docs/HANDOFF.md). The requirements are in [`Backend_PRD.md`](Backend_PRD.md),
+[Real-phone test](docs/REAL_DEVICE_TEST.md) · [PRD deviations](docs/PRD_DEVIATIONS.md). The requirements are in [`Backend_PRD.md`](Backend_PRD.md),
 [`Frontend_PRD.md`](Frontend_PRD.md), [`AI_PRD.md`](AI_PRD.md) and [`Engineering_Brief.md`](Engineering_Brief.md).
 
 ## Status and known limits
@@ -120,6 +119,11 @@ Start at [`docs/README.md`](docs/README.md). Highlights:
 - **Not built:** QR scanning from the customer's camera, a service worker (the manifest and icons exist), voice
   transfer, "ask for more time" and Card Guard (later phases; built only when the backend endpoint exists).
 - **Demo scope:** mock login, mock bank, in-memory rate limiting (one process). See [`SECURITY.md`](SECURITY.md).
+
+## License
+
+MIT. See [`LICENSE`](LICENSE). Third-party material keeps its own licence (for example the design skill in
+`.claude/skills/apple-design`, MIT, with its licence file).
 
 ## Contributing
 
