@@ -140,7 +140,10 @@ test("press feedback: scales to 0.97 while pressed, and not at all under reduced
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.mouse.down();
     await page.waitForTimeout(250);
-    const t = await button.evaluate((el) => getComputedStyle(el).scale);
+    const t = await button.evaluate((el) => {
+      const m = new DOMMatrix(getComputedStyle(el).transform);
+      return String(m.a); // the x scale: 1 at rest, 0.97 while pressed
+    });
     await page.mouse.up();
     return t;
   };
@@ -149,7 +152,7 @@ test("press feedback: scales to 0.97 while pressed, and not at all under reduced
   await page.getByRole("button", { name: "Hear again" }).scrollIntoViewIfNeeded();
   expect(Number(await scaleWhilePressed())).toBeCloseTo(0.97, 2);
   await page.emulateMedia({ reducedMotion: "reduce" });
-  expect(["none", "1"]).toContain(await scaleWhilePressed());
+  expect(Number(await scaleWhilePressed())).toBe(1);
 });
 
 test("works at 320px wide AND 200% text: nothing overflows sideways", async ({ page }) => {

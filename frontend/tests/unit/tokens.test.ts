@@ -43,6 +43,7 @@ const COLOURS: Record<string, [string, string]> = {
   "--color-brand-text": ["#D7191E", "#FF5A5F"],
   "--color-graphite": ["#3A3A3C", "#3A3A3C"],
   "--color-bg": ["#FFFFFF", "#000000"],
+  "--color-bg-backdrop": ["#E9E9EE", "#000000"],
   "--color-bg-grouped": ["#F5F5F7", "#111113"],
   "--color-bg-elevated": ["#FFFFFF", "#1C1C1E"],
   "--color-text": ["#1C1C1E", "#F5F5F7"],
@@ -112,6 +113,8 @@ describe("a limit worth knowing", () => {
 
 // ── Type, spacing, shape ──────────────────────────────────────────────────────────────────────
 const TYPE: Record<string, [string, string, string, string]> = {
+  hero: ["4.5rem", "700", "1", "-0.035em"],
+  display: ["2.125rem", "700", "1.08", "-0.025em"],
   amount: ["3.5rem", "700", "1.05", "-0.02em"],
   code: ["3rem", "600", "1.1", "0.08em"],
   title: ["1.75rem", "600", "1.15", "-0.01em"],
@@ -146,6 +149,19 @@ describe("type scale matches the PRD", () => {
   it("large type tightens its tracking and small type loosens it, never one value for all", () => {
     expect(parseFloat(light["--type-amount-tracking"]!)).toBeLessThan(0);
     expect(parseFloat(light["--type-caption-tracking"]!)).toBeGreaterThan(0);
+  });
+
+  it("the bigger the type, the tighter the tracking (hero < display < title < body)", () => {
+    const track = (n: string) => parseFloat(light[`--type-${n}-tracking`]!);
+    expect(track("hero")).toBeLessThan(track("display"));
+    expect(track("display")).toBeLessThan(track("title"));
+    expect(track("title")).toBeLessThanOrEqual(track("body"));
+  });
+
+  it("the biggest type has the tightest leading", () => {
+    const lead = (n: string) => parseFloat(light[`--type-${n}-leading`]!);
+    expect(lead("hero")).toBeLessThan(lead("title"));
+    expect(lead("title")).toBeLessThan(lead("body"));
   });
 
   it("uses system fonts only: no web font is named or loaded", () => {
@@ -247,5 +263,32 @@ describe("motion tokens", () => {
     const sheet = toSpring(SPRING.sheet);
     expect(sheet.damping ** 2).toBeLessThan(4 * sheet.stiffness * sheet.mass);
     expect(sheet.stiffness).toBeGreaterThan(toSpring(SPRING.default).stiffness);
+  });
+});
+
+describe("the agent tint stays readable", () => {
+  it("text and secondary text keep 4.5:1 on the tinted agent background, in both themes", () => {
+    for (const [name, t] of Object.entries(themes)) {
+      for (const fg of ["--color-text", "--color-text-secondary"] as const)
+        expect(contrast(t[fg]!, t["--tint-agent"]!), `${name} ${fg}`).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+  it("the tint is subtle: nearly as light as the grouped background, only a little cooler", () => {
+    for (const t of Object.values(themes)) {
+      const ratio = contrast(t["--tint-agent"]!, t["--color-bg-grouped"]!);
+      expect(ratio).toBeLessThan(1.1);
+      expect(hex(t["--tint-agent"])).not.toBe(hex(t["--color-bg-grouped"]));
+    }
+  });
+});
+
+describe("press feedback and release", () => {
+  it("scales to 0.97 on press and settles with a spring on release; none of it under reduced motion", () => {
+    expect(light["--motion-press-scale"]).toBe("0.97");
+    expect(light["--motion-release-duration"]).toBe("420ms");
+    expect(light["--motion-spring-ease"]).toMatch(/^linear\(/);
+    const reduced = mediaRoot("(prefers-reduced-motion: reduce)");
+    expect(reduced["--motion-press-scale"]).toBe("1");
+    expect(reduced["--motion-release-duration"]).toBe("0ms");
   });
 });

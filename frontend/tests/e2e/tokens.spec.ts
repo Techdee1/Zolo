@@ -8,15 +8,15 @@ const zoomText = (page: Page) =>
 const htmlBg = (page: Page) =>
   page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor);
 
-test("light mode: white page, graphite-black text", async ({ page }) => {
+test("light mode: a light backdrop, graphite-black text", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/signin");
-  expect(await htmlBg(page)).toBe("rgb(255, 255, 255)");
+  expect(await htmlBg(page)).toBe("rgb(233, 233, 238)"); // the desk the frame sits on
   expect(await rootVar(page, "--color-text")).toBe("#1c1c1e");
   expect(await rootVar(page, "--color-brand-text")).toBe("#d7191e");
 });
 
-test("dark mode follows the system: black page, light text, the lighter red for text", async ({
+test("dark mode follows the system: black backdrop, light text, the lighter red for text", async ({
   page,
 }) => {
   await page.emulateMedia({ colorScheme: "dark" });

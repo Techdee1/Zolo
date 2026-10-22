@@ -38,7 +38,7 @@ describe("AmountDisplay", () => {
 
   it("uses the amount type style at hero size, with tabular figures", () => {
     render(<AmountDisplay kobo={1_500_000} unit="naira" />);
-    expect(screen.getByText("₦15,000")).toHaveClass("type-amount");
+    expect(screen.getByText("₦15,000")).toHaveClass("type-hero");
   });
 
   it("shows kobo only when there are some", () => {

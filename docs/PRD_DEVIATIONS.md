@@ -31,6 +31,8 @@ Living document: add a row whenever a new difference is found or one is resolved
 | 25 | Recent payments are "spoken naturally" ("Fifteen thousand naira to Bisi Ventures, today") | The API gives a `line` such as `Paid ₦15,000 to Bisi Ventures` with no date. | The line is shown as-is for the eye. Screen readers get a sentence built from the amount and payee fields, in words, plus "today / yesterday / 14 Oct" from `created_at`. |
 | 26 | Result "Changed after you heard it" is a state | It is not a request state. The request stays `READ_BACK`; `INTENT_CHANGED` (409) comes back from readback, challenge or approve. | The screen that gets that error opens the result page with `?r=changed`. The query only chooses the words; nothing else trusts it. |
 | 27 | Approval outcome is final in the response | `approve` can return `SUBMITTED` (bank call did not finish). Also, a connection that drops *after* the approval was sent leaves the outcome unknown. | `SUBMITTED` shows Processing (row 11). A dropped connection never says "failed": the result page asks the server what happened. |
+| 28 | Setup passkey: status "set up or not" | There is no "list my passkeys" call. | The status is remembered on this phone (`localStorage`) when setup succeeds, and cleared if the API answers `NO_PASSKEY`. It only chooses the wording ("Set up" or "Replace") and shows an explainer on the review screen; it never blocks Approve. |
+| 29 | Frame: phone-sized column | (not specified) | On screens 40rem and wider the app is a 30rem frame centred on a backdrop; on phones it fills the screen. Agent screens carry a faint cool tint and an "Agent" pill; customer screens a "Customer" pill. |
 
 ## 2. Architecture
 
