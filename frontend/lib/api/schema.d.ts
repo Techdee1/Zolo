@@ -206,6 +206,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/phone/calls": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ring the customer to approve one of their own requests */
+        post: operations["start_call_phone_calls_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/phone/calls/{call_id}/keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** The keys pressed on the call: 1 approve, 2 decline, 9 repeat, then the PIN */
+        post: operations["press_keys_phone_calls__call_id__keys_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/phone/enrol": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Set the number to ring and a four digit Zolo PIN */
+        post: operations["enrol_phone_enrol_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/phone/enrolment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Is phone approval set up for this customer? */
+        get: operations["enrolment_phone_enrolment_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/readyz": {
         parameters: {
             query?: never;
@@ -416,6 +484,18 @@ export interface components {
         AssertionIn: {
             [key: string]: unknown;
         };
+        /** CallPromptOut */
+        CallPromptOut: {
+            /**
+             * Audio Url
+             * @description A recording; when null the app speaks `text` itself
+             */
+            audio_url?: string | null;
+            /** Key */
+            key: string;
+            /** Text */
+            text: string;
+        };
         /** ClaimIn */
         ClaimIn: {
             /**
@@ -476,6 +556,95 @@ export interface components {
             id: string;
             /** Replaced Previous */
             replaced_previous: boolean;
+        };
+        /** PhoneCallIn */
+        PhoneCallIn: {
+            /**
+             * Request Id
+             * Format: uuid
+             */
+            request_id: string;
+        };
+        /** PhoneCallOut */
+        PhoneCallOut: {
+            /**
+             * Call Id
+             * Format: uuid
+             */
+            call_id: string;
+            /** Done */
+            done: boolean;
+            /**
+             * Expects
+             * @enum {string}
+             */
+            expects: "choice" | "pin" | "none";
+            /** Outcome */
+            outcome?: ("approved" | "declined" | "ended") | null;
+            /** Prompts */
+            prompts: components["schemas"]["CallPromptOut"][];
+            /**
+             * Stage
+             * @enum {string}
+             */
+            stage: "menu" | "pin" | "done";
+        };
+        /** PhoneEnrolIn */
+        PhoneEnrolIn: {
+            /**
+             * Language
+             * @default en
+             * @enum {string}
+             */
+            language: "en" | "pcm";
+            /**
+             * Phone
+             * @example +2348011111111
+             */
+            phone: string;
+            /**
+             * Pin
+             * @description A four digit Zolo PIN: not a card or bank PIN
+             */
+            pin: string;
+        };
+        /** PhoneEnrolmentOut */
+        PhoneEnrolmentOut: {
+            /**
+             * Enabled
+             * @description False while phone approval is switched off
+             * @default true
+             */
+            enabled: boolean;
+            /** Enrolled */
+            enrolled: boolean;
+            /**
+             * Language
+             * @default en
+             * @enum {string}
+             */
+            language: "en" | "pcm";
+            /**
+             * Locked
+             * @default false
+             */
+            locked: boolean;
+            /**
+             * Paused
+             * @description The number was changed recently
+             * @default false
+             */
+            paused: boolean;
+            /**
+             * Phone Last4
+             * @default
+             */
+            phone_last4: string;
+        };
+        /** PhoneKeysIn */
+        PhoneKeysIn: {
+            /** Digits */
+            digits: string;
         };
         /** Problem */
         Problem: {
@@ -1258,6 +1427,280 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    start_call_phone_calls_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PhoneCallIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PhoneCallOut"];
+                };
+            };
+            /** @description UNAUTHENTICATED: log in first */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description FORBIDDEN: wrong role for this endpoint */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description NOT_FOUND: no such request, or it is not yours */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description STATE_CONFLICT: not set up, paused, locked, or the request cannot be called */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description REQUEST_EXPIRED */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description RATE_LIMITED: slow down; see the Retry-After header */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    press_keys_phone_calls__call_id__keys_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                call_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PhoneKeysIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PhoneCallOut"];
+                };
+            };
+            /** @description UNAUTHENTICATED: log in first */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description FORBIDDEN: wrong role for this endpoint */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description NOT_FOUND: no such request, or it is not yours */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description RATE_LIMITED: slow down; see the Retry-After header */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    enrol_phone_enrol_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PhoneEnrolIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PhoneEnrolmentOut"];
+                };
+            };
+            /** @description UNAUTHENTICATED: log in first */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description FORBIDDEN: wrong role for this endpoint */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description NOT_FOUND: the feature is off */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description STATE_CONFLICT: the number belongs to another customer */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description VALIDATION_ERROR: the PIN is too easy to guess */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description RATE_LIMITED: slow down; see the Retry-After header */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    enrolment_phone_enrolment_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PhoneEnrolmentOut"];
+                };
+            };
+            /** @description UNAUTHENTICATED: log in first */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description FORBIDDEN: wrong role for this endpoint */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
                 };
             };
         };

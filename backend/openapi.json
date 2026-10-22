@@ -127,6 +127,36 @@
         "title": "AssertionIn",
         "type": "object"
       },
+      "CallPromptOut": {
+        "properties": {
+          "audio_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "A recording; when null the app speaks `text` itself",
+            "title": "Audio Url"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "text"
+        ],
+        "title": "CallPromptOut",
+        "type": "object"
+      },
       "ClaimIn": {
         "properties": {
           "claim_code": {
@@ -296,6 +326,176 @@
           "replaced_previous"
         ],
         "title": "PasskeyOut",
+        "type": "object"
+      },
+      "PhoneCallIn": {
+        "properties": {
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PhoneCallIn",
+        "type": "object"
+      },
+      "PhoneCallOut": {
+        "properties": {
+          "call_id": {
+            "format": "uuid",
+            "title": "Call Id",
+            "type": "string"
+          },
+          "done": {
+            "title": "Done",
+            "type": "boolean"
+          },
+          "expects": {
+            "enum": [
+              "choice",
+              "pin",
+              "none"
+            ],
+            "title": "Expects",
+            "type": "string"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "enum": [
+                  "approved",
+                  "declined",
+                  "ended"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcome"
+          },
+          "prompts": {
+            "items": {
+              "$ref": "#/components/schemas/CallPromptOut"
+            },
+            "title": "Prompts",
+            "type": "array"
+          },
+          "stage": {
+            "enum": [
+              "menu",
+              "pin",
+              "done"
+            ],
+            "title": "Stage",
+            "type": "string"
+          }
+        },
+        "required": [
+          "call_id",
+          "stage",
+          "expects",
+          "prompts",
+          "done"
+        ],
+        "title": "PhoneCallOut",
+        "type": "object"
+      },
+      "PhoneEnrolIn": {
+        "properties": {
+          "language": {
+            "default": "en",
+            "enum": [
+              "en",
+              "pcm"
+            ],
+            "title": "Language",
+            "type": "string"
+          },
+          "phone": {
+            "examples": [
+              "+2348011111111"
+            ],
+            "pattern": "^\\+[1-9][0-9]{7,14}$",
+            "title": "Phone",
+            "type": "string"
+          },
+          "pin": {
+            "description": "A four digit Zolo PIN: not a card or bank PIN",
+            "pattern": "^[0-9]{4}$",
+            "title": "Pin",
+            "type": "string"
+          }
+        },
+        "required": [
+          "phone",
+          "pin"
+        ],
+        "title": "PhoneEnrolIn",
+        "type": "object"
+      },
+      "PhoneEnrolmentOut": {
+        "properties": {
+          "enabled": {
+            "default": true,
+            "description": "False while phone approval is switched off",
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "enrolled": {
+            "title": "Enrolled",
+            "type": "boolean"
+          },
+          "language": {
+            "default": "en",
+            "enum": [
+              "en",
+              "pcm"
+            ],
+            "title": "Language",
+            "type": "string"
+          },
+          "locked": {
+            "default": false,
+            "title": "Locked",
+            "type": "boolean"
+          },
+          "paused": {
+            "default": false,
+            "description": "The number was changed recently",
+            "title": "Paused",
+            "type": "boolean"
+          },
+          "phone_last4": {
+            "default": "",
+            "title": "Phone Last4",
+            "type": "string"
+          }
+        },
+        "required": [
+          "enrolled"
+        ],
+        "title": "PhoneEnrolmentOut",
+        "type": "object"
+      },
+      "PhoneKeysIn": {
+        "properties": {
+          "digits": {
+            "maxLength": 4,
+            "minLength": 1,
+            "pattern": "^[0-9]{1,4}$",
+            "title": "Digits",
+            "type": "string"
+          }
+        },
+        "required": [
+          "digits"
+        ],
+        "title": "PhoneKeysIn",
         "type": "object"
       },
       "Problem": {
@@ -1512,6 +1712,331 @@
         "summary": "Verify the browser's answer and store the passkey",
         "tags": [
           "passkeys"
+        ]
+      }
+    },
+    "/phone/calls": {
+      "post": {
+        "operationId": "start_call_phone_calls_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneCallIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhoneCallOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: log in first"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "FORBIDDEN: wrong role for this endpoint"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: no such request, or it is not yours"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "STATE_CONFLICT: not set up, paused, locked, or the request cannot be called"
+          },
+          "410": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "REQUEST_EXPIRED"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "Ring the customer to approve one of their own requests",
+        "tags": [
+          "phone-approval"
+        ]
+      }
+    },
+    "/phone/calls/{call_id}/keys": {
+      "post": {
+        "operationId": "press_keys_phone_calls__call_id__keys_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "call_id",
+            "required": true,
+            "schema": {
+              "title": "Call Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneKeysIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhoneCallOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: log in first"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "FORBIDDEN: wrong role for this endpoint"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: no such request, or it is not yours"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "The keys pressed on the call: 1 approve, 2 decline, 9 repeat, then the PIN",
+        "tags": [
+          "phone-approval"
+        ]
+      }
+    },
+    "/phone/enrol": {
+      "post": {
+        "operationId": "enrol_phone_enrol_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneEnrolIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhoneEnrolmentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: log in first"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "FORBIDDEN: wrong role for this endpoint"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: the feature is off"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "STATE_CONFLICT: the number belongs to another customer"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "VALIDATION_ERROR: the PIN is too easy to guess"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "Set the number to ring and a four digit Zolo PIN",
+        "tags": [
+          "phone-approval"
+        ]
+      }
+    },
+    "/phone/enrolment": {
+      "get": {
+        "operationId": "enrolment_phone_enrolment_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhoneEnrolmentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: log in first"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "FORBIDDEN: wrong role for this endpoint"
+          }
+        },
+        "summary": "Is phone approval set up for this customer?",
+        "tags": [
+          "phone-approval"
         ]
       }
     },

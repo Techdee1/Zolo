@@ -49,6 +49,7 @@ The full design, state machine and component diagram are in [`docs/ARCHITECTURE.
 | **Backend** (`backend/`) | FastAPI + Postgres. Consent state machine, WebAuthn passkeys, mock bank behind an adapter, risk caps, append-only audit, RFC 9457 errors, rate limits, OpenAPI contract, 950 tests |
 | **Frontend** (`frontend/`) | Next.js 16 PWA: landing page, customer and agent screens, demo console. WCAG 2.2 AA with axe at zero violations, strict CSP, springs and reduced-motion support |
 | **Languages** | Screens and readback in English, Pidgin, Yoruba, Hausa and Igbo; the spoken readback falls back to English with a note when a recording does not exist |
+| **Phone approval** | Optional (`FEATURE_PHONE_CALL`): a simulated call reads the payment out and the customer approves with a Zolo PIN, capped at ₦20,000. A lower-assurance channel, off by default; see [`docs/PRD_DEVIATIONS.md`](docs/PRD_DEVIATIONS.md) |
 | **Voice** | Readback audio rendered in the background (YarnGPT), cached, with a shipped clip set for the demo amounts |
 | **Deploy** | Render Blueprints (paid and free) and Docker Compose with automatic HTTPS |
 

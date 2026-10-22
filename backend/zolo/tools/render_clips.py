@@ -61,7 +61,23 @@ def agent_names() -> list[str]:
 
 def status_lines() -> list[tuple[Lang, str]]:
     spec = json.loads(_PHRASES.read_text(encoding="utf-8"))["phrases"]
-    return [(lang, spec[lang][k]) for lang in LANGS for k in sorted(spec[lang])]
+    return [
+        (lang, spec[lang][k])
+        for lang in LANGS
+        for k in sorted(spec[lang])
+        if not k.startswith("call_")
+    ]
+
+
+def call_lines() -> list[tuple[Lang, str]]:
+    """The phone-approval prompts: English and Pidgin only (the call is spoken in those two)."""
+    spec = json.loads(_PHRASES.read_text(encoding="utf-8"))["phrases"]
+    return [
+        (lang, spec[lang][k])
+        for lang in ("en", "pcm")
+        for k in sorted(spec[lang])
+        if k.startswith("call_")
+    ]
 
 
 def amount_lines(trim_non_english: bool) -> list[tuple[Lang, str]]:
@@ -78,6 +94,7 @@ def plan(settings: Settings, trim_non_english: bool = False) -> list[Clip]:
     texts: list[tuple[Lang, str, str]] = (
         [(lang, text, "script") for lang, text in demo_lines()]
         + [(lang, text, "status") for lang, text in status_lines()]
+        + [(lang, text, "call") for lang, text in call_lines()]
         + [(lang, text, "amounts") for lang, text in amount_lines(trim_non_english)]
     )
     clips: dict[tuple[Lang, str, str], Clip] = {}

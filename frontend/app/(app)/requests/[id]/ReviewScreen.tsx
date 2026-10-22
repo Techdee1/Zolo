@@ -13,7 +13,14 @@ import { Button } from "@/components/ui/Button";
 import { useAnnounce } from "@/components/ui/LiveRegion";
 import { TimeLeft } from "@/components/ui/TimeLeft";
 import { ApiError, isApiError, NetworkError } from "@/lib/api/client";
-import { approve, decline, getChallenge, getReadback, getRequest } from "@/lib/api/endpoints";
+import {
+  approve,
+  decline,
+  getChallenge,
+  getPhoneEnrolment,
+  getReadback,
+  getRequest,
+} from "@/lib/api/endpoints";
 import type { ReadbackOut } from "@/lib/api/types";
 import { API_BASE } from "@/lib/env";
 import { genericErrorKey, redirectIfSignedOut } from "@/lib/errors";
@@ -40,6 +47,8 @@ export function ReviewScreen({ id }: { id: string }) {
   const [problem, setProblem] = useState<MessageKey | null>(null);
   const [busy, setBusy] = useState<"approve" | "decline" | null>(null);
   const [mode, setMode] = useVoiceMode();
+  // null until known; stays null when phone approval is off (the backend answers 404)
+  const [phone, setPhone] = useState<{ enrolled: boolean } | null>(null);
   const readbackHeading = useRef<HTMLHeadingElement>(null);
 
   const go = useCallback(
@@ -58,6 +67,15 @@ export function ReviewScreen({ id }: { id: string }) {
     });
     return () => controller.abort();
   }, [id, lang, router, go]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    getPhoneEnrolment({ signal: controller.signal }).then(
+      (e) => setPhone(e.enabled ? e : null),
+      () => undefined,
+    );
+    return () => controller.abort();
+  }, []);
 
   const voice = useReadbackVoice({
     audioUrl: audioSrc(readback?.audio_url),
@@ -290,6 +308,21 @@ export function ReviewScreen({ id }: { id: string }) {
         >
           {t("review.decline")}
         </Button>
+        {phone ? (
+          <div className="grid gap-1 text-center">
+            <Link
+              href={
+                phone.enrolled
+                  ? `/requests/${encodeURIComponent(id)}/call`
+                  : `/setup/phone?next=${encodeURIComponent(`/requests/${id}`)}`
+              }
+              className="press type-body inline-flex min-h-(--target-min) items-center justify-center font-semibold text-zolo-text underline underline-offset-4"
+            >
+              {t(phone.enrolled ? "phone.offer" : "phone.offerSetup")}
+            </Link>
+            <p className="type-secondary m-0">{t("phone.offerNote")}</p>
+          </div>
+        ) : null}
       </div>
     </Screen>
   );

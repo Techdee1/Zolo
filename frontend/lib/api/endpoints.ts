@@ -9,6 +9,8 @@ import {
   demoResetSchema,
   jsonObjectSchema,
   passkeySchema,
+  phoneCallSchema,
+  phoneEnrolmentSchema,
   readbackSchema,
   requestSchema,
   sessionSchema,
@@ -91,4 +93,15 @@ export const demoTimeline = (token: string, id: string, o: Opts = {}) =>
   api(`/demo/requests/${encodeURIComponent(id)}/timeline`, timelineSchema, {
     ...o,
     headers: demo(token),
+  });
+
+// ── Phone-call approval (a flagged channel: every call answers 404 while it is off) ───────────
+export const getPhoneEnrolment = (o: Opts = {}) => api("/phone/enrolment", phoneEnrolmentSchema, o);
+export const enrolPhone = (phone: string, pin: string, language: "en" | "pcm") =>
+  api("/phone/enrol", phoneEnrolmentSchema, { body: { phone, pin, language } });
+export const startPhoneCall = (requestId: string) =>
+  api("/phone/calls", phoneCallSchema, { body: { request_id: requestId } });
+export const pressPhoneKeys = (callId: string, digits: string) =>
+  api(`/phone/calls/${encodeURIComponent(callId)}/keys`, phoneCallSchema, {
+    body: { digits },
   });

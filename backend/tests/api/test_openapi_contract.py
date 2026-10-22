@@ -30,6 +30,13 @@ DEMO_PHASE_1 = {
     ("post", "/demo/requests/{request_id}/expire"),
     ("get", "/demo/requests/{request_id}/timeline"),
 }
+# Phone-call approval (a flagged addition to the PRD, see docs/PRD_DEVIATIONS.md): off by default.
+PHONE = {
+    ("get", "/phone/enrolment"),
+    ("post", "/phone/enrol"),
+    ("post", "/phone/calls"),
+    ("post", "/phone/calls/{call_id}/keys"),
+}
 PHASE_2_3 = [
     "/events",
     "/renew",
@@ -54,7 +61,7 @@ def test_the_committed_openapi_json_is_current() -> None:
 
 
 def test_every_phase_1_endpoint_in_the_prd_table_exists_and_nothing_else_does() -> None:
-    assert operations() == PRD_PHASE_1 | DEMO_PHASE_1 | SUPPORT
+    assert operations() == PRD_PHASE_1 | DEMO_PHASE_1 | SUPPORT | PHONE
 
 
 def test_no_phase_2_or_3_endpoint_is_exposed() -> None:

@@ -90,6 +90,13 @@ class Settings(BaseSettings):
     feature_failure_injection: bool = False
     feature_phone_call: bool = False
 
+    # --- phone-call approval (a lower-assurance channel: a PIN typed on a call, never a voice) ---
+    call_channel_cap_kobo: int = 20_000 * NAIRA  # ₦20,000 per payment, below the passkey cap
+    phone_lock_wrong_tries: int = 3
+    phone_lock_seconds: int = 1800
+    phone_cooling_off_hours: int = 24  # after the enrolled number is changed
+    phone_calls_per_hour: int = 3
+
     @field_validator("database_url", mode="before")
     @classmethod
     def _async_driver(cls, v: str) -> str:

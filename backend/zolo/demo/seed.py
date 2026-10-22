@@ -22,8 +22,16 @@ from zolo.demo import seed_data as data
 from zolo.risk.models import RiskLimit
 
 # Order matters only for readability: TRUNCATE takes them together.
-_STATE_TABLES = (
-    "webauthn_challenges, payment_requests, audit_events, mock_transfers, card_guard_windows"
+_STATE_TABLES = ", ".join(
+    (
+        "phone_calls",
+        "phone_enrolments",
+        "webauthn_challenges",
+        "payment_requests",
+        "audit_events",
+        "mock_transfers",
+        "card_guard_windows",
+    )  # fmt: skip
 )
 
 

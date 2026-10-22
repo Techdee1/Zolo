@@ -60,6 +60,27 @@ Living document: add a row whenever a new difference is found or one is resolved
 | 17 | Amounts get an `aria-label` in words | The digits are `aria-hidden` and the words are visually hidden text next to them. | ARIA 1.2 does not allow `aria-label` on a plain `span` or `div`, and axe flags it. The effect for a screen reader user is the same: it hears "fifteen thousand naira". |
 | 18 | Approve is "disabled" until the readback has been heard | The button uses `aria-disabled` and stays focusable, with a description saying why. | A natively disabled button is skipped by screen-reader users, who then never learn it exists. |
 
+## 3b. Phone-call approval (an addition, off by default)
+
+`FEATURE_PHONE_CALL=true` turns on a second way to approve for customers who cannot use a passkey:
+Zolo "calls", reads the same payment out, and the customer presses 1 and types a four digit Zolo PIN. It
+is a **lower-assurance channel** and is held to stricter rules so it does not weaken the core promise.
+
+| What | Rule |
+| --- | --- |
+| A voice never approves | Approval needs the PIN typed on the keypad. A spoken "yes", silence or any other key ends the call with nothing sent. |
+| Hear, then approve | The PIN step exists only after the readback was played in that call. The server rechecks that the payment still hashes to what that call played (`INTENT_CHANGED` otherwise). |
+| Lower cap | At most ₦20,000 per payment on this channel (`CALL_CHANNEL_CAP_KOBO`), under the passkey cap. |
+| One try per call, then lockout | One PIN try per call; 3 wrong tries lock phone approval for 30 minutes; at most 3 calls an hour. |
+| Number changes are slow | Changing the enrolled number pauses phone approval for 24 hours. |
+| Only the consent module approves | The phone module checks the PIN; `ConsentService.approve_by_phone` does the state change, and records `approval_method = phone_pin` (passkey approvals record `passkey`). |
+| PIN storage | A salted scrypt hash. Never logged, never in the audit trail; the PIN is not a bank or card PIN. |
+
+In this build the call is **simulated in the app** with recorded prompts (English and Pidgin), not carried
+over a telephone network. The same two calls (`POST /phone/calls`, `POST /phone/calls/{id}/keys`) are all
+a telephony provider needs to drive. The screens for it are English only. A PIN is a weaker factor than a
+passkey (it can be watched or coerced), which is why the cap and lockouts are tighter.
+
 ## 4. Not yet decided
 
 | # | Question | Where it matters |

@@ -12,7 +12,7 @@ const flat = (d: Tree, p = ""): Array<[string, string]> =>
 const placeholders = (s: string) => [...s.matchAll(/\{(\w+)\}/g)].map((m) => m[1]!).sort();
 
 // The landing page is English only, and the demo console and the brand line stay in English too.
-const ENGLISH_ONLY = /^(landing|demo|demoMenu)\.|^app\.(name|forBank)$/;
+const ENGLISH_ONLY = /^(landing|demo|demoMenu|phone)\.|^app\.(name|forBank)$/;
 const source = flat(en as Tree).filter(([k]) => !ENGLISH_ONLY.test(k));
 
 describe("the five languages", () => {

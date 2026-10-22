@@ -17,6 +17,8 @@ export type SessionOut = Schemas["SessionOut"];
 export type PasskeyOut = Schemas["PasskeyOut"];
 export type TimelineOut = Schemas["TimelineOut"];
 export type TimelineEventOut = Schemas["TimelineEventOut"];
+export type PhoneEnrolmentOut = Schemas["PhoneEnrolmentOut"];
+export type PhoneCallOut = Schemas["PhoneCallOut"];
 export type Problem = Schemas["Problem"];
 export type ErrorCode = Schemas["ErrorCode"];
 

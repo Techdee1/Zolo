@@ -1,18 +1,42 @@
 {
   "version": 1,
-  "note": "Fixed status lines in the five languages, taken word for word from the frontend's message files (Yoruba, Hausa and Igbo are the natively reviewed wording). They carry no amount or name. Rendered and shipped with the other clips; nothing plays them yet.",
+  "note": "Fixed status lines in the five languages, taken word for word from the frontend's message files (Yoruba, Hausa and Igbo are the natively reviewed wording). They carry no amount or name. Rendered and shipped with the other clips; the call_* lines are the phone-approval prompts.",
   "phrases": {
     "en": {
       "paid": "Paid. The money has left your account.",
       "declined": "Declined. Nothing was sent.",
       "expired": "This request expired. Nothing was sent.",
-      "processing": "Processing. Don't hand over goods yet."
+      "processing": "Processing. Don't hand over goods yet.",
+      "call_intro": "This is Zolo. Someone has asked for a payment from your account.",
+      "call_menu": "To approve, press 1. To decline, press 2. To hear it again, press 9.",
+      "call_privacy": "Make sure no one can hear you.",
+      "call_pin": "Enter your four digit Zolo PIN now.",
+      "call_wrong_pin": "That PIN was wrong. Nothing was sent. Goodbye.",
+      "call_locked": "Phone approval is locked for now. Nothing was sent. Goodbye.",
+      "call_approved": "Approved. Goodbye.",
+      "call_declined": "Declined. Nothing was sent. Goodbye.",
+      "call_changed": "This payment changed. Nothing was sent. Goodbye.",
+      "call_expired": "This request expired. Nothing was sent. Goodbye.",
+      "call_limit": "This payment is over the phone limit. Nothing was sent. Goodbye.",
+      "call_none": "No payment was approved. Nothing was sent. Goodbye."
     },
     "pcm": {
       "paid": "Don pay. The money don comot your account.",
       "declined": "You don decline. We no send anything.",
       "expired": "This request don expire. We no send anything.",
-      "processing": "We dey process am. No give person im goods yet."
+      "processing": "We dey process am. No give person im goods yet.",
+      "call_intro": "Na Zolo dey call. Person don ask for payment from your account.",
+      "call_menu": "To approve, press 1. To decline, press 2. To hear am again, press 9.",
+      "call_privacy": "Make sure say nobody fit hear you.",
+      "call_pin": "Enter your four digit Zolo PIN now.",
+      "call_wrong_pin": "That PIN no correct. We no send anything. Bye.",
+      "call_locked": "Phone approval don lock for now. We no send anything. Bye.",
+      "call_approved": "Approved. Bye.",
+      "call_declined": "You don decline. We no send anything. Bye.",
+      "call_changed": "This payment don change. We no send anything. Bye.",
+      "call_expired": "This request don expire. We no send anything. Bye.",
+      "call_limit": "This payment pass the phone limit. We no send anything. Bye.",
+      "call_none": "We no approve anything. We no send anything. Bye."
     },
     "yo": {
       "paid": "A ti san án. Owó náà ti kúrò nínú àkọọ́lẹ̀ rẹ.",

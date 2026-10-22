@@ -44,6 +44,12 @@ reproduce. We will acknowledge within a few days. Never include real credentials
 - Secrets live in environment variables (`backend/.env`, `deploy/.env`, Render's environment); both `.env`
   files are gitignored and examples contain no values.
 
+**Phone-call approval (optional, `FEATURE_PHONE_CALL`, off by default)**
+- A lower-assurance channel: a four digit Zolo PIN typed on a call, after the readback, never a voice alone.
+  Capped at ₦20,000 per payment, one PIN try per call, locked after 3 wrong tries, slowed after a number
+  change. Only the consent module can approve; the PIN is a salted hash and never appears in logs or the
+  audit trail. In this build the call is simulated in the app. Details: `docs/PRD_DEVIATIONS.md`.
+
 **Demo mode**
 - Mock login and `/demo/*` exist only when `DEMO_MODE=true`. `/demo/*` needs an `X-Demo-Token` header; ten
   wrong tokens lock the caller out for 5 minutes. The token is typed by the operator and never bundled.

@@ -43,6 +43,10 @@ class PaymentRequest(Base):
         ),
         CheckConstraint(f"state IN ({_ALL})", name="state_known"),
         CheckConstraint("channel IN ('app', 'call')", name="channel_known"),
+        CheckConstraint(
+            "approval_method IS NULL OR approval_method IN ('passkey', 'phone_pin')",
+            name="approval_method_known",
+        ),
         # The database refuses states the code could reach by mistake:
         CheckConstraint(
             f"state NOT IN ({_HEARD}) OR customer_id IS NOT NULL", name="heard_has_customer"
@@ -85,6 +89,7 @@ class PaymentRequest(Base):
     idempotency_key: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), unique=True)
     state: Mapped[str] = mapped_column(Text)
     channel: Mapped[str] = mapped_column(Text, server_default="app")
+    approval_method: Mapped[str | None] = mapped_column(Text, nullable=True)  # passkey | phone_pin
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

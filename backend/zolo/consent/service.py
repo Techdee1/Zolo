@@ -32,7 +32,7 @@ from zolo.consent.states import State
 from zolo.core.config import Settings
 from zolo.core.errors import ApiError, ErrorCode
 from zolo.passkeys.service import PasskeyService, SignatureInvalid
-from zolo.risk.rules import check_per_payment, evaluate
+from zolo.risk.rules import Limits, check_per_payment, evaluate
 from zolo.risk.service import customer_limits, day_window, global_limits
 
 Clock = Callable[[], datetime]
@@ -603,7 +603,7 @@ class ConsentService:
                 PaymentRequest.expires_at > now,
                 PaymentRequest.intent_hash == digest,
             ],
-            values={"approved_at": now},
+            values={"approved_at": now, "approval_method": "passkey"},
         )  # fmt: skip
         if moved is None:
             raise _conflict()
@@ -611,6 +611,139 @@ class ConsentService:
         await record(
             session, "request.approved", f"customer:{customer_id}", request_id=row.id,
             customer_id=customer_id, from_state="READ_BACK", to_state="APPROVED",
+        )  # fmt: skip
+        await session.commit()
+        return await self.settle(session, request_id)
+
+    # ------------------------------------------------------------------ phone-call approval
+    # A lower-assurance channel: the customer hears the same readback on a call and types a PIN.
+    # The PIN is checked by the phone module; everything about the payment is decided here.
+
+    async def use_call_channel(
+        self, session: AsyncSession, customer_id: uuid.UUID, request_id: uuid.UUID
+    ) -> None:
+        """Mark the customer's own, still open request as one to be approved by phone."""
+        now = self.clock()
+        row = await self._load(session, request_id)
+        if row.customer_id != customer_id:
+            raise _not_found()
+        row = await self._expire_if_due(session, row, now)
+        if row.state == State.EXPIRED.value:
+            await session.commit()
+            raise _expired()
+        if row.state not in (State.CREATED.value, State.READ_BACK.value):
+            raise _conflict()
+        if row.channel != "call":
+            await session.execute(
+                update(PaymentRequest)
+                .where(PaymentRequest.id == row.id, PaymentRequest.state == row.state)
+                .values(channel="call")
+            )
+            await record(
+                session, "request.call_channel", f"customer:{customer_id}", request_id=row.id,
+                customer_id=customer_id, channel="call",
+            )  # fmt: skip
+        await session.commit()
+
+    async def heard_hash(
+        self, session: AsyncSession, customer_id: uuid.UUID, request_id: uuid.UUID
+    ) -> bytes:
+        """The intent hash stored when the customer's request was read back."""
+        row = await self._load(session, request_id)
+        if row.customer_id != customer_id:
+            raise _not_found()
+        if row.state != State.READ_BACK.value or row.intent_hash is None:
+            raise _conflict("Listen to the readback before approving")
+        return bytes(row.intent_hash)
+
+    async def approve_by_phone(
+        self,
+        session: AsyncSession,
+        customer_id: uuid.UUID,
+        request_id: uuid.UUID,
+        heard_hash: bytes,
+    ) -> RequestView:
+        """READ_BACK -> APPROVED for a call-channel request whose PIN the phone module has just
+        verified, then send the transfer.
+
+        `heard_hash` is the intent hash of what this call played. The payment is rebuilt from the
+        row as it is now and must still match it, exactly as for a passkey. The cap is the lower
+        call-channel cap. Nothing else in the app can reach this path.
+        """
+        try:
+            return await self._approve_by_phone(session, customer_id, request_id, heard_hash)
+        except BaseException:
+            await session.rollback()
+            raise
+
+    async def _approve_by_phone(
+        self,
+        session: AsyncSession,
+        customer_id: uuid.UUID,
+        request_id: uuid.UUID,
+        heard_hash: bytes,
+    ) -> RequestView:
+        seen = await self._load(session, request_id)
+        if seen.customer_id != customer_id:
+            raise _not_found()
+        row = (
+            await session.execute(
+                select(PaymentRequest)
+                .where(PaymentRequest.id == request_id)
+                .with_for_update()
+                .execution_options(populate_existing=True)
+            )
+        ).scalar_one()
+        now = self.clock()
+        if row.channel != "call":
+            raise _conflict("This request was not set up for phone approval")
+        if row.state != State.READ_BACK.value:
+            if row.state == State.EXPIRED.value:
+                raise _expired()
+            raise _conflict()
+        if row.expires_at <= now:
+            raise await self._expired_error(session, row)
+
+        digest = intent_hash(await self.intent_for(session, row))
+        if row.intent_hash is None or digest != row.intent_hash or digest != heard_hash:
+            await record(
+                session, "approve.intent_changed", "system", request_id=row.id,
+                customer_id=customer_id, code="INTENT_CHANGED", channel="call",
+            )  # fmt: skip
+            await session.commit()
+            raise ApiError(409, ErrorCode.INTENT_CHANGED, "This payment changed after you heard it")
+
+        base = await customer_limits(session, customer_id, self.settings)
+        limits = Limits(
+            min(base.per_payment_kobo, self.settings.call_channel_cap_kobo), base.daily_kobo
+        )
+        decision = evaluate(
+            row.amount_kobo, await self.approved_today_kobo(session, customer_id, now), limits
+        )
+        if not decision.allowed:
+            await record(
+                session, "approve.blocked", "system", request_id=row.id,
+                customer_id=customer_id, code=decision.code, channel="call",
+            )  # fmt: skip
+            await session.commit()
+            raise ApiError(422, ErrorCode.LIMIT_EXCEEDED, "This payment is over your limit")
+
+        moved = await apply_transition(
+            session, row.id, State.READ_BACK, State.APPROVED,
+            guards=[
+                PaymentRequest.customer_id == customer_id,
+                PaymentRequest.channel == "call",
+                PaymentRequest.expires_at > now,
+                PaymentRequest.intent_hash == digest,
+            ],
+            values={"approved_at": now, "approval_method": "phone_pin"},
+        )  # fmt: skip
+        if moved is None:
+            raise _conflict()
+        await record(
+            session, "request.approved", f"customer:{customer_id}", request_id=row.id,
+            customer_id=customer_id, from_state="READ_BACK", to_state="APPROVED",
+            channel="call",
         )  # fmt: skip
         await session.commit()
         return await self.settle(session, request_id)

@@ -142,3 +142,45 @@ class TimelineEventOut(BaseModel):
 class TimelineOut(BaseModel):
     request: RequestOut
     events: list[TimelineEventOut]
+
+
+class PhoneEnrolIn(BaseModel):
+    phone: str = Field(pattern=r"^\+[1-9][0-9]{7,14}$", examples=["+2348011111111"])
+    pin: str = Field(
+        pattern=r"^[0-9]{4}$", description="A four digit Zolo PIN: not a card or bank PIN"
+    )
+    language: Literal["en", "pcm"] = "en"
+
+
+class PhoneEnrolmentOut(BaseModel):
+    enabled: bool = Field(default=True, description="False while phone approval is switched off")
+    enrolled: bool
+    language: Literal["en", "pcm"] = "en"
+    phone_last4: str = ""
+    locked: bool = False
+    paused: bool = Field(default=False, description="The number was changed recently")
+
+
+class PhoneCallIn(BaseModel):
+    request_id: uuid.UUID
+
+
+class PhoneKeysIn(BaseModel):
+    digits: str = Field(min_length=1, max_length=4, pattern=r"^[0-9]{1,4}$")
+
+
+class CallPromptOut(BaseModel):
+    key: str
+    text: str
+    audio_url: str | None = Field(
+        default=None, description="A recording; when null the app speaks `text` itself"
+    )
+
+
+class PhoneCallOut(BaseModel):
+    call_id: uuid.UUID
+    stage: Literal["menu", "pin", "done"]
+    expects: Literal["choice", "pin", "none"]
+    prompts: list[CallPromptOut]
+    done: bool
+    outcome: Literal["approved", "declined", "ended"] | None = None

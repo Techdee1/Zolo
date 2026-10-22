@@ -126,6 +126,26 @@ export const timelineSchema = z.object({
   ),
 });
 
+export const phoneEnrolmentSchema = z.object({
+  enabled: z.boolean(),
+  enrolled: z.boolean(),
+  language: z.enum(["en", "pcm"]),
+  phone_last4: z.string(),
+  locked: z.boolean(),
+  paused: z.boolean(),
+});
+
+export const phoneCallSchema = z.object({
+  call_id: id,
+  stage: z.enum(["menu", "pin", "done"]),
+  expects: z.enum(["choice", "pin", "none"]),
+  prompts: z.array(
+    z.object({ key: z.string(), text: z.string(), audio_url: z.string().nullish() }),
+  ),
+  done: z.boolean(),
+  outcome: z.enum(["approved", "declined", "ended"]).nullish(),
+});
+
 export const demoResetSchema = z.object({
   customers: z.number().int(),
   agents: z.number().int(),
@@ -148,5 +168,7 @@ export type _Drift = [
   Assert<Same<z.infer<typeof activitySchema>, ActivityOut>>,
   Assert<Same<z.infer<typeof passkeySchema>, PasskeyOut>>,
   Assert<Same<z.infer<typeof timelineSchema>, TimelineOut>>,
+  Assert<Same<z.infer<typeof phoneEnrolmentSchema>, components["schemas"]["PhoneEnrolmentOut"]>>,
+  Assert<Same<z.infer<typeof phoneCallSchema>, components["schemas"]["PhoneCallOut"]>>,
   Assert<Same<z.infer<typeof demoResetSchema>, components["schemas"]["DemoResetOut"]>>,
 ];

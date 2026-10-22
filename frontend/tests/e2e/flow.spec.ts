@@ -271,6 +271,28 @@ for (const mode of MODES) {
     await noAxeViolations(customer.page); // review (Approve inactive)
     await allowed(customer.page);
     await noAxeViolations(customer.page); // review (Approve ready)
+
+    // Phone-call approval, switched on: the offer on the review screen, setup, and the call.
+    const review = customer.page.url();
+    await control("phone");
+    await customer.page.reload();
+    await customer.page.getByRole("link", { name: "Set up phone approval" }).waitFor();
+    await noAxeViolations(customer.page); // review with the phone offer
+    await customer.page.getByRole("link", { name: "Set up phone approval" }).click();
+    await customer.page.waitForURL("**/setup/phone**");
+    await noAxeViolations(customer.page); // phone setup
+    await customer.page.getByLabel(/number Zolo should ring/i).fill("+2348055550142");
+    await customer.page.getByLabel(/four digit Zolo PIN/i).fill("7391");
+    await customer.page.getByRole("button", { name: "Save phone approval" }).click();
+    await customer.page.getByText("Phone approval is ready.").waitFor();
+    await noAxeViolations(customer.page); // phone setup done
+    await customer.page.goto(`${review}/call`);
+    await noAxeViolations(customer.page); // ringing
+    await customer.page.getByRole("button", { name: "Answer" }).click();
+    await customer.page.getByRole("button", { name: /Approve/ }).waitFor();
+    await noAxeViolations(customer.page); // the call, choosing
+    await customer.page.goto(review);
+    await allowed(customer.page);
     await approveButton(customer.page).click();
     await customer.page.waitForURL("**/result");
     await customer.page.locator("[data-result=paid]").waitFor();

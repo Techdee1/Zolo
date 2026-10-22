@@ -88,6 +88,10 @@ export function createFakeBackend(options: FakeOptions = {}) {
   let nextOutcome: ApprovalOutcome = "SETTLED";
   let lastApproval: unknown = null;
   let forcedSession: string | null = null;
+  // Phone-call approval: off (every /phone route is a 404) until a test turns it on.
+  let phoneOn = false;
+  let phoneEnrolled = false;
+  const phoneCalls = new Map<string, { requestId: string; stage: "menu" | "pin" | "done" }>();
   const idempotent = new Map<string, unknown>();
 
   const json = (
@@ -397,6 +401,109 @@ export function createFakeBackend(options: FakeOptions = {}) {
       }
     }
 
+    if (path.startsWith("/phone/")) {
+      // like the real backend, whose problem title says what is wrong
+      const titled = (status: number, code: string, title: string): FakeResponse => {
+        const p = problem(status, code);
+        return { ...p, body: { ...(p.body as object), title } };
+      };
+      const e = needs("customer");
+      if (e) return e;
+      if (method === "GET" && path === "/phone/enrolment" && !phoneOn)
+        return json(200, {
+          enabled: false,
+          enrolled: false,
+          language: "en",
+          phone_last4: "",
+          locked: false,
+          paused: false,
+        });
+      if (!phoneOn) return problem(404, "NOT_FOUND");
+      const prompt = (key: string, text: string) => ({ key, text, audio_url: null });
+      const view = (
+        callId: string,
+        stage: "menu" | "pin" | "done",
+        prompts: ReturnType<typeof prompt>[],
+        outcome: "approved" | "declined" | "ended" | null = null,
+      ) =>
+        json(200, {
+          call_id: callId,
+          stage,
+          expects: stage === "menu" ? "choice" : stage === "pin" ? "pin" : "none",
+          prompts,
+          done: stage === "done",
+          outcome,
+        });
+      if (method === "GET" && path === "/phone/enrolment")
+        return json(200, {
+          enabled: true,
+          enrolled: phoneEnrolled,
+          language: "en",
+          phone_last4: phoneEnrolled ? "0142" : "",
+          locked: false,
+          paused: false,
+        });
+      if (method === "POST" && path === "/phone/enrol") {
+        if (!/^[0-9]{4}$/.test(String(body.pin)) || body.pin === "1234")
+          return titled(422, "VALIDATION_ERROR", "Choose a stronger PIN");
+        phoneEnrolled = true;
+        return json(200, {
+          enabled: true,
+          enrolled: true,
+          language: body.language ?? "en",
+          phone_last4: "0142",
+          locked: false,
+          paused: false,
+        });
+      }
+      if (method === "POST" && path === "/phone/calls") {
+        const r = find(String(body.request_id));
+        if (!phoneEnrolled) return titled(409, "STATE_CONFLICT", "Set up phone approval first");
+        if (!r || r.customerId !== me!.id) return problem(404, "NOT_FOUND");
+        r.state = "READ_BACK";
+        const id = uuid();
+        phoneCalls.set(id, { requestId: r.id, stage: "menu" });
+        return {
+          ...view(id, "menu", [
+            prompt("intro", "This is Zolo. Someone has asked for a payment from your account."),
+            prompt("readback", `${r.payee} is asking for a payment.`),
+            prompt("menu", "To approve, press 1. To decline, press 2. To hear it again, press 9."),
+          ]),
+          status: 201,
+        };
+      }
+      const keys = /^\/phone\/calls\/([^/]+)\/keys$/.exec(path);
+      if (method === "POST" && keys) {
+        const call = phoneCalls.get(keys[1]!);
+        const r = call && find(call.requestId);
+        if (!call || !r) return problem(404, "NOT_FOUND");
+        const digits = String(body.digits);
+        if (call.stage === "menu") {
+          if (digits === "1") {
+            call.stage = "pin";
+            return view(keys[1]!, "pin", [prompt("pin", "Enter your four digit Zolo PIN now.")]);
+          }
+          if (digits === "2") {
+            call.stage = "done";
+            r.state = "DECLINED";
+            return view(
+              keys[1]!,
+              "done",
+              [prompt("declined", "Declined. Nothing was sent.")],
+              "declined",
+            );
+          }
+          return view(keys[1]!, "menu", [prompt("menu", "To approve, press 1.")]);
+        }
+        call.stage = "done";
+        if (digits !== "7391")
+          return view(keys[1]!, "done", [prompt("wrong_pin", "That PIN was wrong.")], "ended");
+        r.state = "SETTLED";
+        return view(keys[1]!, "done", [prompt("approved", "Approved. Goodbye.")], "approved");
+      }
+      return problem(404, "NOT_FOUND");
+    }
+
     if (method === "POST" && path === "/passkeys/register/options") {
       const e = needs("customer");
       if (e) return e;
@@ -500,6 +607,11 @@ export function createFakeBackend(options: FakeOptions = {}) {
     setOutcome(o: ApprovalOutcome) {
       nextOutcome = o;
     },
+    /** Turn phone-call approval on, enrolled or not. */
+    setPhone(on: boolean, enrolled = false) {
+      phoneOn = on;
+      phoneEnrolled = enrolled;
+    },
     setAudio(url: string | null) {
       audioUrl = url;
     },
@@ -527,6 +639,9 @@ export function createFakeBackend(options: FakeOptions = {}) {
       nativeClips = false;
       forcedSession = null;
       lastApproval = null;
+      phoneOn = false;
+      phoneEnrolled = false;
+      phoneCalls.clear();
     },
     get nativeClips() {
       return nativeClips;
