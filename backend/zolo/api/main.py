@@ -23,6 +23,7 @@ from zolo.api.services import Overrides
 from zolo.core.config import Settings, get_settings
 from zolo.core.db import make_engine, make_sessionmaker
 from zolo.core.logging import configure_logging
+from zolo.tools.render_clips import log_audio_inventory
 
 
 def create_app(settings: Settings | None = None, *, overrides: Overrides | None = None) -> FastAPI:
@@ -31,8 +32,9 @@ def create_app(settings: Settings | None = None, *, overrides: Overrides | None 
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-        engine = make_engine(settings.database_url)
+        engine = make_engine(settings.database_url, settings.db_pool_size, settings.db_max_overflow)
         app.state.engine = engine
+        log_audio_inventory()
         app.state.sessionmaker = make_sessionmaker(engine)
         yield
         await engine.dispose()

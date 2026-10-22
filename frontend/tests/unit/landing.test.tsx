@@ -10,7 +10,7 @@ import en from "@/messages/en.json";
 const flags = vi.hoisted(() => ({
   demoVideoUrl: undefined as string | undefined,
   repoUrl: undefined as string | undefined,
-  teamName: "Our team (name to come)",
+  teamName: "Overclock",
   featureDemo: false,
 }));
 vi.mock("@/lib/env", async (orig) => ({
@@ -113,7 +113,7 @@ describe("landing page content (rendered with no JavaScript: this is plain HTML)
     const html = await render();
     expect(html).toContain("Made by The Zolo crew");
     expect(html).toContain("Zecathon 6.0, Track 7");
-    flags.teamName = "Our team (name to come)";
+    flags.teamName = "Overclock";
   });
 
   it("has no client components of its own: no 'use client' in the landing files", () => {

@@ -15,6 +15,31 @@ for a stage demo and for judges to try, not for real money. Everything runs on o
 The browser only ever talks to one address. That is why **passkeys are bound to that address**: the
 domain you pick is the RP ID, and a passkey made on another domain (or on a tunnel) will not work.
 
+## Backend on Heroku, frontend on Vercel
+
+The web app can live on Vercel and the API on Heroku. The Vercel app proxies `/api/*` to the API, so the
+browser still talks to one address (the Vercel one) and **passkeys belong to the Vercel host**.
+
+**Heroku** (one app, one Basic dyno, one Heroku Postgres Essential-0; container stack). `backend/heroku.yml`
+builds the same Dockerfile and runs migrations and the first seed in the release phase. Config vars:
+
+| Var | Value |
+| --- | --- |
+| `DATABASE_URL` | set by the Postgres add-on (a plain `postgres://` URL is accepted) |
+| `DATABASE_SSL` | `require` (Heroku Postgres only accepts SSL) |
+| `DB_POOL_SIZE`, `DB_MAX_OVERFLOW` | `4`, `2` (Essential-0 allows 20 connections; the release phase needs one) |
+| `SESSION_SECRET`, `DEMO_TOKEN` | generated |
+| `RP_ID`, `ORIGIN`, `CORS_ORIGINS` | the Vercel host, e.g. `zolo-coral.vercel.app` and `https://zolo-coral.vercel.app` |
+| `COOKIE_SECURE`, `TRUST_FORWARDED_FOR`, `DEMO_MODE`, `ENV` | `true`, `true`, `true`, `prod` |
+| `AUDIO_CACHE_DIR` | `/tmp/audio` (Heroku's disk is ephemeral; the clips are copied there from the image at every start) |
+| `TTS_LIVE_ENABLED` | `false` (the live path is never used) |
+| `YARNGPT_API_KEY`, `AUDIO_PRERENDER_ON_CREATE`, `AUDIO_DAILY_RENDER_CAP` | the key; `true`; `60`. When an agent creates a request the API renders the English and Pidgin clip in the background **only if no shipped or cached clip matches**, never blocking the request. At most 60 renders start per UTC day (counted in memory); when the cap or the provider's quota is reached it stops and the customer simply gets the text. The log shows counts only |
+
+Deploy from the repository root with `git subtree push --prefix backend heroku main` (the app root is
+`backend/`). At every start the API logs one line, `audio clips present: en 53/74, pcm 48/58, ...`, so a
+missing clip is visible. **Vercel:** set `BACKEND_URL` to the Heroku app's `https://<app>.herokuapp.com`
+and redeploy; set `NEXT_PUBLIC_FEATURE_DEMO=true` (a build-time setting) if you want `/demo`.
+
 ## On Render (the quick way)
 
 `render.yaml` at the repo root describes everything: a Postgres database, the API as a **private**

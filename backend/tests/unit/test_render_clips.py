@@ -84,3 +84,41 @@ def test_what_ships_is_exactly_what_the_set_asks_for() -> None:
     wanted = {cache_key("yarngpt", c.lang, c.voice, c.text) for c in plan(SETTINGS, True)}
     wanted |= {cache_key("yarngpt", c.lang, c.voice, c.text) for c in plan(SETTINGS)}
     assert shipped <= wanted, f"{len(shipped - wanted)} stray clips"
+
+
+def test_the_startup_inventory_counts_the_clips_in_the_cache_per_language(
+    tmp_path, monkeypatch
+) -> None:  # type: ignore[no-untyped-def]
+    import logging
+
+    from zolo.ai.tts.base import AudioClip
+    from zolo.ai.tts.cache import AudioCache
+    from zolo.ai.tts.factory import RoutingTTS
+    from zolo.tools.render_clips import choose, inventory, key_for, log_audio_inventory
+
+    monkeypatch.setenv("AUDIO_CACHE_DIR", str(tmp_path))
+    settings = Settings.from_env()
+    empty = inventory(settings)
+    assert all(have == 0 for have, _ in empty.values())
+    clips, _ = choose(settings)
+    tts, cache = RoutingTTS(settings), AudioCache(tmp_path)
+    first_yo = next(c for c in clips if c.lang == "yo")
+    cache.put(key_for(tts, settings, first_yo), AudioClip(b"x"))
+    now = inventory(settings)
+    assert now["yo"][0] == 1 and now["en"][0] == 0
+    assert sum(want for _, want in now.values()) == len(clips)
+
+    records: list[logging.LogRecord] = []
+
+    class Catch(logging.Handler):
+        def emit(self, record: logging.LogRecord) -> None:
+            records.append(record)
+
+    log = logging.getLogger("zolo.audio")
+    log.setLevel(logging.INFO)
+    handler = Catch()
+    log.addHandler(handler)
+    log_audio_inventory()
+    log.removeHandler(handler)
+    line = records[0].getMessage()
+    assert "yo 1/" in line and "en 0/" in line and "total 1/" in line

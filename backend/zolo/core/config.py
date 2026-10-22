@@ -21,6 +21,11 @@ class Settings(BaseSettings):
     database_url: str = Field(description="postgresql+asyncpg://user:pass@host:5432/db")
     session_secret: str = Field(min_length=32, description="Signs session cookies")
 
+    # --- database connection (hosts like Heroku need SSL and a small pool) ---
+    database_ssl: str = ""  # "require" adds ssl=require to DATABASE_URL (Heroku Postgres)
+    db_pool_size: int = 10
+    db_max_overflow: int = 10
+
     # --- passkeys: the RP ID must be the registrable domain the phone's passkey is bound to ---
     rp_id: str = "localhost"
     rp_name: str = "Zolo"
@@ -67,6 +72,7 @@ class Settings(BaseSettings):
     # Render the English and Pidgin readback in the background when an agent creates a request, so
     # any amount can have a voice (spends text-to-speech credits). Off unless asked for.
     audio_prerender_on_create: bool = False
+    audio_daily_render_cap: int = 60  # renders that may start per UTC day; then text only
     audio_wait_seconds: float = 4.0  # how long a readback waits for a clip still being rendered
     # Which languages to render when a request is created (each one spends credits). Yoruba, Hausa
     # and Igbo are added here once their voices are approved, e.g. "en,pcm,yo,ha,ig".
@@ -94,6 +100,13 @@ class Settings(BaseSettings):
         if not isinstance(v, str) or not v.startswith("postgresql+asyncpg://"):
             raise ValueError("DATABASE_URL must be a Postgres URL (postgresql+asyncpg://)")
         return v
+
+    @model_validator(mode="after")
+    def _ssl_for_hosted_databases(self) -> "Settings":
+        if self.database_ssl.lower() == "require" and "ssl=" not in self.database_url:
+            joiner = "&" if "?" in self.database_url else "?"
+            self.database_url = f"{self.database_url}{joiner}ssl=require"
+        return self
 
     @model_validator(mode="after")
     def _demo_needs_a_token(self) -> "Settings":
