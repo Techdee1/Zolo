@@ -54,6 +54,31 @@ bill. A private service and a disk need a paid plan; the free web tier sleeps af
 If you would rather watch the logs: each service has a **Logs** tab. The API logs one JSON line per
 request with reason codes only.
 
+## On Render, free plan
+
+`render.free.yaml` is the same app on Render's free plans. It works, with trade-offs you should know
+before putting it in front of judges:
+
+| Limit of the free plan | What it means for Zolo |
+| --- | --- |
+| Web services **sleep after 15 minutes without traffic** and take roughly 30 to 60 seconds to wake | The first visit after a quiet spell is slow, and because the web app wakes the API too, it can take a minute or two. **Open the site and sign in a few minutes before you present**, and keep it warm. |
+| **No private services** | The API is a normal public web service and the web app calls it by its public address. Browsers still only talk to the web app, so nothing about passkeys changes. |
+| **No persistent disk** | Voice clips live on the instance's own storage and are **lost when it restarts or redeploys**. They are re-rendered on demand (credits) the next time that amount is asked for. |
+| **The free database expires after 30 days** | Fine for an event; for anything longer, upgrade it. |
+| 750 free instance hours a month, shared | Two services kept awake all month would use them up. Fine for a few days of demo. |
+| 512 MB memory per service | Enough for this app. |
+
+Steps are the same as the paid version, with these differences:
+
+1. In **New > Blueprint**, set the **Blueprint file path** to `render.free.yaml`.
+2. It asks for one more value: `BACKEND_URL` on `zolo-web` is the API's public address,
+   **`https://zolo-api.onrender.com`** (use the address Render shows for `zolo-api`).
+   `RP_ID`, `ORIGIN` and `CORS_ORIGINS` are still the **web** service's address, as in the table above.
+3. Deploy `zolo-api` first if you can: `zolo-web` needs its address.
+
+You can switch to the paid file later without losing anything but the audio clips: create the
+Blueprint from `render.yaml` instead (it moves the API to a private service and adds the disk).
+
 ## What you need (your own server)
 
 - A small Linux machine (1 vCPU and 2 GB is enough) with Docker and the Compose plugin.

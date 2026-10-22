@@ -79,3 +79,15 @@ jobs:
               assert env[k].get("generateValue") is True, k
           assert "value" not in env["SESSION_SECRET"] and "value" not in env["YARNGPT_API_KEY"]
           PY
+      - name: The free Blueprint stays free and public-API-free of disks
+        run: |
+          python3 - <<'PY'
+          import yaml
+          d = yaml.safe_load(open("render.free.yaml"))
+          assert {s["name"] for s in d["services"]} == {"zolo-api", "zolo-web"}
+          for s in d["services"]:
+              assert s["plan"] == "free" and s["type"] == "web" and "disk" not in s, s["name"]
+          assert d["databases"][0]["plan"] == "free"
+          web = next(s for s in d["services"] if s["name"] == "zolo-web")
+          assert any(e["key"] == "BACKEND_URL" and e.get("sync") is False for e in web["envVars"])
+          PY
