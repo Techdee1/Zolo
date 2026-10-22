@@ -27,6 +27,10 @@ from zolo.phone_approval.twiml import (
     twiml_gather_pin,
     twiml_play_and_hangup,
 )
+from zolo.phone_approval.service import (
+    PhoneApprovalError,
+    PhoneApprovalService,
+)
 
 router = APIRouter(tags=["phone-approval"])
 _password_hasher = PasswordHasher()
@@ -205,12 +209,22 @@ async def call_start(
     phone_service = _phone_service(services)
     try:
         await phone_service.prepare_readback(db, public_id)
-        call, payment_request, enrolment = await _get_call_context(db, public_id)
+        call, payment_request, enrolment = await _get_call_context(
+            db, public_id
+        )
     except HTTPException:
         raise
+    except PhoneApprovalError:
+        raise HTTPException(
+            status_code=404,
+            detail="Call not found",
+        ) from None
     except (ValueError, LookupError):
-        raise HTTPException(status_code=404, detail="Call not found") from None
-
+        raise HTTPException(
+            status_code=404,
+            detail="Call not found",
+        ) from None
+    
     intro_url = _absolute_audio_url(services, "call_intro", enrolment.language)
     readback_url = (
         f"{services.settings.public_base_url.rstrip('/')}"

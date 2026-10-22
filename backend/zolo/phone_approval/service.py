@@ -149,7 +149,7 @@ class PhoneApprovalService:
 
         webhook_url = (
             f"{self.settings.public_base_url.rstrip('/')}"
-            f"/voice/{public_id}/start"
+            f"/phone/{public_id}/start"
         )
 
         try:
