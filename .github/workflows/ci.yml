@@ -47,3 +47,20 @@ jobs:
         with:
           name: openapi
           path: backend/openapi.json
+
+  images:
+    # The deployment files must keep working: both images build, and the Caddy config is valid.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the API image
+        run: docker build -t zolo-api backend
+      - name: Build the web image
+        run: docker build -t zolo-web frontend
+      - name: Validate the Compose file and the Caddy config
+        run: |
+          cp deploy/.env.example deploy/.env
+          sed -i 's/^POSTGRES_PASSWORD=$/POSTGRES_PASSWORD=ci/; s/^SESSION_SECRET=$/SESSION_SECRET=ci-session-secret-ci-session-secret-ci/; s/^DEMO_TOKEN=$/DEMO_TOKEN=ci-demo-token/' deploy/.env
+          docker compose -f deploy/compose.yml --env-file deploy/.env config --quiet
+          docker run --rm -e SITE_ADDRESS=zolo.example.com -v "$PWD/deploy/Caddyfile:/etc/caddy/Caddyfile:ro" caddy:2 caddy validate --config /etc/caddy/Caddyfile
+

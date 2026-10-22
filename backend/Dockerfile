@@ -10,7 +10,8 @@ RUN uv sync --frozen --no-dev --no-install-project
 COPY zolo ./zolo
 COPY migrations ./migrations
 COPY alembic.ini ./
-RUN useradd --create-home zolo && chown -R zolo /app
+# the audio cache lives on a volume mounted at /data/audio (AUDIO_CACHE_DIR)
+RUN useradd --create-home zolo && mkdir -p /data/audio && chown -R zolo /app /data
 USER zolo
 ENV PATH="/app/.venv/bin:$PATH"
 EXPOSE 8000

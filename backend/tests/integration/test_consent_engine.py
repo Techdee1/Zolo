@@ -42,6 +42,9 @@ class StubAudio:
     def audio_url(self, text: str, lang: Lang) -> str | None:
         return f"/voice/audio/{len(text)}-{lang}.mp3"
 
+    async def wait_ready(self, text: str, lang: Lang) -> None:
+        return None
+
 
 class Flaky:
     """A bank that loses the first `fail_times` calls (timeout), then behaves."""

@@ -63,6 +63,12 @@ class Settings(BaseSettings):
     trust_forwarded_for: bool = False  # behind a proxy or tunnel, use X-Forwarded-For for the IP
     login_attempts_per_minute: int = 10
 
+    # --- readback audio ---
+    # Render the English and Pidgin readback in the background when an agent creates a request, so
+    # any amount can have a voice (spends text-to-speech credits). Off unless asked for.
+    audio_prerender_on_create: bool = False
+    audio_wait_seconds: float = 4.0  # how long a readback waits for a clip still being rendered
+
     # --- demo console: exists only when DEMO_MODE is true and a demo token is sent ---
     demo_mode: bool = False
     demo_token: str = ""

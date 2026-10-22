@@ -48,6 +48,9 @@ async def create_request(
     created = await services.consent.create_agent_request(
         session, principal.id, body.amount_kobo, _idempotency_key(idempotency_key)
     )
+    if services.audio_prep is not None:
+        # Start the voice now: the customer takes a few seconds to claim and open the request.
+        services.audio_prep.schedule(created.payee_name, created.amount_kobo)
     return AgentRequestOut(
         id=created.id,
         claim_code=created.claim_code,

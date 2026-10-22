@@ -408,6 +408,7 @@ class ConsentService:
 
         await session.commit()
         spoken = build_readback(language, row.payee_verified_name, row.amount_kobo)
+        await self.audio.wait_ready(spoken.text, language)  # only if it is still being rendered
         return ReadbackView(
             text=spoken.text,
             lang=language,
