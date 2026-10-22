@@ -1,6 +1,6 @@
 # Real-device passkey test
 
-**Status: not yet run on a phone.** Everything below is the procedure and what the server is built to show. The API's passkey logic is tested with a software authenticator; whether a real phone's fingerprint or face prompt works end to end through a public HTTPS tunnel is exactly what this test finds out. Fill in the results table at the bottom, and only then say it works.
+**Status: run once on a real phone through the frontend (2026-10-22), reported as working end to end. Details below are what was reported; device model, browser version and whether TalkBack/VoiceOver was on were not recorded.** Everything below is the procedure and what the server is built to show. The API's passkey logic is tested with a software authenticator; whether a real phone's fingerprint or face prompt works end to end through a public HTTPS tunnel is exactly what this test finds out. Fill in the results table at the bottom, and only then say it works.
 
 ## Why this test exists
 
@@ -113,8 +113,14 @@ A failure that shows only in the **page log and not at all in the API log** (the
 
 ## Results (fill this in)
 
+Run through the frontend (`/signin`, `/home`, `/agent`) behind a Cloudflare quick tunnel, with the real
+backend, on 2026-10-22. The tester reported that it "worked perfectly". Only that summary was given,
+so the rows below say what was reported and leave the rest blank.
+
 | Step | Device and browser | Result | Notes |
 | --- | --- | --- | --- |
-| 4. Register a passkey | | | |
-| 7. Approve ₦15,000 | | | |
-| 9. Decline / expire / cancel prompt | | | |
+| Register a passkey (Passkey row on home) | Real phone, not recorded | Worked (reported) | |
+| Approve ₦15,000 with fingerprint or face | Real phone, not recorded | Worked (reported) | Agent screen reached Paid |
+| Decline / expire / cancel prompt / change the amount after hearing it | | Not reported | Run these on purpose and record them |
+| With TalkBack or VoiceOver on | | Not run | The voice-first path is what this tests |
+| Readback audio played on the phone | | Not reported | ₦5,000, ₦15,000 and ₦51,000 have cached clips |
