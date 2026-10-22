@@ -9,10 +9,11 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project
 COPY zolo ./zolo
 COPY migrations ./migrations
-COPY alembic.ini ./
+COPY alembic.ini docker-entrypoint.sh ./
 # the audio cache lives on a volume mounted at /data/audio (AUDIO_CACHE_DIR)
 RUN useradd --create-home zolo && mkdir -p /data/audio && chown -R zolo /app /data
-USER zolo
 ENV PATH="/app/.venv/bin:$PATH"
 EXPOSE 8000
+# starts as root only to fix the disk's owner, then drops to the zolo user (see the script)
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 CMD ["sh", "-c", "alembic upgrade head && uvicorn zolo.api.main:create_app --factory --host 0.0.0.0 --port 8000"]

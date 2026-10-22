@@ -15,7 +15,46 @@ for a stage demo and for judges to try, not for real money. Everything runs on o
 The browser only ever talks to one address. That is why **passkeys are bound to that address**: the
 domain you pick is the RP ID, and a passkey made on another domain (or on a tunnel) will not work.
 
-## What you need
+## On Render (the quick way)
+
+`render.yaml` at the repo root describes everything: a Postgres database, the API as a **private**
+service (only the web app can reach it), the web app as the public service, and a 1 GB disk for the
+voice clips. Render gives it an HTTPS address and renews the certificate.
+
+1. **Put the code where Render can read it.** Render deploys from a branch of a GitHub repo. Use
+   `main` once this branch is merged, or pick `frontend-phase-1` in step 3.
+2. **Sign in at render.com** and connect your GitHub account.
+3. **New > Blueprint**, choose the repo and the branch. Render reads `render.yaml` and shows what it
+   will create: `zolo-db`, `zolo-api`, `zolo-web`. It asks for the values marked `sync: false`.
+4. **Fill in the prompts.** First decide the public address. The web service is called `zolo-web`, so
+   its address is normally `https://zolo-web.onrender.com` (if the name is taken, Render adds a
+   suffix: use whatever it shows for `zolo-web`). Then:
+
+   | Variable | Value |
+   | --- | --- |
+   | `RP_ID` | `zolo-web.onrender.com` (the host only: no `https://`, no slash) |
+   | `ORIGIN` | `https://zolo-web.onrender.com` |
+   | `CORS_ORIGINS` | `https://zolo-web.onrender.com` |
+   | `YARNGPT_API_KEY` | your key |
+
+   `SESSION_SECRET` and `DEMO_TOKEN` are generated for you. Read the demo token afterwards under
+   `zolo-api` > Environment.
+5. **Apply.** The first build takes several minutes. When both services are live, open the web
+   address: the landing page, then "Try the demo".
+6. **If the address turned out different** from the one you typed, fix `RP_ID`, `ORIGIN` and
+   `CORS_ORIGINS` on `zolo-api` (Environment) and let it redeploy. Until they match, passkeys fail.
+7. **Do the real-phone run on that address** ([REAL_DEVICE_TEST.md](REAL_DEVICE_TEST.md)).
+
+What it costs (check Render's pricing page; plans change): two Starter services, a small Postgres and
+a 1 GB disk is roughly **US$20 a month**, billed by the hour, so deleting it after the event stops the
+bill. A private service and a disk need a paid plan; the free web tier sleeps after 15 minutes idle
+(a 30 to 60 second wake-up), which is a bad surprise on stage. The small free database expires after
+30 days.
+
+If you would rather watch the logs: each service has a **Logs** tab. The API logs one JSON line per
+request with reason codes only.
+
+## What you need (your own server)
 
 - A small Linux machine (1 vCPU and 2 GB is enough) with Docker and the Compose plugin.
   Any provider works: a DigitalOcean droplet, Hetzner, AWS Lightsail, a Google Cloud VM.

@@ -81,11 +81,15 @@ class Settings(BaseSettings):
     feature_failure_injection: bool = False
     feature_phone_call: bool = False
 
-    @field_validator("database_url")
+    @field_validator("database_url", mode="before")
     @classmethod
     def _async_driver(cls, v: str) -> str:
-        if not v.startswith("postgresql+asyncpg://"):
-            raise ValueError("DATABASE_URL must use the postgresql+asyncpg:// driver")
+        # Hosts such as Render hand out plain postgres:// or postgresql:// URLs; we need asyncpg.
+        for plain in ("postgres://", "postgresql://"):
+            if isinstance(v, str) and v.startswith(plain):
+                v = "postgresql+asyncpg://" + v[len(plain) :]
+        if not isinstance(v, str) or not v.startswith("postgresql+asyncpg://"):
+            raise ValueError("DATABASE_URL must be a Postgres URL (postgresql+asyncpg://)")
         return v
 
     @model_validator(mode="after")
