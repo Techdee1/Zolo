@@ -400,6 +400,8 @@ export function createFakeBackend(options: FakeOptions = {}) {
         ],
         timeout: 60_000,
         attestation: "none",
+        // Like the real backend: a phone that already has the passkey cannot make a second one.
+        excludeCredentials: (passkeys.get(me!.id) ?? []).map((id) => ({ id, type: "public-key" })),
         authenticatorSelection: {
           residentKey: "required",
           userVerification: "required",

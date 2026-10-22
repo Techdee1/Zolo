@@ -36,6 +36,8 @@ Living document: add a row whenever a new difference is found or one is resolved
 | 30 | `/` is the customer home | `/` is the landing page; the customer home moved to `/home`. | The landing page is the first thing a stranger sees. The installed app skips it: the manifest's `start_url` is `/home`. |
 | 31 | PWA manifest, service worker (P1) | Manifest and icons exist; **no service worker yet**. | Enough for "Add to home screen" metadata; offline support is not built. The icons are a plain "Z" tile made for this project (not the Zenith logo). |
 | 32 | System fonts only | One serif (Instrument Serif, one weight) for the landing page's big headings, self-hosted through `next/font`. | Requested for the landing page. The app screens stay on the system font, and the landing page makes no third-party request at runtime. |
+| 33 | Passkey status: "Replace" for someone who has one | The backend sends the existing passkey in `excludeCredentials`, so a phone that already has it cannot register a second (the browser refuses). Only another phone can replace it. | Once this phone has a passkey the home row is just a status, with no action. A same-phone retry says "This phone already has your passkey." |
+| 34 | The payee's name is the same everywhere | `GET /requests/{id}/readback` gives `payee_name` as `Bisi Ventures`; `GET /requests/{id}` and the approve response give the bank's `BISI VENTURES`. | **Open, for the backend:** the review screen shows and the voice says "Bisi Ventures", the result and activity screens show "BISI VENTURES". The frontend shows what each call returns and does not re-case names. |
 
 ## 2. Architecture
 

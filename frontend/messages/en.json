@@ -133,7 +133,6 @@
     "rowTitle": "Passkey",
     "statusOn": "Set up on this phone",
     "statusOff": "Not set up",
-    "actionOn": "Replace",
     "actionOff": "Set up",
     "needTitle": "Set up your passkey first",
     "needBody": "You approve payments with your fingerprint, face or screen lock. It takes a few seconds, and then you come straight back here.",

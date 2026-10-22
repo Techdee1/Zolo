@@ -503,7 +503,7 @@ test("the passkey row on home: Not set up, then Set up on this phone after setup
   await customer.page.getByRole("button", { name: "Set up passkey" }).click();
   await expect(customer.page.getByText("Your passkey is ready.")).toBeVisible();
   await customer.page.goto("/home");
-  await expect(customer.page.getByRole("link", { name: /Passkey/ })).toContainText(
+  await expect(customer.page.getByRole("region", { name: "Passkey" })).toContainText(
     "Set up on this phone",
   );
   await customer.context.close();

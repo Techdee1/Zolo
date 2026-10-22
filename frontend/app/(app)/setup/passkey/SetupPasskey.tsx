@@ -67,6 +67,7 @@ export function SetupPasskey({ next }: { next: string }) {
               other: "passkey.failed",
             } as const
           )[classifyPasskeyError(e)];
+      if (key === "passkey.already") setPasskeyKnown(true); // the browser says this phone has it
       setError(key);
       say(key, true);
     } finally {

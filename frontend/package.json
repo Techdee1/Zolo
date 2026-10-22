@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "playwright test",
+    "e2e:real": "playwright test --config playwright.real.config.ts",
     "e2e:install": "playwright install --with-deps chromium",
     "check": "pnpm gen:api:check && pnpm typecheck && pnpm lint && pnpm format:check && pnpm test",
     "commitlint": "commitlint",

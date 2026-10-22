@@ -6,6 +6,23 @@
 
 A passkey is bound to a web domain. It only works on the exact domain it was created on, over HTTPS. A passkey made on `localhost` will not work on a tunnel address, and a tunnel address that changes makes yesterday's passkey useless. The PRD calls this the "passkey domain trap". This test proves, on your own phone, that the domain settings are right before the demo depends on them.
 
+## Through the frontend (the real app, not the test page)
+
+The frontend proxies `/api` to the backend, so the passkey's origin and RP ID are the **frontend's**
+domain, not the API's. To try the real screens on a phone:
+
+1. Start the backend with `RP_ID=<frontend host>`, `ORIGIN=https://<frontend host>`,
+   `CORS_ORIGINS=` the same origin, `COOKIE_SECURE=true`, `TRUST_FORWARDED_FOR=true`, `DEMO_MODE=true`.
+2. Start the frontend with `BACKEND_URL=<where the API listens>` and `NEXT_PUBLIC_FEATURE_DEMO=true`,
+   and put the HTTPS tunnel (or domain) in front of the **frontend**, not the API.
+3. On the phone: open `/signin`, sign in as the customer, tap **Passkey** on the home screen, then
+   set one up. On the laptop: sign in as the agent at `/agent`, ask for ₦15,000. On the phone:
+   **Pay an agent**, type the code, listen, **Approve**.
+
+The same journeys run automatically against the real backend with a software authenticator:
+`cd frontend && pnpm build:e2e && pnpm e2e:real` (needs Docker for Postgres). That proves the wiring;
+it does not prove a real phone's fingerprint or face prompt. That is still the table at the bottom.
+
 ## What you need
 
 - Your phone, with a screen lock set and fingerprint or face unlock enabled. Android with Chrome, or iPhone with Safari, both on a current version. Open the page in the real browser, not inside another app's built-in browser (WhatsApp, Instagram and similar often break passkeys).

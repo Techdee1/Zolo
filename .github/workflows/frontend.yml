@@ -2,9 +2,9 @@ name: frontend
 
 on:
   push:
-    paths: ["frontend/**", "backend/openapi.json", ".github/workflows/frontend.yml"]
+    paths: ["frontend/**", "backend/**", ".github/workflows/frontend.yml"]
   pull_request:
-    paths: ["frontend/**", "backend/openapi.json", ".github/workflows/frontend.yml"]
+    paths: ["frontend/**", "backend/**", ".github/workflows/frontend.yml"]
 
 concurrency:
   group: frontend-${{ github.ref }}
@@ -54,6 +54,53 @@ jobs:
           name: playwright-report
           path: |
             frontend/playwright-report
+            frontend/test-results
+          retention-days: 7
+
+  real-backend:
+    # The same journeys against the REAL backend (Postgres, real WebAuthn verification, the real
+    # state machine), with Chromium's virtual authenticator playing the phone.
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: zolo
+          POSTGRES_PASSWORD: zolo
+          POSTGRES_DB: zolo_e2e
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U zolo" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: frontend/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - uses: astral-sh/setup-uv@v5
+      - run: uv python install 3.12
+      - run: uv sync --frozen
+        working-directory: backend
+      - run: pnpm install --frozen-lockfile
+        working-directory: frontend
+      - run: pnpm build:e2e
+        working-directory: frontend
+      - run: pnpm e2e:install
+        working-directory: frontend
+      - name: Passkeys, approval and failure cases against the real backend
+        run: pnpm e2e:real
+        working-directory: frontend
+      - name: Keep the report when tests fail
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-real
+          path: |
+            frontend/playwright-report-real
             frontend/test-results
           retention-days: 7
 

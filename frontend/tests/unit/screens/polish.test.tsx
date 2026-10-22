@@ -91,13 +91,12 @@ describe("the passkey row on home", () => {
     expect(row).toHaveTextContent("Set up");
   });
 
-  it("says Set up on this phone, with Replace as its action, once it is", async () => {
+  it("says Set up on this phone, and is just a status (no link) once it is: a phone cannot make a second one", async () => {
     setPasskeyKnown(true);
     fake.actAs("customer");
     renderScreen(<Home />);
-    const row = await screen.findByRole("link", { name: /Passkey/ });
-    expect(row).toHaveTextContent("Set up on this phone");
-    expect(row).toHaveTextContent("Replace");
+    await screen.findByText("Set up on this phone");
+    expect(screen.queryByRole("link", { name: /Passkey/ })).not.toBeInTheDocument();
   });
 
   it("is remembered after setup succeeds", async () => {

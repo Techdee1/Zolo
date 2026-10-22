@@ -42,6 +42,27 @@ const ICON_BOX =
 const ROW =
   "press flex min-h-(--target-primary) items-center gap-4 p-4 text-zolo-text touch-manipulation";
 
+function PasskeyRowBody({ passkey, t }: { passkey: boolean | null; t: Translate }) {
+  return (
+    <>
+      <span className={ICON_BOX}>
+        <KeyRound aria-hidden="true" size={22} strokeWidth={1.75} />
+      </span>
+      <span className="grid flex-1 justify-items-start gap-0.5">
+        <span className="type-body font-semibold">{t("passkey.rowTitle")}</span>
+        {passkey === null ? null : (
+          <span
+            className={`type-secondary inline-flex items-center gap-1.5 ${passkey ? "text-zolo-success" : ""}`}
+          >
+            {passkey ? <BadgeCheck aria-hidden="true" size={16} strokeWidth={1.75} /> : null}
+            {t(passkey ? "passkey.statusOn" : "passkey.statusOff")}
+          </span>
+        )}
+      </span>
+    </>
+  );
+}
+
 export function Home() {
   const t = useT();
   const router = useRouter();
@@ -118,26 +139,21 @@ export function Home() {
           {t("passkey.rowTitle")}
         </h2>
         <div className={CARD}>
-          <Link href="/setup/passkey" className={ROW}>
-            <span className={ICON_BOX}>
-              <KeyRound aria-hidden="true" size={22} strokeWidth={1.75} />
-            </span>
-            <span className="grid flex-1 justify-items-start gap-0.5">
-              <span className="type-body font-semibold">{t("passkey.rowTitle")}</span>
-              {passkey === null ? null : (
-                <span
-                  className={`type-secondary inline-flex items-center gap-1.5 ${passkey ? "text-zolo-success" : ""}`}
-                >
-                  {passkey ? <BadgeCheck aria-hidden="true" size={16} strokeWidth={1.75} /> : null}
-                  {t(passkey ? "passkey.statusOn" : "passkey.statusOff")}
-                </span>
-              )}
-            </span>
-            <span className="type-secondary font-semibold text-zolo-text">
-              {t(passkey ? "passkey.actionOn" : "passkey.actionOff")}
-            </span>
-            <ChevronRight aria-hidden="true" size={22} className="text-zolo-secondary" />
-          </Link>
+          {/* Once this phone has a passkey there is nothing to do here (a phone cannot make a second
+              one: the browser refuses), so the row is just the status. Without one, it is the way in. */}
+          {passkey ? (
+            <div className="flex min-h-(--target-primary) items-center gap-4 p-4">
+              <PasskeyRowBody passkey t={t} />
+            </div>
+          ) : (
+            <Link href="/setup/passkey" className={ROW}>
+              <PasskeyRowBody passkey={passkey} t={t} />
+              <span className="type-secondary font-semibold text-zolo-text">
+                {t("passkey.actionOff")}
+              </span>
+              <ChevronRight aria-hidden="true" size={22} className="text-zolo-secondary" />
+            </Link>
+          )}
         </div>
       </section>
     </Screen>
