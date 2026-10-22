@@ -72,6 +72,7 @@ class Settings(BaseSettings):
     # Render the English and Pidgin readback in the background when an agent creates a request, so
     # any amount can have a voice (spends text-to-speech credits). Off unless asked for.
     audio_prerender_on_create: bool = False
+    audio_daily_render_cap: int = 60  # renders that may start per UTC day; then text only
     audio_wait_seconds: float = 4.0  # how long a readback waits for a clip still being rendered
     # Which languages to render when a request is created (each one spends credits). Yoruba, Hausa
     # and Igbo are added here once their voices are approved, e.g. "en,pcm,yo,ha,ig".

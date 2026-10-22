@@ -60,6 +60,7 @@ def build_services(app: FastAPI) -> Services:
         ReadbackAudioPreparer(
             ai,
             wait_seconds=settings.audio_wait_seconds,
+            daily_cap=settings.audio_daily_render_cap,
             langs=tuple(
                 lang
                 for lang in LANGS
