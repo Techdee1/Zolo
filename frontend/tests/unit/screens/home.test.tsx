@@ -34,7 +34,14 @@ describe("Home", () => {
     await fetch("/api/requests/" + [...fake.requests.keys()][0] + "/decline", { method: "POST" });
     renderScreen(<Home />);
     const item = await screen.findByText(/Declined fifteen thousand naira to Bisi Ventures, today/);
-    expect(item.closest("li")).toHaveTextContent("Declined ₦15,000 to Bisi Ventures, today");
+    // Sighted: the payee, the status with the day, and the amount in digits, laid out in the row.
+    const row = item.closest("li")!;
+    expect(row).toHaveTextContent("Bisi Ventures");
+    expect(row).toHaveTextContent("Declined · today");
+    expect(row).toHaveTextContent("₦15,000");
+    // ...and all of that is hidden from the screen reader, which hears the one sentence instead.
+    for (const el of row.querySelectorAll(":scope > :not(.sr-only)"))
+      expect(el).toHaveAttribute("aria-hidden", "true");
   });
 
   it("sends a signed-out visitor to the sign-in chooser and an agent to their page", async () => {

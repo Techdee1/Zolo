@@ -1,10 +1,12 @@
 "use client";
 
+import { BadgeCheck, EyeOff, Fingerprint, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PageHeading } from "@/components/PageHeading";
 import { Screen } from "@/components/Screen";
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { useAnnounce } from "@/components/ui/LiveRegion";
 import { getRegisterOptions, verifyRegistration } from "@/lib/api/endpoints";
@@ -77,39 +79,68 @@ export function SetupPasskey({ next }: { next: string }) {
 
   const blocked = support === "unsupported" || support === "no-lock";
   return (
-    <Screen who="customer">
-      <PageHeading title={t("passkey.title")}>{t("passkey.title")}</PageHeading>
-      <div className="grid gap-3">
-        <p className="type-body">{t("passkey.what")}</p>
-        <p className="type-body">{t("passkey.never")}</p>
-        <p className="type-body text-zolo-secondary">{t("passkey.private")}</p>
-      </div>
+    <Screen
+      back={next}
+      who="customer"
+      hero={
+        <div className="grid gap-3">
+          <span aria-hidden="true" className="icon-tile size-14 rounded-[18px] text-zolo-text">
+            <Fingerprint size={30} strokeWidth={1.75} />
+          </span>
+          <PageHeading title={t("passkey.title")} className="type-display">
+            {t("passkey.title")}
+          </PageHeading>
+        </div>
+      }
+    >
+      <ul className="surface rows inset rise m-0 list-none p-0">
+        {(
+          [
+            [Fingerprint, "passkey.what", "text-zolo-text"],
+            [ShieldCheck, "passkey.never", "text-zolo-success"],
+            [EyeOff, "passkey.private", "text-zolo-secondary"],
+          ] as const
+        ).map(([Icon, key, tone]) => (
+          <li key={key} className="flex items-start gap-4 p-4">
+            <span aria-hidden="true" className={`icon-tile ${tone}`}>
+              <Icon size={22} strokeWidth={1.75} />
+            </span>
+            <p className="type-body m-0 self-center">{t(key)}</p>
+          </li>
+        ))}
+      </ul>
 
       {blocked ? (
-        <p className="type-body text-zolo-critical">
-          {t(support === "unsupported" ? "passkey.unsupported" : "passkey.noLock")}
-        </p>
+        <Alert>{t(support === "unsupported" ? "passkey.unsupported" : "passkey.noLock")}</Alert>
       ) : null}
-      {error ? <p className="type-body text-zolo-critical">{t(error)}</p> : null}
+      {error ? <Alert>{t(error)}</Alert> : null}
 
       {done ? (
-        <>
-          <p className="type-headline">{t(done)}</p>
+        <p className="surface type-headline m-0 flex items-center gap-3 p-4">
+          <span aria-hidden="true" className="icon-tile round text-zolo-success">
+            <BadgeCheck size={22} strokeWidth={1.75} />
+          </span>
+          {t(done)}
+        </p>
+      ) : null}
+
+      <div className="action-bar mt-auto">
+        {done ? (
           <Link href={next} className={LINK_PRIMARY}>
             {t("common.done")}
           </Link>
-        </>
-      ) : (
-        <Button
-          variant="primary"
-          loading={busy}
-          disabled={blocked}
-          disabledReason={t("passkey.noLock")}
-          onClick={() => void start()}
-        >
-          {busy ? t("passkey.working") : t("passkey.start")}
-        </Button>
-      )}
+        ) : (
+          <Button
+            variant="primary"
+            loading={busy}
+            disabled={blocked}
+            disabledReason={t("passkey.noLock")}
+            onClick={() => void start()}
+          >
+            {busy ? t("passkey.working") : t("passkey.start")}
+          </Button>
+        )}
+      </div>
     </Screen>
   );
 }

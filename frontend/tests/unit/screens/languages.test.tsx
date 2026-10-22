@@ -175,8 +175,9 @@ describe("home in another language", () => {
     await fetch(`/api/requests/${made.id}/readback?lang=en`);
     await fetch(`/api/requests/${made.id}/decline`, { method: "POST" });
     renderScreen(<Home />, "pcm");
-    const item = await screen.findByText(/You decline ₦15,000 to .*today/i);
-    expect(item.closest("li")).toBeInTheDocument();
+    // Heard: the whole line in Pidgin. Seen: the Pidgin status word in the row.
+    const item = await screen.findByText(/You decline .* to .*today/i);
+    expect(item.closest("li")).toHaveTextContent(say("pcm", "result.badge.declined"));
     await waitFor(() =>
       expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(say("pcm", "home.title")),
     );

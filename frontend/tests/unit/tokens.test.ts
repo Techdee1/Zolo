@@ -103,6 +103,48 @@ describe.each(["light", "dark"] as const)("contrast in %s mode", (theme) => {
   });
 });
 
+// ── The hero: the always-dark band. Its text is checked on every surface it can sit on, including
+// the spot where the red glow is strongest (the glow blended over the band at its full alpha). ──
+const blend = (rgba: string, under: string): string => {
+  const [r, g, b, a] = rgba.match(/[\d.]+/g)!.map(Number) as [number, number, number, number];
+  const base = [1, 3, 5].map((i) => parseInt(under.slice(i, i + 2), 16));
+  return `#${[r, g, b]
+    .map((c, i) => Math.round(c * a + base[i]! * (1 - a)))
+    .map((c) => c.toString(16).padStart(2, "0"))
+    .join("")}`;
+};
+
+describe.each(["light", "dark"] as const)("the hero band in %s mode", (theme) => {
+  const t = themes[theme];
+  const surfaces = {
+    "--hero-bg": t["--hero-bg"]!,
+    "--hero-bg-end": t["--hero-bg-end"]!,
+    "--hero-surface": t["--hero-surface"]!,
+    "the red glow": blend(t["--hero-glow"]!, t["--hero-bg"]!),
+  };
+
+  it.each([
+    "--hero-text",
+    "--hero-text-secondary",
+    "--hero-accent-text",
+    "--hero-success",
+    "--hero-warning",
+  ])("%s is at least 4.5:1 on every hero surface", (fg) => {
+    for (const [name, bg] of Object.entries(surfaces)) {
+      expect(contrast(t[fg]!, bg), `${fg} on ${name}`).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it("the white focus ring is at least 3:1 on every hero surface", () => {
+    for (const bg of Object.values(surfaces))
+      expect(contrast("#ffffff", bg)).toBeGreaterThanOrEqual(3);
+  });
+
+  it("the hero reads as a band on the page: at least 1.1:1 against the page behind it", () => {
+    expect(contrast(t["--hero-bg"]!, t["--color-bg-grouped"]!)).toBeGreaterThanOrEqual(1.1);
+  });
+});
+
 describe("a limit worth knowing", () => {
   it("graphite on a black page is under 3:1, so a graphite chip in dark mode needs a border", () => {
     // Not a failure: the chip's text is 11:1 on graphite. But the SHAPE is not identifiable from

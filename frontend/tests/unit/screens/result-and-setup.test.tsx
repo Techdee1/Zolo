@@ -1,4 +1,4 @@
-import { screen, waitFor } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DemoConsole } from "@/app/(app)/demo/DemoConsole";
@@ -64,8 +64,12 @@ describe("Result screen: one outcome per screen, honest about money", () => {
     const h1 = await screen.findByRole("heading", { level: 1, name: /^Paid\./ });
     expect(h1).toHaveAccessibleName("Paid. You sent fifteen thousand naira to Bisi Ventures.");
     expect(h1).toHaveTextContent("Paid. You sent ₦15,000 to Bisi Ventures.");
-    expect(screen.getAllByRole("link")).toHaveLength(1);
-    expect(screen.getByRole("link", { name: "Done" })).toHaveAttribute("href", "/home");
+    // One next action at the bottom; the only other link is the back arrow, which goes to the same place.
+    const actions = document.querySelector<HTMLElement>(".action-bar")!;
+    expect(within(actions).getAllByRole("link")).toHaveLength(1);
+    expect(within(actions).getByRole("link", { name: "Done" })).toHaveAttribute("href", "/home");
+    expect(screen.getAllByRole("link")).toHaveLength(2);
+    expect(screen.getByRole("link", { name: "Back" })).toHaveAttribute("href", "/home");
   });
 
   it("SUBMITTED never says Paid, keeps polling, and announces the change to Paid when the bank confirms", async () => {
@@ -184,6 +188,14 @@ describe("Demo sign-in chooser", () => {
     renderScreen(<SignIn />);
     await userEvent.click(screen.getByRole("button", { name: "I am a customer: Amaka Obi" }));
     await waitFor(() => expect(router.push).toHaveBeenCalledWith("/home"));
+  });
+
+  it("a customer sent here from a QR link goes back to it; an agent still goes to /agent", async () => {
+    renderScreen(<SignIn next="/claim?code=1234" />);
+    await userEvent.click(screen.getByRole("button", { name: "I am a customer: Amaka Obi" }));
+    await waitFor(() => expect(router.push).toHaveBeenCalledWith("/claim?code=1234"));
+    await userEvent.click(screen.getByRole("button", { name: "I am an agent: Bisi Ventures" }));
+    await waitFor(() => expect(router.push).toHaveBeenLastCalledWith("/agent"));
   });
 });
 

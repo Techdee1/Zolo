@@ -15,7 +15,7 @@ import { cn } from "@/lib/cn";
  * order, so a screen-reader user finds it and hears why (`disabledReason`) instead of never
  * learning it exists. Clicks are ignored while it is inactive.
  */
-type Variant = "primary" | "secondary" | "tertiary";
+type Variant = "primary" | "secondary" | "tertiary" | "tile" | "chip";
 
 export type ButtonProps = Omit<ComponentProps<"button">, "disabled" | "children" | "type"> & {
   children: ReactNode;
@@ -31,21 +31,30 @@ export type ButtonProps = Omit<ComponentProps<"button">, "disabled" | "children"
 };
 
 const BASE =
-  "press relative inline-flex select-none items-center justify-center gap-2 rounded-zolo-control px-6 " +
+  "press relative inline-flex select-none items-center gap-2 " +
   "type-body font-semibold touch-manipulation " +
   "aria-disabled:cursor-not-allowed aria-disabled:active:scale-100";
 
+// Each variant owns its shape, padding and alignment, so no two classes ever set the same thing.
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "min-h-(--target-primary) w-full rounded-[16px] bg-zolo-brand text-zolo-on-brand shadow-zolo-primary " +
+    "min-h-(--target-primary) w-full justify-center rounded-[16px] px-6 bg-zolo-brand text-zolo-on-brand shadow-zolo-primary " +
     "active:bg-zolo-brand-pressed " +
     "aria-disabled:border aria-disabled:border-zolo-separator aria-disabled:bg-zolo-elevated " +
     "aria-disabled:text-zolo-secondary aria-disabled:shadow-none aria-disabled:active:bg-zolo-elevated",
   secondary:
-    "min-h-(--target-min) bg-zolo-elevated text-zolo-text border border-zolo-separator shadow-zolo-card " +
+    "min-h-(--target-min) justify-center rounded-zolo-control px-6 bg-zolo-elevated text-zolo-text border border-zolo-separator shadow-zolo-card " +
     "aria-disabled:text-zolo-secondary",
   tertiary:
-    "min-h-(--target-min) bg-transparent text-zolo-text underline-offset-4 hover:underline aria-disabled:text-zolo-secondary",
+    "min-h-(--target-min) justify-center rounded-zolo-control px-6 bg-transparent text-zolo-text underline-offset-4 hover:underline aria-disabled:text-zolo-secondary",
+  /** A whole card that is one button (the sign-in people): content laid out by the caller. */
+  tile:
+    "min-h-20 w-full justify-start rounded-zolo-card px-4 py-3 text-left bg-zolo-elevated text-zolo-text shadow-zolo-card " +
+    "[&>span:last-child]:w-full aria-disabled:text-zolo-secondary",
+  /** A quick choice in a row (the amount chips). */
+  chip:
+    "min-h-(--target-min) w-full justify-center rounded-full px-3 bg-zolo-elevated text-zolo-text border border-zolo-separator shadow-zolo-card tabular-nums " +
+    "aria-disabled:text-zolo-secondary",
 };
 
 export function Button({

@@ -100,11 +100,18 @@ export function DemoConsole() {
 
   const request = timeline?.request;
   return (
-    <Screen>
-      <PageHeading title={t("demo.title")}>{t("demo.title")}</PageHeading>
-      <p className="type-body text-zolo-secondary">{t("demo.intro")}</p>
-
-      <div className="grid gap-4">
+    <Screen
+      back="/signin"
+      hero={
+        <div className="grid gap-3">
+          <PageHeading title={t("demo.title")} className="type-display">
+            {t("demo.title")}
+          </PageHeading>
+          <p className="type-body m-0 text-zolo-secondary">{t("demo.intro")}</p>
+        </div>
+      }
+    >
+      <div className="surface rise grid gap-5 p-5">
         <div className="grid gap-1">
           <label htmlFor="demo-token" className="type-headline">
             {t("demo.token")}
@@ -138,7 +145,7 @@ export function DemoConsole() {
         </div>
       </div>
 
-      <div className="grid gap-3">
+      <div className="rise grid grid-cols-2 gap-3 [--rise:1]">
         <Button
           variant="secondary"
           fullWidth
@@ -172,23 +179,23 @@ export function DemoConsole() {
           {t("demo.expire")}
         </Button>
       </div>
-      <p className="type-body" data-testid="demo-message">
+      <p className="type-body m-0 min-h-6" data-testid="demo-message">
         {message}
       </p>
 
-      <section aria-labelledby="timeline" className="grid gap-3">
-        <h2 id="timeline" className="type-headline">
+      <section aria-labelledby="timeline" className="surface grid gap-4 p-5">
+        <h2 id="timeline" className="type-headline m-0">
           {t("demo.timeline")}
         </h2>
         {request ? (
-          <p className="type-headline flex flex-wrap items-center gap-3">
+          <p className="type-headline m-0 flex flex-wrap items-center gap-3">
             <span>{t("demo.state")}</span>
             <Badge variant={STATE_BADGE[request.state] ?? "waiting"}>{request.state}</Badge>
             <span className="tabular-nums">{formatNaira(request.amount_kobo)}</span>
           </p>
         ) : null}
         {timeline && timeline.events.length > 0 ? (
-          <ol className="m-0 grid list-none gap-2 p-0">
+          <ol className="m-0 grid list-none gap-3 border-s-2 border-zolo-separator p-0 ps-4">
             {timeline.events.map((ev) => (
               <li key={ev.id} className="type-body tabular-nums">
                 <span className="text-zolo-secondary">
@@ -199,7 +206,7 @@ export function DemoConsole() {
             ))}
           </ol>
         ) : (
-          <p className="type-body text-zolo-secondary">{t("demo.noEvents")}</p>
+          <p className="type-body m-0 text-zolo-secondary">{t("demo.noEvents")}</p>
         )}
       </section>
     </Screen>

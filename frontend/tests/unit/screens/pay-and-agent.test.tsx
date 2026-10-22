@@ -50,6 +50,26 @@ describe("Pay an agent", () => {
     expect(await screen.findByText(/That code has expired/)).toBeInTheDocument();
   });
 
+  it("from the agent's QR (/claim?code=…): starts filled in and claims once, with no typing", async () => {
+    fake.actAs("agent");
+    const made = await createAgentRequest(1_500_000, "k");
+    fake.actAs("customer");
+    renderScreen(<PayCode initialCode={made.claim_code!} />);
+    expect(screen.getByRole("textbox")).toHaveValue(made.claim_code);
+    await waitFor(() => expect(router.push).toHaveBeenCalledWith(`/requests/${made.id}`));
+    expect(router.push).toHaveBeenCalledTimes(1);
+  });
+
+  it("from the QR while signed out: sends you to sign in, and back to this code after", async () => {
+    fake.actAs(null);
+    renderScreen(<PayCode initialCode="1234" />);
+    await waitFor(() =>
+      expect(router.replace).toHaveBeenCalledWith(
+        `/signin?next=${encodeURIComponent("/claim?code=1234")}`,
+      ),
+    );
+  });
+
   it("ignores anything that is not a digit and never takes more than 4", async () => {
     fake.actAs("customer");
     renderScreen(<PayCode />);

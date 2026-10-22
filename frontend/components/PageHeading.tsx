@@ -36,7 +36,12 @@ export function PageHeading({
   }, [manualFocus]);
 
   return (
-    <h1 ref={ref} tabIndex={-1} className={cn("type-title outline-none", className)}>
+    <h1
+      ref={ref}
+      tabIndex={-1}
+      // The title size unless the screen asks for another one (two type classes would fight).
+      className={cn(!/\btype-/.test(className ?? "") && "type-title", "outline-none", className)}
+    >
       {children}
     </h1>
   );

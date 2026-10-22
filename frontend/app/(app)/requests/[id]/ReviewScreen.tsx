@@ -1,6 +1,6 @@
 "use client";
 
-import { BadgeCheck } from "lucide-react";
+import { BadgeCheck, KeyRound, Volume2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import { PageHeading } from "@/components/PageHeading";
 import { Screen } from "@/components/Screen";
 import { SaidText } from "@/components/SaidText";
 import { Badge } from "@/components/ui/Badge";
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { useAnnounce } from "@/components/ui/LiveRegion";
 import { TimeLeft } from "@/components/ui/TimeLeft";
@@ -132,7 +133,7 @@ export function ReviewScreen({ id }: { id: string }) {
 
   if (!readback) {
     return (
-      <Screen who="customer">
+      <Screen back="/home" who="customer">
         <PageHeading title={t("review.loading")}>
           {problem ? t(problem) : t("review.loading")}
         </PageHeading>
@@ -146,47 +147,72 @@ export function ReviewScreen({ id }: { id: string }) {
   const approveWaits = !voice.heard;
 
   return (
-    <Screen who="customer">
-      {/* The sentence a screen reader hears first. Sighted people get the hero card below, which says
-          the same thing in a layout, so it is hidden from assistive tech to avoid saying it twice. */}
-      <PageHeading title={t("review.title", params)} manualFocus className="sr-only">
-        <SaidText visible={t("review.title", params)} spoken={t("review.titleSpoken", params)} />
-      </PageHeading>
-
-      <section className="grid gap-4 rounded-zolo-card bg-zolo-elevated p-6 shadow-zolo-card">
-        <div aria-hidden="true" className="grid gap-1">
-          <p className="type-title m-0">{readback.payee_name}</p>
-          <p className="type-secondary m-0">{t("review.askingFor")}</p>
-          <p className="type-hero m-0 mt-3 [overflow-wrap:anywhere]">{amount}</p>
-          <p className="type-body m-0 mt-1 text-zolo-secondary">
-            {readback.amount_words} {t("common.unit")}
-          </p>
+    <Screen
+      back="/home"
+      who="customer"
+      hero={
+        <>
+          {/* The sentence a screen reader hears first. Sighted people get the layout below, which
+              says the same thing, so that is hidden from assistive tech to avoid saying it twice. */}
+          <PageHeading title={t("review.title", params)} manualFocus className="sr-only">
+            <SaidText
+              visible={t("review.title", params)}
+              spoken={t("review.titleSpoken", params)}
+            />
+          </PageHeading>
+          <div aria-hidden="true" className="grid gap-1">
+            <div className="flex items-center gap-3">
+              <span className="avatar brand">
+                {readback.payee_name
+                  .split(/\s+/)
+                  .slice(0, 2)
+                  .map((w) => w[0])
+                  .join("")
+                  .toUpperCase()}
+              </span>
+              <span className="grid">
+                <span className="type-headline">{readback.payee_name}</span>
+                <span className="type-secondary">{t("review.askingFor")}</span>
+              </span>
+            </div>
+            <p className="type-hero m-0 mt-5 [overflow-wrap:anywhere]">{amount}</p>
+            <p className="type-body m-0 mt-1 text-zolo-secondary">
+              {readback.amount_words} {t("common.unit")}
+            </p>
+          </div>
+          <div className="grid gap-3 border-t border-zolo-separator pt-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <Badge variant="verified">{t("common.verified")}</Badge>
+              <TimeLeft
+                expiresAt={readback.expires_at}
+                messages={{
+                  label: t("common.timeLeft"),
+                  oneMinute: t("common.oneMinute"),
+                  fifteenSeconds: t("common.fifteenSeconds"),
+                  expired: t("common.timeUp"),
+                }}
+                onExpire={() => go()}
+              />
+            </div>
+            <p className="type-secondary m-0">{t("review.bank")}</p>
+          </div>
+        </>
+      }
+    >
+      <section className="surface rise grid gap-3 p-5">
+        <div className="flex items-center gap-3">
+          <span aria-hidden="true" className="icon-tile round text-zolo-brand-text">
+            <Volume2 size={22} strokeWidth={1.75} />
+          </span>
+          <h2
+            ref={readbackHeading}
+            tabIndex={-1}
+            aria-describedby="readback-text"
+            className="type-headline m-0 outline-none"
+          >
+            {t("review.readbackHeading")}
+          </h2>
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-zolo-separator pt-4">
-          <Badge variant="verified">{t("common.verified")}</Badge>
-          <TimeLeft
-            expiresAt={readback.expires_at}
-            messages={{
-              label: t("common.timeLeft"),
-              oneMinute: t("common.oneMinute"),
-              fifteenSeconds: t("common.fifteenSeconds"),
-              expired: t("common.timeUp"),
-            }}
-            onExpire={() => go()}
-          />
-        </div>
-        <p className="type-secondary m-0">{t("review.bank")}</p>
-      </section>
-
-      <section className="grid gap-2 rounded-zolo-card bg-zolo-elevated p-6 shadow-zolo-card">
-        <h2
-          ref={readbackHeading}
-          tabIndex={-1}
-          aria-describedby="readback-text"
-          className="type-secondary m-0 font-semibold outline-none"
-        >
-          {t("review.readbackHeading")}
-        </h2>
         {/* Not a live region: the voice or the screen reader reads it once, on purpose. */}
         <p id="readback-text" lang={readback.lang} className="type-body m-0">
           {readback.text}
@@ -205,13 +231,15 @@ export function ReviewScreen({ id }: { id: string }) {
       </section>
 
       {passkey === false ? (
-        <section
-          aria-labelledby="need-passkey"
-          className="grid gap-3 rounded-zolo-card bg-zolo-elevated p-6 shadow-zolo-card"
-        >
-          <h2 id="need-passkey" className="type-headline m-0">
-            {t("passkey.needTitle")}
-          </h2>
+        <section aria-labelledby="need-passkey" className="surface rise grid gap-3 p-5 [--rise:1]">
+          <div className="flex items-center gap-3">
+            <span aria-hidden="true" className="icon-tile text-zolo-text">
+              <KeyRound size={22} strokeWidth={1.75} />
+            </span>
+            <h2 id="need-passkey" className="type-headline m-0">
+              {t("passkey.needTitle")}
+            </h2>
+          </div>
           <p className="type-body m-0 text-zolo-secondary">{t("passkey.needBody")}</p>
           <Link
             href={`/setup/passkey?next=${encodeURIComponent(`/requests/${id}`)}`}
@@ -235,11 +263,7 @@ export function ReviewScreen({ id }: { id: string }) {
         </p>
       </div>
 
-      {problem ? (
-        <p className="type-body m-0 text-zolo-critical" data-testid="review-problem">
-          {t(problem)}
-        </p>
-      ) : null}
+      {problem ? <Alert data-testid="review-problem">{t(problem)}</Alert> : null}
 
       <div className="action-bar grid gap-3">
         {approveWaits ? (

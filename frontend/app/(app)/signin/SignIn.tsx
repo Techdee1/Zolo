@@ -1,10 +1,12 @@
 "use client";
 
+import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LanguagePicker } from "@/components/LanguagePicker";
 import { PageHeading } from "@/components/PageHeading";
 import { Screen } from "@/components/Screen";
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { useAnnounce } from "@/components/ui/LiveRegion";
 import { mockLogin } from "@/lib/api/endpoints";
@@ -23,7 +25,9 @@ const PEOPLE = [
 ] as const;
 const DEMO_CODE = "123456";
 
-export function SignIn() {
+/** `next`: where a customer goes after signing in (already checked to be a path on this site).
+ * Agents always go to their own screen. */
+export function SignIn({ next }: { next?: string } = {}) {
   const t = useT();
   const router = useRouter();
   const announce = useAnnounce();
@@ -36,7 +40,7 @@ export function SignIn() {
     try {
       const session = await mockLogin(person.phone, DEMO_CODE);
       setSessionHint({ role: session.role, name: session.display_name });
-      router.push(person.to);
+      router.push(person.role === "customer" && next ? next : person.to);
     } catch (e) {
       const message =
         e instanceof Error && "status" in e ? t("signin.failed") : t(genericErrorKey(e));
@@ -47,26 +51,50 @@ export function SignIn() {
   }
 
   return (
-    <Screen>
-      <PageHeading title={t("signin.title")} className="type-display">
-        {t("signin.title")}
-      </PageHeading>
-      <p className="type-body text-zolo-secondary">{t("signin.intro")}</p>
-      <div className="grid gap-3">
+    <Screen
+      back="/"
+      hero={
+        <div className="grid gap-3">
+          <PageHeading title={t("signin.title")} className="type-display">
+            {t("signin.title")}
+          </PageHeading>
+          <p className="type-body m-0 text-zolo-secondary">{t("signin.intro")}</p>
+        </div>
+      }
+    >
+      <div className="rise grid gap-3">
         {PEOPLE.map((p) => (
           <Button
             key={p.role}
-            variant="secondary"
-            fullWidth
+            variant="tile"
             loading={busy === p.role}
             onClick={() => void signIn(p)}
           >
-            {t(p.role === "customer" ? "signin.customer" : "signin.agent", { name: p.name })}
+            {/* Seen: a person card. Heard: the one sentence, "I am a customer: Amaka Obi". */}
+            <span aria-hidden="true" className="flex w-full items-center gap-4">
+              <span className={`avatar ${p.role === "agent" ? "brand" : ""}`}>
+                {p.name
+                  .split(" ")
+                  .map((w) => w[0])
+                  .join("")
+                  .slice(0, 2)}
+              </span>
+              <span className="grid flex-1 gap-0.5">
+                <span className="type-headline">{p.name}</span>
+                <span className="type-secondary">
+                  {t(p.role === "customer" ? "role.customer" : "role.agent")}
+                </span>
+              </span>
+              <ChevronRight size={22} className="text-zolo-secondary" />
+            </span>
+            <span className="sr-only">
+              {t(p.role === "customer" ? "signin.customer" : "signin.agent", { name: p.name })}
+            </span>
           </Button>
         ))}
       </div>
-      {error ? <p className="type-body text-zolo-critical">{error}</p> : null}
-      <section className="rounded-zolo-card bg-zolo-elevated p-4 shadow-zolo-card">
+      {error ? <Alert>{error}</Alert> : null}
+      <section className="surface rise p-5 [--rise:1]">
         <LanguagePicker />
       </section>
     </Screen>

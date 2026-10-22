@@ -157,6 +157,7 @@ export function ResultScreen({ id, reason }: { id: string; reason: ResultReason 
   if (denied === "not-found")
     return (
       <ResultView
+        back="/home"
         variant="failed"
         who="customer"
         title={t("errors.notFound")}
@@ -169,7 +170,7 @@ export function ResultScreen({ id, reason }: { id: string; reason: ResultReason 
     );
   if (!request || !outcome)
     return (
-      <Screen who="customer">
+      <Screen back="/home" who="customer">
         <PageHeading title={t("result.checking")}>{t("result.checking")}</PageHeading>
       </Screen>
     );
@@ -181,6 +182,7 @@ export function ResultScreen({ id, reason }: { id: string; reason: ResultReason 
   };
   return (
     <ResultView
+      back="/home"
       variant={outcome.variant}
       who="customer"
       title={t(outcome.title, params)}

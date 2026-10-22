@@ -125,6 +125,22 @@
   --shadow-frame: 0 2px 6px rgb(0 0 0 / 0.06), 0 24px 60px rgb(0 0 0 / 0.12);
   --shadow-primary: 0 1px 2px rgb(179 20 26 / 0.3), 0 8px 18px rgb(215 25 30 / 0.22);
   --tint-agent: #f1f4fa; /* agent screens: the grouped background with a faint cool slate cast */
+  --shadow-raised:
+    0 2px 6px rgb(0 0 0 / 0.05), 0 18px 40px rgb(0 0 0 / 0.1); /* a card that floats */
+
+  /* ── The hero: an always-dark band at the top of a screen, Zenith's black with a faint red glow.
+        Inside it (.hero in globals.css) the text tokens take these values, which are the dark
+        theme's; tokens.test.ts checks every one against every hero surface, glow included. ── */
+  --hero-bg: #121214;
+  --hero-bg-end: #1d1d20;
+  --hero-surface: #232326; /* pills and tiles inside the hero */
+  --hero-glow: rgb(215 25 30 / 0.32); /* decoration only: no text relies on it */
+  --hero-text: #f5f5f7;
+  --hero-text-secondary: #a1a1a6;
+  --hero-accent-text: #ff5a5f;
+  --hero-success: #32d74b;
+  --hero-warning: #ffb340;
+  --hero-line: rgb(255 255 255 / 0.14);
 
   /* ── Motion: springs for anything that moves; only transform and opacity are animated. ─────
         damping 1.0 = critically damped, no overshoot. Response is seconds, not a duration.
@@ -167,6 +183,12 @@
     --color-warning: #ffb340;
     --color-critical: #ff5a5f;
     --color-focus: #ffffff;
+    --shadow-raised: 0 0 0 1px rgb(255 255 255 / 0.06);
+    /* On a black page the hero lifts to the elevated grey, so it still reads as a band. */
+    --hero-bg: #1c1c1e;
+    --hero-bg-end: #151517;
+    --hero-surface: #2c2c2e;
+    --hero-glow: rgb(215 25 30 / 0.24); /* fainter on the lighter band, so red text stays 4.5:1 */
     /* --color-brand, --color-brand-pressed and --color-graphite are the same in both themes */
   }
 }
@@ -205,6 +227,9 @@
     --color-text-secondary: var(--color-text);
     --border-width: 2px;
     --focus-width: 4px;
+    --hero-glow: transparent;
+    --hero-text-secondary: var(--hero-text);
+    --hero-line: rgb(255 255 255 / 0.5);
   }
 }
 

@@ -17,6 +17,7 @@ import { FADE_SECONDS, SPRING, toSpring } from "@/lib/motion";
  * lands a beat after the card, so the eye is led from the words to the check.
  */
 export function ResultView({
+  back,
   variant,
   who,
   title,
@@ -28,6 +29,8 @@ export function ResultView({
   action,
   quiet = false,
 }: {
+  /** Where the back arrow goes (see Screen). */
+  back: string;
   variant: BadgeVariant;
   who: "customer" | "agent";
   title: string;
@@ -72,18 +75,18 @@ export function ResultView({
   }, [variant]);
 
   return (
-    <Screen who={who} className="min-h-[calc(100dvh-var(--space-8))] grid-rows-[auto_1fr_auto]">
+    <Screen
+      back={back}
+      who={who}
+      className="min-h-[calc(100dvh-var(--space-8))] grid-rows-[auto_1fr_auto]"
+    >
       <div
         ref={card}
         data-result={variant}
         className="grid content-center justify-items-center gap-4 py-8 text-center"
       >
-        <span
-          ref={icon}
-          data-variant={variant}
-          className={`grid size-20 place-items-center rounded-full bg-zolo-elevated shadow-zolo-card ${tone}`}
-        >
-          <Icon aria-hidden="true" size={40} strokeWidth={1.5} />
+        <span ref={icon} data-variant={variant} className={`icon-tile round result-icon ${tone}`}>
+          <Icon aria-hidden="true" size={44} strokeWidth={1.5} />
         </span>
         <PageHeading
           title={title}

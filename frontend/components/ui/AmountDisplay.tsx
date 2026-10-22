@@ -15,7 +15,7 @@ import { amountSpoken } from "@/lib/format/words";
  * thousand"), so the screen and the spoken readback use the same ones. An invalid amount throws:
  * money data that failed validation is never rendered.
  */
-type Size = "hero" | "large" | "inline";
+type Size = "hero" | "amount" | "large" | "inline";
 
 export type AmountDisplayProps = {
   kobo: number;
@@ -30,6 +30,7 @@ export type AmountDisplayProps = {
 
 const SIZES: Record<Size, string> = {
   hero: "type-hero",
+  amount: "type-amount",
   large: "type-headline tabular-nums",
   inline: "tabular-nums",
 };

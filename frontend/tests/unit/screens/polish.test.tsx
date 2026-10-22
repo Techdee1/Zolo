@@ -54,6 +54,27 @@ describe("the role label: customer and agent are told apart at a glance", () => 
   });
 });
 
+describe("every screen has a back arrow to its parent", () => {
+  it("is a link named Back, first in the header, to a fixed place (not the browser's history)", async () => {
+    fake.actAs("customer");
+    const { unmount } = renderScreen(<Home />);
+    const back = screen.getByRole("link", { name: "Back" });
+    expect(back).toHaveAttribute("href", "/signin");
+    expect(document.querySelector("header a")).toBe(back);
+    await screen.findByText("No payments yet.");
+    unmount();
+    fake.actAs("agent");
+    renderScreen(<AgentNewRequest />);
+    expect(screen.getByRole("link", { name: "Back" })).toHaveAttribute("href", "/signin");
+  });
+
+  it("passkey setup goes back to where it was opened from", () => {
+    vi.mocked(passkeySupport).mockResolvedValue("ok");
+    renderScreen(<SetupPasskey next="/requests/abc" />);
+    expect(screen.getByRole("link", { name: "Back" })).toHaveAttribute("href", "/requests/abc");
+  });
+});
+
 describe("demo tools live in a menu, and only in demo builds", () => {
   it("a customer build has no demo menu and no 'Switch demo user' anywhere on home", async () => {
     fake.actAs("customer");

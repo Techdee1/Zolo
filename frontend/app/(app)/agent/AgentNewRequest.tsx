@@ -6,6 +6,7 @@ import { PageHeading } from "@/components/PageHeading";
 import { Screen } from "@/components/Screen";
 import { SaidText } from "@/components/SaidText";
 import { AmountDisplay } from "@/components/ui/AmountDisplay";
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Keypad } from "@/components/ui/Keypad";
 import { useAnnounce } from "@/components/ui/LiveRegion";
@@ -70,25 +71,27 @@ export function AgentNewRequest() {
 
   const kobo = nairaToKobo(naira);
   return (
-    <Screen who="agent">
-      <div className="grid gap-1">
-        <PageHeading title={t("agent.title")} className="type-display">
-          {t("agent.title")}
-        </PageHeading>
-        {name ? <p className="type-secondary m-0">{t("agent.business", { name })}</p> : null}
-      </div>
-
-      <section
-        aria-label={t("agent.amountLabel")}
-        className="rounded-zolo-card bg-zolo-elevated p-6 shadow-zolo-card"
-      >
-        <AmountDisplay kobo={kobo} unit={t("common.unit")} showWords />
-      </section>
-
-      <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
+    <Screen
+      back="/signin"
+      who="agent"
+      hero={
+        <>
+          <div className="grid gap-1">
+            <PageHeading title={t("agent.title")} className="type-display">
+              {t("agent.title")}
+            </PageHeading>
+            {name ? <p className="type-secondary m-0">{t("agent.business", { name })}</p> : null}
+          </div>
+          <section aria-label={t("agent.amountLabel")} className="min-w-0">
+            <AmountDisplay kobo={kobo} unit={t("common.unit")} showWords />
+          </section>
+        </>
+      }
+    >
+      <ul className="rise m-0 grid list-none grid-cols-3 gap-2 p-0">
         {CHIPS.map((c) => (
-          <li key={c}>
-            <Button variant="secondary" onClick={() => change(c)}>
+          <li key={c} className="grid">
+            <Button variant="chip" onClick={() => change(c)}>
               <SaidText
                 visible={formatNaira(nairaToKobo(c))}
                 spoken={t("agent.chip", { amountWords: amountSpoken(nairaToKobo(c)) })}
@@ -99,6 +102,7 @@ export function AgentNewRequest() {
       </ul>
 
       <Keypad
+        className="rise [--rise:1]"
         labels={{
           group: t("agent.keypad"),
           clear: t("agent.clear"),
@@ -109,11 +113,7 @@ export function AgentNewRequest() {
         onClear={() => change(0)}
       />
 
-      {error ? (
-        <p className="type-body text-zolo-critical" role="presentation">
-          {error}
-        </p>
-      ) : null}
+      {error ? <Alert role="presentation">{error}</Alert> : null}
 
       <div className="action-bar">
         <Button

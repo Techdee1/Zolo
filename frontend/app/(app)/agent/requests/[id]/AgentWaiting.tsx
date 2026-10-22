@@ -1,5 +1,6 @@
 "use client";
 
+import { ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -87,11 +88,17 @@ export function AgentWaiting({ id }: { id: string }) {
 
   if (denied === "not-found")
     return (
-      <ResultView variant="failed" who="agent" title={t("errors.notFound")} action={newRequest} />
+      <ResultView
+        back="/agent"
+        variant="failed"
+        who="agent"
+        title={t("errors.notFound")}
+        action={newRequest}
+      />
     );
   if (!request)
     return (
-      <Screen who="agent">
+      <Screen back="/agent" who="agent">
         <PageHeading title={t("agent.waitingTitle")}>{t("agent.waitingTitle")}</PageHeading>
       </Screen>
     );
@@ -99,6 +106,7 @@ export function AgentWaiting({ id }: { id: string }) {
   if (phase === "paid")
     return (
       <ResultView
+        back="/agent"
         quiet
         variant="paid"
         who="agent"
@@ -120,6 +128,7 @@ export function AgentWaiting({ id }: { id: string }) {
   if (phase === "processing")
     return (
       <ResultView
+        back="/agent"
         quiet
         variant="processing"
         who="agent"
@@ -132,6 +141,7 @@ export function AgentWaiting({ id }: { id: string }) {
   if (phase === "declined" || phase === "expired" || phase === "failed")
     return (
       <ResultView
+        back="/agent"
         quiet
         variant={phase}
         who="agent"
@@ -142,54 +152,77 @@ export function AgentWaiting({ id }: { id: string }) {
 
   const code = stored?.claim_code ?? null;
   return (
-    <Screen who="agent">
-      <PageHeading title={t("agent.waitingTitle")}>{t("agent.waitingTitle")}</PageHeading>
-
-      <section className="grid gap-5 rounded-zolo-card bg-zolo-elevated p-6 shadow-zolo-card">
-        <AmountDisplay kobo={request.amount_kobo} unit={t("common.unit")} size="large" showWords />
-
-        {code ? (
-          <div
-            aria-labelledby="code-label"
-            role="group"
-            className="grid justify-items-center gap-3 border-t border-zolo-separator pt-5 text-center"
-          >
-            <h2 id="code-label" className="type-secondary m-0 font-semibold">
-              {t("agent.yourCode")}
-            </h2>
-            {/* Digits are read one at a time ("4, 0, 0, 1"), not as "four thousand and one". */}
-            <p
-              className="type-hero m-0 tracking-[0.12em]"
-              aria-label={t("agent.codeSpoken", { digits: [...code].join(", ") })}
-              role="img"
-            >
-              {code}
-            </p>
-            <p className="type-secondary m-0">{t("agent.codeAloud")}</p>
-            {stored ? <QrCode value={stored.qr_payload} /> : null}
+    <Screen
+      back="/agent"
+      who="agent"
+      hero={
+        <>
+          <PageHeading title={t("agent.waitingTitle")}>{t("agent.waitingTitle")}</PageHeading>
+          <AmountDisplay
+            kobo={request.amount_kobo}
+            unit={t("common.unit")}
+            size="amount"
+            showWords
+          />
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-zolo-separator pt-4">
+            <Badge variant={phase === "reviewing" ? "processing" : "waiting"}>
+              {phase === "reviewing" ? t("agent.stateReviewing") : t("agent.stateWaiting")}
+            </Badge>
+            <TimeLeft
+              expiresAt={request.expires_at}
+              messages={{
+                label: t("common.timeLeft"),
+                oneMinute: t("common.oneMinute"),
+                fifteenSeconds: t("common.fifteenSeconds"),
+                expired: t("common.timeUp"),
+              }}
+            />
           </div>
-        ) : stored === null ? (
-          <p className="type-body m-0">{t("agent.noCode")}</p>
-        ) : null}
-      </section>
+        </>
+      }
+    >
+      {code ? (
+        <section
+          aria-labelledby="code-label"
+          className="surface rise grid justify-items-center gap-4 p-6 text-center"
+        >
+          <h2 id="code-label" className="type-secondary m-0 font-semibold">
+            {t("agent.yourCode")}
+          </h2>
+          {/* Digits are read one at a time ("4, 0, 0, 1"), not as "four thousand and one". */}
+          <p
+            className="m-0 flex gap-2"
+            aria-label={t("agent.codeSpoken", { digits: [...code].join(", ") })}
+            role="img"
+          >
+            {[...code].map((d, i) => (
+              <span
+                key={i}
+                className="type-code grid h-18 w-14 place-items-center rounded-[16px] bg-zolo-grouped tracking-normal"
+              >
+                {d}
+              </span>
+            ))}
+          </p>
+          <p className="type-secondary m-0">{t("agent.codeAloud")}</p>
+          {stored ? (
+            <div className="rounded-[20px] border border-zolo-separator bg-white p-3">
+              <QrCode value={stored.qr_payload} size={176} />
+            </div>
+          ) : null}
+        </section>
+      ) : stored === null ? (
+        <p className="surface type-body m-0 p-5">{t("agent.noCode")}</p>
+      ) : null}
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Badge variant={phase === "reviewing" ? "processing" : "waiting"}>
-          {phase === "reviewing" ? t("agent.stateReviewing") : t("agent.stateWaiting")}
-        </Badge>
-        <TimeLeft
-          expiresAt={request.expires_at}
-          messages={{
-            label: t("common.timeLeft"),
-            oneMinute: t("common.oneMinute"),
-            fifteenSeconds: t("common.fifteenSeconds"),
-            expired: t("common.timeUp"),
-          }}
+      <p className="callout type-headline rise m-0 [--rise:1]">
+        <ShieldAlert
+          aria-hidden="true"
+          size={24}
+          strokeWidth={1.75}
+          className="mt-0.5 shrink-0 text-zolo-warning"
         />
-      </div>
-
-      <p className="type-headline m-0 rounded-zolo-card border border-zolo-separator bg-zolo-elevated p-4">
-        {t("agent.waitForPaid")}
+        <span>{t("agent.waitForPaid")}</span>
       </p>
       {offline ? <p className="type-secondary">{t("common.offline")}</p> : null}
     </Screen>

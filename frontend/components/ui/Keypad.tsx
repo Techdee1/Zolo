@@ -27,9 +27,11 @@ export type KeypadProps = {
 };
 
 const KEY =
-  "inline-flex min-h-14 items-center justify-center rounded-zolo-card " +
-  "press bg-zolo-elevated text-zolo-text shadow-zolo-card touch-manipulation select-none tabular-nums";
-const DIGIT = cn(KEY, "type-title");
+  "press inline-flex min-h-16 items-center justify-center rounded-[18px] " +
+  "touch-manipulation select-none tabular-nums";
+/** Digits are solid keys; Clear and Delete are quiet, so the numbers stand out. */
+const DIGIT = cn(KEY, "type-title bg-zolo-elevated text-zolo-text shadow-zolo-card");
+const QUIET = cn(KEY, "text-zolo-secondary");
 
 const ROWS: Digit[][] = [
   [1, 2, 3],
@@ -47,7 +49,7 @@ export function Keypad({ onDigit, onBackspace, onClear, labels, className }: Key
       ))}
       <button
         type="button"
-        className={cn(KEY, "type-body min-w-0 font-semibold [overflow-wrap:anywhere]")}
+        className={cn(QUIET, "type-body min-w-0 font-semibold [overflow-wrap:anywhere]")}
         onClick={onClear}
       >
         {labels.clear}
@@ -55,7 +57,7 @@ export function Keypad({ onDigit, onBackspace, onClear, labels, className }: Key
       <button type="button" className={DIGIT} onClick={() => onDigit(0)}>
         0
       </button>
-      <button type="button" className={DIGIT} aria-label={labels.backspace} onClick={onBackspace}>
+      <button type="button" className={QUIET} aria-label={labels.backspace} onClick={onBackspace}>
         <Delete aria-hidden="true" size={24} strokeWidth={1.75} />
       </button>
     </div>
