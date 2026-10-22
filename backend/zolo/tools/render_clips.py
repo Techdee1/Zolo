@@ -20,6 +20,7 @@ Clips are stored as mono mp3 at 40 kbps under the same cache key as before.
 
 import argparse
 import json
+import logging
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -192,6 +193,35 @@ def export(settings: Settings, dest: Path) -> int:
     print(f"exported {copied} clips ({size / 1024:.0f} KB) to {dest}, {missing} not rendered")
     print("per language: " + ", ".join(f"{lang} {n}" for lang, n in per_lang.items()))
     return 0
+
+
+def inventory(settings: Settings) -> dict[Lang, tuple[int, int]]:
+    """Per language: how many of the set's clips are in the cache now, and how many the set has."""
+    clips, _ = choose(settings)
+    tts, cache = RoutingTTS(settings), AudioCache(settings.audio_cache_dir)
+    out: dict[Lang, tuple[int, int]] = {}
+    for lang in LANGS:
+        mine = [c for c in clips if c.lang == lang]
+        present = sum(cache.get(key_for(tts, settings, c)) is not None for c in mine)
+        out[lang] = (present, len(mine))
+    return out
+
+
+def log_audio_inventory() -> None:
+    """One line at startup so a missing clip is visible in the logs. Never stops the app."""
+    log = logging.getLogger("zolo.audio")
+    try:
+        counts = inventory(Settings.from_env())
+        summary = ", ".join(f"{lang} {have}/{want}" for lang, (have, want) in counts.items())
+        have_all = sum(have for have, _ in counts.values())
+        want_all = sum(want for _, want in counts.values())
+        log.info(
+            "audio clips present: %s (total %d/%d)", summary, have_all, want_all,
+            extra={"event": "audio_inventory", "summary": summary, "total": have_all},
+        )  # fmt: skip
+    except Exception as exc:  # an unreadable folder must never take the API down
+        failed = {"event": "audio_inventory_failed", "code": type(exc).__name__}
+        log.warning("audio inventory failed", extra=failed)
 
 
 def main() -> int:

@@ -22,7 +22,7 @@ async def _is_empty(sessionmaker: async_sessionmaker[AsyncSession]) -> bool:
 
 async def main(if_empty: bool = False) -> None:
     settings = get_settings()
-    engine = make_engine(settings.database_url)
+    engine = make_engine(settings.database_url, 2, 0)
     try:
         if if_empty and not await _is_empty(make_sessionmaker(engine)):
             print("already seeded, nothing changed")
