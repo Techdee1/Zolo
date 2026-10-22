@@ -1,10 +1,10 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { DemoConsole } from "@/app/demo/DemoConsole";
-import { ResultScreen } from "@/app/requests/[id]/result/ResultScreen";
-import { SetupPasskey } from "@/app/setup/passkey/SetupPasskey";
-import { SignIn } from "@/app/signin/SignIn";
+import { DemoConsole } from "@/app/(app)/demo/DemoConsole";
+import { ResultScreen } from "@/app/(app)/requests/[id]/result/ResultScreen";
+import { SetupPasskey } from "@/app/(app)/setup/passkey/SetupPasskey";
+import { SignIn } from "@/app/(app)/signin/SignIn";
 import { createPasskey, passkeySupport } from "@/lib/passkeys";
 import { router } from "../router";
 import { installFakeBackend } from "../fake-server";
@@ -65,7 +65,7 @@ describe("Result screen: one outcome per screen, honest about money", () => {
     expect(h1).toHaveAccessibleName("Paid. You sent fifteen thousand naira to Bisi Ventures.");
     expect(h1).toHaveTextContent("Paid. You sent ₦15,000 to Bisi Ventures.");
     expect(screen.getAllByRole("link")).toHaveLength(1);
-    expect(screen.getByRole("link", { name: "Done" })).toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: "Done" })).toHaveAttribute("href", "/home");
   });
 
   it("SUBMITTED never says Paid, keeps polling, and announces the change to Paid when the bank confirms", async () => {
@@ -183,7 +183,7 @@ describe("Demo sign-in chooser", () => {
   it("a customer goes home", async () => {
     renderScreen(<SignIn />);
     await userEvent.click(screen.getByRole("button", { name: "I am a customer: Amaka Obi" }));
-    await waitFor(() => expect(router.push).toHaveBeenCalledWith("/"));
+    await waitFor(() => expect(router.push).toHaveBeenCalledWith("/home"));
   });
 });
 

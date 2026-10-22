@@ -249,3 +249,310 @@ body {
   gap: var(--space-4);
   padding: var(--space-6) var(--space-screen-x) calc(var(--space-6) + env(safe-area-inset-bottom));
 }
+
+/* ══ The landing page ═════════════════════════════════════════════════════════════════════════
+   A full-width, warm page. Everything is plain HTML and CSS: it reads, scrolls and links with no
+   JavaScript. Motion is CSS only, only transform and opacity, and off under reduced motion. ══ */
+.landing {
+  position: relative;
+  min-height: 100dvh;
+  background: var(--land-bg);
+  color: var(--land-ink);
+  overflow-x: clip;
+}
+/* A faint film grain under the content. Nothing reads or clicks it; it is gone under reduced
+   transparency and more contrast (the opacity token becomes 0). */
+.landing::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: url("/landing/grain.png") repeat;
+  background-size: 96px 96px;
+  opacity: var(--land-grain-opacity);
+  pointer-events: none;
+}
+.landing > * {
+  position: relative;
+  z-index: 1;
+}
+.land-wrap {
+  width: min(100% - 2.5rem, 64rem);
+  margin-inline: auto;
+}
+.land-secondary {
+  color: var(--land-ink-secondary);
+}
+.land-display {
+  font-family: var(--font-display), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2.5rem, 1.6rem + 4.6vw, 4.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.008em;
+  text-wrap: balance;
+  margin: 0;
+}
+.land-display-md {
+  font-family: var(--font-display), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+  line-height: 1.06;
+  letter-spacing: -0.004em;
+  text-wrap: balance;
+  margin: 0;
+}
+.land-lede {
+  font-size: clamp(1.125rem, 1.05rem + 0.4vw, 1.3125rem);
+  line-height: 1.5;
+  color: var(--land-ink-secondary);
+  max-width: 36rem;
+  margin: 0;
+}
+.land-section {
+  padding-block: clamp(3.5rem, 8vw, 6.5rem);
+}
+.land-section + .land-section {
+  border-top: 1px solid var(--land-line);
+}
+.land-eyebrow {
+  font-size: var(--type-caption-size);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--land-accent-text);
+  margin: 0 0 var(--space-3);
+}
+
+/* The header: translucent material over the page, solid under reduced transparency. */
+.land-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 20;
+  background: var(--land-material-bg);
+  -webkit-backdrop-filter: var(--land-material-filter);
+  backdrop-filter: var(--land-material-filter);
+  border-bottom: 1px solid var(--land-line);
+}
+.land-header .land-wrap {
+  display: flex;
+  min-height: 4rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+/* Buttons and links: the primary is the one red thing; the quiet link is just text. */
+.land-btn {
+  display: inline-flex;
+  min-height: var(--target-primary);
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--space-8);
+  border-radius: 16px;
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+  font-size: var(--type-body-size);
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--shadow-primary);
+}
+.land-btn:active {
+  background: var(--color-brand-pressed);
+}
+.land-pill {
+  display: inline-flex;
+  min-height: var(--target-min);
+  align-items: center;
+  padding-inline: var(--space-4);
+  border-radius: 999px;
+  border: 1px solid var(--land-line);
+  background: var(--land-surface);
+  color: var(--land-ink);
+  font-size: var(--type-secondary-size);
+  font-weight: 600;
+  text-decoration: none;
+}
+.land-link {
+  display: inline-flex;
+  min-height: var(--target-min);
+  align-items: center;
+  color: var(--land-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+  text-decoration-thickness: 1px;
+}
+
+/* Photos sit in soft frames with the slightest tilt, alternating. 1 degree at most. */
+.land-photo {
+  margin: 0;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: var(--land-surface);
+  box-shadow: var(--land-shadow);
+}
+.land-photo img,
+.land-photo .land-placeholder {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.tilt-a {
+  rotate: -0.8deg;
+}
+.tilt-b {
+  rotate: 0.8deg;
+}
+.land-placeholder {
+  background:
+    radial-gradient(120% 90% at 20% 10%, #f0c9a6, transparent 60%),
+    radial-gradient(90% 90% at 90% 90%, #d9a38a, transparent 55%), #e6cdb5;
+}
+@media (prefers-color-scheme: dark) {
+  .land-placeholder {
+    background:
+      radial-gradient(120% 90% at 20% 10%, #5a4030, transparent 60%),
+      radial-gradient(90% 90% at 90% 90%, #4a2e2a, transparent 55%), #2f2824;
+  }
+}
+.land-caption {
+  font-size: var(--type-secondary-size);
+  color: var(--land-ink-secondary);
+  padding: var(--space-3) var(--space-4);
+}
+
+/* The app screenshots, as a phone-shaped card. */
+.land-shot {
+  margin: 0;
+  overflow: clip;
+  border-radius: 28px;
+  border: 1px solid var(--land-line);
+  background: var(--land-surface);
+  box-shadow: var(--land-shadow);
+}
+.land-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Layouts: phone first, then two columns where there is room. */
+.land-hero {
+  display: grid;
+  gap: var(--space-8);
+  padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 7vw, 6rem);
+}
+.land-hero-copy {
+  display: grid;
+  gap: var(--space-6);
+  align-content: center;
+  justify-items: start;
+}
+.land-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+}
+.land-split {
+  display: grid;
+  gap: var(--space-8);
+  align-items: center;
+}
+.land-steps {
+  display: grid;
+  gap: var(--space-8);
+  margin: var(--space-8) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.land-step {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+}
+.land-step-num {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 2.25rem;
+  line-height: 1;
+  color: var(--land-accent-text);
+}
+.land-checks {
+  display: grid;
+  gap: var(--space-4);
+  margin: var(--space-8) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.land-checks li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  align-items: start;
+  padding: var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--land-surface);
+  box-shadow: var(--land-shadow);
+  font-size: var(--type-body-size);
+}
+.land-rule {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2rem, 1.2rem + 4vw, 4rem);
+  line-height: 1.08;
+  letter-spacing: -0.004em;
+  text-wrap: balance;
+  margin: 0;
+  max-width: 22ch;
+}
+@media (min-width: 56rem) {
+  .land-hero {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+  }
+  .land-split {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+  }
+  .land-split.flip > :first-child {
+    order: 2;
+  }
+  .land-steps {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .land-checks {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Scroll reveal and the hero's gentle drift: pure CSS, scroll-linked (so it follows the finger and
+   can be reversed at any moment), and only where the browser supports it. Without support, or
+   under reduced motion, nothing moves and everything is simply there. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: land-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+    .drift {
+      animation: land-drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 70vh;
+    }
+  }
+  @keyframes land-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes land-drift {
+    to {
+      transform: translateY(-20px);
+    }
+  }
+}

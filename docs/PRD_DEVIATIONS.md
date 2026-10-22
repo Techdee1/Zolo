@@ -33,6 +33,9 @@ Living document: add a row whenever a new difference is found or one is resolved
 | 27 | Approval outcome is final in the response | `approve` can return `SUBMITTED` (bank call did not finish). Also, a connection that drops *after* the approval was sent leaves the outcome unknown. | `SUBMITTED` shows Processing (row 11). A dropped connection never says "failed": the result page asks the server what happened. |
 | 28 | Setup passkey: status "set up or not" | There is no "list my passkeys" call. | The status is remembered on this phone (`localStorage`) when setup succeeds, and cleared if the API answers `NO_PASSKEY`. It only chooses the wording ("Set up" or "Replace") and shows an explainer on the review screen; it never blocks Approve. |
 | 29 | Frame: phone-sized column | (not specified) | On screens 40rem and wider the app is a 30rem frame centred on a backdrop; on phones it fills the screen. Agent screens carry a faint cool tint and an "Agent" pill; customer screens a "Customer" pill. |
+| 30 | `/` is the customer home | `/` is the landing page; the customer home moved to `/home`. | The landing page is the first thing a stranger sees. The installed app skips it: the manifest's `start_url` is `/home`. |
+| 31 | PWA manifest, service worker (P1) | Manifest and icons exist; **no service worker yet**. | Enough for "Add to home screen" metadata; offline support is not built. The icons are a plain "Z" tile made for this project (not the Zenith logo). |
+| 32 | System fonts only | One serif (Instrument Serif, one weight) for the landing page's big headings, self-hosted through `next/font`. | Requested for the landing page. The app screens stay on the system font, and the landing page makes no third-party request at runtime. |
 
 ## 2. Architecture
 

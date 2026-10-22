@@ -17,7 +17,7 @@ import { setSessionHint } from "@/lib/session-hint";
  * you pick who you are. Nothing is typed, nothing secret is asked for.
  */
 const PEOPLE = [
-  { role: "customer", name: "Amaka Obi", phone: "+2348011111111", to: "/" },
+  { role: "customer", name: "Amaka Obi", phone: "+2348011111111", to: "/home" },
   { role: "agent", name: "Bisi Ventures", phone: "+2348022222222", to: "/agent" },
 ] as const;
 const DEMO_CODE = "123456";

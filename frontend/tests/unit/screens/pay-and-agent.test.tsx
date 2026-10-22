@@ -1,9 +1,9 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
-import { AgentNewRequest } from "@/app/agent/AgentNewRequest";
-import { AgentWaiting } from "@/app/agent/requests/[id]/AgentWaiting";
-import { PayCode } from "@/app/pay/code/PayCode";
+import { AgentNewRequest } from "@/app/(app)/agent/AgentNewRequest";
+import { AgentWaiting } from "@/app/(app)/agent/requests/[id]/AgentWaiting";
+import { PayCode } from "@/app/(app)/pay/code/PayCode";
 import { createAgentRequest, claimByCode } from "@/lib/api/endpoints";
 import { setAgentRequest } from "@/lib/session-hint";
 import { router } from "../router";

@@ -161,7 +161,7 @@ export function ResultScreen({ id, reason }: { id: string; reason: ResultReason 
         who="customer"
         title={t("errors.notFound")}
         action={
-          <Link href="/" className={LINK_PRIMARY}>
+          <Link href="/home" className={LINK_PRIMARY}>
             {t("common.done")}
           </Link>
         }
@@ -206,7 +206,7 @@ export function ResultScreen({ id, reason }: { id: string; reason: ResultReason 
       }
       action={
         outcome.variant === "processing" ? (
-          <Link href="/" className={LINK_SECONDARY}>
+          <Link href="/home" className={LINK_SECONDARY}>
             {t("pay.back")}
           </Link>
         ) : outcome.retry ? (
@@ -214,12 +214,12 @@ export function ResultScreen({ id, reason }: { id: string; reason: ResultReason 
             <Link href="/pay/code" className={LINK_PRIMARY}>
               {t("common.tryAgain")}
             </Link>
-            <Link href="/" className={LINK_SECONDARY}>
+            <Link href="/home" className={LINK_SECONDARY}>
               {t("common.done")}
             </Link>
           </>
         ) : (
-          <Link href="/" className={LINK_PRIMARY}>
+          <Link href="/home" className={LINK_PRIMARY}>
             {t("common.done")}
           </Link>
         )

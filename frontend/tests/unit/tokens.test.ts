@@ -292,3 +292,26 @@ describe("press feedback and release", () => {
     expect(reduced["--motion-release-duration"]).toBe("0ms");
   });
 });
+
+describe("the landing page palette", () => {
+  const land = ["--land-bg", "--land-surface"] as const;
+  it("ink and secondary text keep 4.5:1 on the warm page and on cards, in both themes", () => {
+    for (const [name, t] of Object.entries(themes))
+      for (const fg of ["--land-ink", "--land-ink-secondary", "--land-accent-text"] as const)
+        for (const bg of land)
+          expect(contrast(t[fg]!, t[bg]!), `${name} ${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5);
+  });
+  it("white text on the red button keeps 4.5:1", () => {
+    expect(contrast(light["--color-on-brand"]!, light["--color-brand"]!)).toBeGreaterThanOrEqual(
+      4.5,
+    );
+  });
+  it("the grain is faint, and gone under reduced transparency and more contrast", () => {
+    expect(parseFloat(light["--land-grain-opacity"]!)).toBeLessThanOrEqual(0.08);
+    expect(mediaRoot("(prefers-reduced-transparency: reduce)")["--land-grain-opacity"]).toBe("0");
+    expect(mediaRoot("(prefers-contrast: more)")["--land-grain-opacity"]).toBe("0");
+    expect(mediaRoot("(prefers-reduced-transparency: reduce)")["--land-material-filter"]).toBe(
+      "none",
+    );
+  });
+});

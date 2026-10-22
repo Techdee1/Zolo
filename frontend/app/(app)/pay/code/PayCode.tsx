@@ -86,7 +86,7 @@ export function PayCode() {
         </p>
       </div>
       <Link
-        href="/"
+        href="/home"
         className="type-body inline-flex min-h-(--target-min) items-center text-zolo-secondary underline underline-offset-4"
       >
         {t("pay.back")}

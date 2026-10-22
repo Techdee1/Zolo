@@ -46,7 +46,7 @@ describe("safeNext", () => {
       "/\\evil",
       undefined,
     ]) {
-      expect(safeNext(bad)).toBe("/");
+      expect(safeNext(bad)).toBe("/home");
     }
   });
 });

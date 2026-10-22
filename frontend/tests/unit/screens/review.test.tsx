@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ReviewScreen } from "@/app/requests/[id]/ReviewScreen";
+import { ReviewScreen } from "@/app/(app)/requests/[id]/ReviewScreen";
 import { signWithPasskey } from "@/lib/passkeys";
 import { router } from "../router";
 import { installFakeBackend } from "../fake-server";

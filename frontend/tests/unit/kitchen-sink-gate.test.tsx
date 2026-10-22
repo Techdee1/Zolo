@@ -10,15 +10,15 @@ vi.mock("next/navigation", () => ({
 describe("the /kitchen-sink page", () => {
   it("is a 404 unless its flag is on", async () => {
     vi.doMock("@/lib/env", () => ({ env: { featureKitchenSink: false } }));
-    const { default: Page } = await import("@/app/kitchen-sink/page");
+    const { default: Page } = await import("@/app/(app)/kitchen-sink/page");
     expect(() => Page()).toThrow("NEXT_NOT_FOUND");
   });
 
   it("renders when the flag is on", async () => {
     vi.resetModules();
     vi.doMock("@/lib/env", () => ({ env: { featureKitchenSink: true } }));
-    vi.doMock("@/app/kitchen-sink/KitchenSink", () => ({ KitchenSink: () => "gallery" }));
-    const { default: Page } = await import("@/app/kitchen-sink/page");
+    vi.doMock("@/app/(app)/kitchen-sink/KitchenSink", () => ({ KitchenSink: () => "gallery" }));
+    const { default: Page } = await import("@/app/(app)/kitchen-sink/page");
     expect(() => Page()).not.toThrow();
   });
 });

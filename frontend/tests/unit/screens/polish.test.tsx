@@ -1,10 +1,10 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { Home } from "@/app/Home";
-import { AgentNewRequest } from "@/app/agent/AgentNewRequest";
-import { ReviewScreen } from "@/app/requests/[id]/ReviewScreen";
-import { SetupPasskey } from "@/app/setup/passkey/SetupPasskey";
+import { Home } from "@/app/(app)/home/Home";
+import { AgentNewRequest } from "@/app/(app)/agent/AgentNewRequest";
+import { ReviewScreen } from "@/app/(app)/requests/[id]/ReviewScreen";
+import { SetupPasskey } from "@/app/(app)/setup/passkey/SetupPasskey";
 import { createPasskey, passkeySupport } from "@/lib/passkeys";
 import { setPasskeyKnown } from "@/lib/passkey-status";
 import { installFakeBackend } from "../fake-server";

@@ -56,6 +56,23 @@ pnpm dev                       # http://localhost:3000
 - Feature flags are environment variables (`NEXT_PUBLIC_FEATURE_*`, see `.env.example`). Nothing in
   `NEXT_PUBLIC_*` is secret, by construction.
 
+## Direct links
+
+The landing page is the root route. These work on their own, without visiting it:
+
+| Link      | What                                                                         |
+| --------- | ---------------------------------------------------------------------------- |
+| `/`       | The landing page: what Zolo is, then "Try the demo"                          |
+| `/signin` | The demo sign-in chooser ("Try the demo" goes here)                          |
+| `/home`   | The customer home (an installed app starts here: the manifest's `start_url`) |
+| `/agent`  | The agent's new request screen                                               |
+| `/demo`   | The stage demo console (only when `NEXT_PUBLIC_FEATURE_DEMO=true`)           |
+
+Landing page settings (all optional, all in `.env.example`): `NEXT_PUBLIC_DEMO_VIDEO_URL` and
+`NEXT_PUBLIC_REPO_URL` (https only; the links hide until set), `NEXT_PUBLIC_TEAM_NAME` (footer).
+Photos live in `public/landing/`; if one is missing a warm placeholder stands in. The three app
+screenshots are made from the running app with `node scripts/landing-shots.mjs`.
+
 ## Where things are
 
 | Path                          | What                                                                                                                                                                                                                         |

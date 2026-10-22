@@ -8,6 +8,9 @@ describe("parseEnv", () => {
       featureCardGuard: false,
       featureKitchenSink: false,
       useMocks: false,
+      demoVideoUrl: undefined,
+      repoUrl: undefined,
+      teamName: "Our team (name to come)",
     });
   });
 
@@ -24,6 +27,16 @@ describe("parseEnv", () => {
     expect(on.featureCardGuard).toBe(false);
     for (const wrong of ["1", "yes", "TRUE", "on"]) {
       expect(() => parseEnv({ NEXT_PUBLIC_FEATURE_DEMO: wrong })).toThrow();
+    }
+  });
+
+  it("landing links are optional and https only", () => {
+    expect(parseEnv({}).demoVideoUrl).toBeUndefined();
+    expect(parseEnv({ NEXT_PUBLIC_REPO_URL: "https://github.com/x/y" }).repoUrl).toBe(
+      "https://github.com/x/y",
+    );
+    for (const bad of ["javascript:alert(1)", "http://example.com", "not a url", "//evil.com"]) {
+      expect(() => parseEnv({ NEXT_PUBLIC_DEMO_VIDEO_URL: bad }), bad).toThrow();
     }
   });
 

@@ -1,6 +1,6 @@
 import { screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { Home, whenWords } from "@/app/Home";
+import { Home, whenWords } from "@/app/(app)/home/Home";
 import { t } from "@/lib/i18n";
 import { router } from "../router";
 import { installFakeBackend } from "../fake-server";

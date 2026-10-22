@@ -210,5 +210,75 @@
     "close": "Close demo tools",
     "switchUser": "Switch demo user",
     "console": "Demo console"
+  },
+  "landing": {
+    "tryDemo": "Try the demo",
+    "tryDemoOpens": "Try the demo, opens the demo sign-in",
+    "watchDemo": "Watch the 90 second demo",
+    "newTab": "opens in a new tab",
+    "navLabel": "Zolo",
+    "hero": {
+      "title": "Anyone can propose a payment. Only you can approve it.",
+      "lede": "Zolo lets blind and low-vision customers pay at an agent or a POS by hearing the request first, then approving it with their own passkey.",
+      "note": "Made for Zenith Bank customers."
+    },
+    "problem": {
+      "title": "At a busy counter, you can't see the screen.",
+      "p1": "The agent tells you the amount. The terminal beeps. Someone behind you is waiting.",
+      "p2": "Whatever you are told, you have to trust. That is a lot to ask when it is your money."
+    },
+    "rule": {
+      "title": "Nothing is sent until you have heard it and approved it.",
+      "p": "Zolo reads the payment out loud: who is asking, and how much. Only then can you approve it, with your fingerprint, face or screen lock."
+    },
+    "how": {
+      "title": "How it works",
+      "intro": "Three steps. These are screens from the app itself.",
+      "s1": {
+        "title": "The agent asks.",
+        "p": "They type the amount and read you a four-digit code.",
+        "alt": "The agent's screen: the amount, fifteen thousand naira, a large four-digit code and a QR code, with a reminder to give cash only after seeing Paid."
+      },
+      "s2": {
+        "title": "You hear it.",
+        "p": "Zolo says who is asking and how much. The amount is also on screen, in very large type.",
+        "alt": "The customer's review screen: Bisi Ventures is asking for fifteen thousand naira, shown in very large type, with a red Approve button and a Decline button underneath."
+      },
+      "s3": {
+        "title": "You approve, and it's paid.",
+        "p": "You use your fingerprint, face or screen lock. The agent sees Paid, and gives you the cash.",
+        "alt": "The customer's Paid screen: a green check, the word Paid, the amount fifteen thousand naira and the words to Bisi Ventures."
+      }
+    },
+    "why": {
+      "title": "Paying shouldn't depend on who you trust at the counter.",
+      "p1": "Blind and low-vision people handle money every day, in markets, at agents, at shops.",
+      "p2": "They shouldn't have to hand over trust along with the cash. Zolo is a small change that puts the decision back with the person paying."
+    },
+    "safe": {
+      "title": "What keeps it safe",
+      "intro": "Only things the system really does.",
+      "i1": "The bank checks the name of the person you are paying.",
+      "i2": "You approve with your passkey: your fingerprint, face or screen lock.",
+      "i3": "A voice on its own can never approve a payment.",
+      "i4": "A request expires after 2 minutes.",
+      "i5": "Nothing is sent unless you approve it."
+    },
+    "cta": {
+      "title": "See it for yourself.",
+      "p": "Open the demo, be the agent, then be the customer.",
+      "repo": "See the code on GitHub"
+    },
+    "footer": {
+      "event": "Zecathon 6.0, Track 7",
+      "credits": "Photo credits",
+      "madeBy": "Made by {team}"
+    },
+    "alt": {
+      "hero": "A person holding a peach-coloured phone to their ear, seen from the side.",
+      "counter": "Hands counting a stack of naira notes beside a card payment terminal, on a street counter.",
+      "hands": "A woman in sunglasses and headphones typing at a computer, sitting at a desk.",
+      "street": "Four people walking on a paved street, two of them using white canes."
+    }
   }
 }

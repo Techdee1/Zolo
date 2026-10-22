@@ -24,7 +24,7 @@ async function person(browser: Browser, who: "customer" | "agent") {
   await page
     .getByRole("button", { name: who === "agent" ? /I am an agent/ : /I am a customer/ })
     .click();
-  await page.waitForURL(who === "agent" ? "**/agent" : "**/");
+  await page.waitForURL(who === "agent" ? "**/agent" : "**/home");
   return { context, page, problems };
 }
 
@@ -253,7 +253,7 @@ for (const mode of MODES) {
     const code = await makeRequest(agent.page, ["1", "5", "0", "0", "0"]);
     await noAxeViolations(agent.page); // waiting
 
-    await customer.page.goto("/");
+    await customer.page.goto("/home");
     await noAxeViolations(customer.page); // home
     await customer.page.goto("/signin");
     await noAxeViolations(customer.page); // chooser
@@ -304,7 +304,7 @@ test("nothing overflows at 320px wide and 200% text, on the screens people use",
   await fits(agent.page);
   const code = await makeRequest(agent.page, ["1", "5", "0", "0", "0"]);
   await fits(agent.page);
-  await customer.page.goto("/");
+  await customer.page.goto("/home");
   await fits(customer.page);
   await setUpPasskey(customer.page);
   await claim(customer.page, code);
@@ -340,7 +340,7 @@ test("routes behind a feature flag are 404 when the flag is off, and the app has
     const res = await customer.page.goto(route);
     expect(res?.status()).toBe(404);
   }
-  await customer.page.goto("/");
+  await customer.page.goto("/home");
   await expect(customer.page.getByText(/send money|card guard|coming soon/i)).toHaveCount(0);
   await customer.context.close();
 });
@@ -352,7 +352,7 @@ test("wide screens: the app sits centred in a phone-sized frame on the backdrop"
 }) => {
   const customer = await person(browser, "customer");
   await customer.page.setViewportSize({ width: 1280, height: 800 });
-  await customer.page.goto("/");
+  await customer.page.goto("/home");
   await customer.page.getByRole("heading", { level: 1 }).waitFor();
   const frame = await customer.page.locator(".app-frame").boundingBox();
   expect(frame!.width).toBeLessThanOrEqual(480);
@@ -427,7 +427,7 @@ test("press feedback: instant scale on pointer-down, a spring on release, and ne
   await customer.page.goto("/pay/code");
   const link = customer.page.getByRole("link", { name: "Back to home" });
   void link;
-  await customer.page.goto("/");
+  await customer.page.goto("/home");
   const tile = customer.page.getByRole("link", { name: /Pay an agent/ });
   const timing = () =>
     tile.evaluate((el) => ({
@@ -475,7 +475,7 @@ test("the bottom action area is frosted glass over scrolling content, and solid 
 
 test("demo tools: one small menu, not in the customer's screens", async ({ browser }) => {
   const customer = await person(browser, "customer");
-  await customer.page.goto("/");
+  await customer.page.goto("/home");
   await expect(
     customer.page.getByText(/switch demo user/i).and(customer.page.locator(":visible")),
   ).toHaveCount(0); // the closed menu is hidden
@@ -495,14 +495,14 @@ test("the passkey row on home: Not set up, then Set up on this phone after setup
 }) => {
   const customer = await person(browser, "customer");
   await virtualAuthenticator(customer.context, customer.page);
-  await customer.page.goto("/");
+  await customer.page.goto("/home");
   const row = customer.page.getByRole("link", { name: /Passkey/ });
   await expect(row).toContainText("Not set up");
   await row.click();
   await customer.page.waitForURL("**/setup/passkey");
   await customer.page.getByRole("button", { name: "Set up passkey" }).click();
   await expect(customer.page.getByText("Your passkey is ready.")).toBeVisible();
-  await customer.page.goto("/");
+  await customer.page.goto("/home");
   await expect(customer.page.getByRole("link", { name: /Passkey/ })).toContainText(
     "Set up on this phone",
   );

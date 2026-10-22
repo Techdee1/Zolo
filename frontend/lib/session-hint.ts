@@ -52,6 +52,6 @@ export const getLastRequestId = () => read("zolo.last-request", z.string());
 export const setLastRequestId = (id: string) => write("zolo.last-request", id);
 
 /** Only ever follow a path on this site, so a crafted `?next=` cannot send anyone elsewhere. */
-export function safeNext(next: string | undefined, fallback = "/"): string {
+export function safeNext(next: string | undefined, fallback = "/home"): string {
   return next && /^\/(?!\/)[\w\-/.?=&%]*$/.test(next) ? next : fallback;
 }

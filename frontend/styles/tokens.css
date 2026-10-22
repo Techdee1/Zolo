@@ -27,6 +27,19 @@
   --color-focus: #1c1c1e;
   --color-on-brand: #ffffff; /* text on --color-brand and --color-graphite */
 
+  /* ── The landing page: warm off-white and graphite. Red is only the primary button and tiny
+        accents; text pairs are checked in tests/unit/tokens.test.ts. ───────────────────────── */
+  --land-bg: #f7f3ec;
+  --land-surface: #fffdf8;
+  --land-ink: #262421;
+  --land-ink-secondary: #5f5a52;
+  --land-line: rgb(38 36 33 / 0.14);
+  --land-accent-text: #c0171c; /* red text and rules on the warm page, kept for tiny accents */
+  --land-material-bg: color-mix(in srgb, var(--land-bg) 78%, transparent);
+  --land-material-filter: blur(18px) saturate(160%);
+  --land-grain-opacity: 0.05;
+  --land-shadow: 0 1px 2px rgb(38 36 33 / 0.06), 0 14px 36px rgb(38 36 33 / 0.1);
+
   /* ── Typography ─────────────────────────────────────────────────────────────────────────────
      System fonts only (no web fonts). All sizes in rem so they follow the user's text size. */
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", Roboto, "Segoe UI", sans-serif;
@@ -134,6 +147,14 @@
     --color-bg: #000000;
     --color-bg-backdrop: #000000;
     --tint-agent: #12151c;
+    --land-bg: #171513;
+    --land-surface: #211e1b;
+    --land-ink: #f4efe7;
+    --land-ink-secondary: #b9b2a7;
+    --land-line: rgb(244 239 231 / 0.16);
+    --land-accent-text: #ff6b6f;
+    --land-grain-opacity: 0.04;
+    --land-shadow: 0 0 0 1px rgb(244 239 231 / 0.08);
     --shadow-card: 0 0 0 1px rgb(255 255 255 / 0.05);
     --shadow-frame: 0 0 0 1px rgb(255 255 255 / 0.08);
     --shadow-primary: 0 8px 20px rgb(215 25 30 / 0.28);
@@ -163,6 +184,9 @@
   :root {
     --material-bg: var(--color-bg);
     --material-filter: none;
+    --land-material-bg: var(--land-bg);
+    --land-material-filter: none;
+    --land-grain-opacity: 0;
   }
 }
 
@@ -172,6 +196,11 @@
   :root {
     --material-bg: var(--color-bg);
     --material-filter: none;
+    --land-material-bg: var(--land-bg);
+    --land-material-filter: none;
+    --land-grain-opacity: 0;
+    --land-ink-secondary: var(--land-ink);
+    --land-line: var(--land-ink-secondary);
     --color-separator: #6e6e73;
     --color-text-secondary: var(--color-text);
     --border-width: 2px;
