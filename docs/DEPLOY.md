@@ -137,6 +137,17 @@ that file, never renders it: rendering takes 3 to 7 seconds and must never sit o
      It covers every seeded agent in both languages for every ₦500 up to ₦10,000, every ₦1,000 up to
      ₦20,000, then every ₦5,000 up to ₦100,000 (about 180 clips), skipping any already stored. Re-run
      it any time: it only spends credits on new sentences.
+- **Clips that ship with the code.** `backend/audio_seed/` holds clips for common amounts. At every
+  start the container copies any that are missing onto the audio disk (it never overwrites). This is
+  what keeps the common amounts spoken on a host with no disk (the free Render plan), where the cache
+  starts empty after every restart. To refresh it, on a machine with a working key:
+  ```bash
+  cd backend
+  uv run python -m zolo.tools.prerender_amounts          # renders what is missing (spends credits)
+  uv run python -m zolo.tools.prerender_amounts --export audio_seed
+  git add audio_seed && git commit -m "feat: ship the clips for common amounts"
+  ```
+  Every clip is a hash-named mp3 of a generic sentence; a test checks nothing else ships.
 - **Where the clips live.** On the `audio` Docker volume (`/data/audio`), so they survive restarts and
   redeploys. The files are named by a hash and hold audio only, no readable payment details.
 - **Cost.** One YarnGPT job per new sentence: at most two per new request (English and Pidgin), and

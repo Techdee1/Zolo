@@ -10,6 +10,8 @@ RUN uv sync --frozen --no-dev --no-install-project
 COPY zolo ./zolo
 COPY migrations ./migrations
 COPY alembic.ini docker-entrypoint.sh ./
+# clips for the common amounts, copied onto the audio disk at start (see the entrypoint)
+COPY audio_seed ./audio_seed
 # the audio cache lives on a volume mounted at /data/audio (AUDIO_CACHE_DIR)
 RUN useradd --create-home zolo && mkdir -p /data/audio && chown -R zolo /app /data
 ENV PATH="/app/.venv/bin:$PATH"

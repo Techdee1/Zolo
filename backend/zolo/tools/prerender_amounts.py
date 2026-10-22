@@ -1,6 +1,7 @@
 """Pre-render the readback for the amounts people actually ask for, so the first listen is instant.
 
     python -m zolo.tools.prerender_amounts [--dry-run] [--langs en,pcm] [--max-naira 100000]
+    python -m zolo.tools.prerender_amounts --export audio_seed      # copy the clips into a folder
 
 Every seeded agent, in English and Pidgin, for a grid of amounts: every N500 up to N10,000, every
 N1,000 up to N20,000, then every N5,000 up to the cap. Any other amount is still rendered in the
@@ -10,6 +11,7 @@ Already-cached lines are skipped, so it only spends credits on new text. Prints 
 
 import argparse
 import time
+from pathlib import Path
 
 from zolo.ai.config import Settings, load_dotenv
 from zolo.ai.tts.cache import AudioCache, cache_key
@@ -44,14 +46,37 @@ def lines(langs: set[str] | None, max_naira: int) -> list[tuple[Lang, str]]:
     return list(dict.fromkeys(out))
 
 
+def export(dest: Path, langs: set[str] | None, max_naira: int) -> int:
+    """Copy the cached clips for this grid into `dest` (to ship them inside the image)."""
+    settings = Settings.from_env()
+    tts, cache = RoutingTTS(settings), AudioCache(settings.audio_cache_dir)
+    dest.mkdir(parents=True, exist_ok=True)
+    copied = missing = 0
+    for lang, text in lines(langs, max_naira):
+        provider = tts.for_lang(lang).renderer.name
+        key = cache_key(provider, lang, settings.tts_voice_for(lang), text)
+        clip = cache.get(key)
+        if clip is None:
+            missing += 1
+            continue
+        (dest / f"{key}.mp3").write_bytes(clip.data)
+        copied += 1
+    print(f"exported {copied} clips to {dest}, {missing} not rendered yet")
+    return 1 if missing else 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true", help="count what would be rendered")
     ap.add_argument("--langs", help="comma separated subset, e.g. en,pcm")
     ap.add_argument("--max-naira", type=int, default=100_000)
+    ap.add_argument("--export", type=Path, help="copy the grid's cached clips into this folder")
     args = ap.parse_args()
 
     load_dotenv()
+    if args.export:
+        wanted_langs = set(args.langs.split(",")) if args.langs else None
+        return export(args.export, wanted_langs, args.max_naira)
     settings = Settings.from_env()
     wanted = set(args.langs.split(",")) if args.langs else None
     todo_all = lines(wanted, args.max_naira)

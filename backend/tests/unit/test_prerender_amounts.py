@@ -21,3 +21,23 @@ def test_it_covers_every_seeded_agent_in_both_readback_languages() -> None:
 
 def test_it_can_be_limited_to_one_language() -> None:
     assert {lang for lang, _ in lines({"pcm"}, 20_000)} == {"pcm"}
+
+
+def test_the_shipped_clips_are_named_by_the_keys_the_readback_looks_up(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    """Every clip in audio_seed must be one the grid would ask for, so nothing stray ships."""
+    from pathlib import Path
+
+    from zolo.ai.config import Settings
+    from zolo.ai.tts.cache import cache_key
+    from zolo.tools.prerender_amounts import lines
+
+    seed = Path(__file__).resolve().parents[2] / "audio_seed"
+    if not seed.exists():
+        return  # the folder is made by `--export`; before that there is nothing to check
+    settings = Settings.from_env()
+    wanted = {
+        cache_key(settings.tts_provider_for(lang), lang, settings.tts_voice_for(lang), text)
+        for lang, text in lines(None, 100_000)
+    }
+    shipped = {p.stem for p in seed.glob("*.mp3")}
+    assert shipped <= wanted, f"{len(shipped - wanted)} clips are not in the grid"
