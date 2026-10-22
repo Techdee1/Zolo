@@ -7,7 +7,7 @@
  * the same rules (an agent cannot claim, a tampered request fails with INTENT_CHANGED). It does NOT
  * verify WebAuthn signatures: that is the backend's job, and step 6 runs against the real backend.
  */
-import { amountSpoken } from "../../lib/format/words";
+import { nairaWords } from "../../lib/format/words";
 import { formatNaira } from "../../lib/format/money";
 
 export type FakeRequest = {
@@ -291,11 +291,31 @@ export function createFakeBackend(options: FakeOptions = {}) {
           return problem(422, "VALIDATION_ERROR", "language must be en or pcm");
         r.state = "READ_BACK";
         record(r, "request.read_back", "customer", { lang });
-        const words = amountSpoken(r.amount);
+        // Like the backend: `amount_words` has no "naira" (the template adds it), and the digits
+        // are spoken again in groups of three from the right ("one five, zero zero zero").
+        const words = nairaWords(r.amount);
+        const NAMES = [
+          "zero",
+          "one",
+          "two",
+          "three",
+          "four",
+          "five",
+          "six",
+          "seven",
+          "eight",
+          "nine",
+        ];
+        const spokenDigits = String(r.amount / 100)
+          .replace(/\B(?=(\d{3})+$)/g, ",")
+          .split(",")
+          .map((group) => [...group].map((d) => NAMES[Number(d)]).join(" "))
+          .join(", ");
+        const digits = spokenDigits.charAt(0).toUpperCase() + spokenDigits.slice(1);
         const text =
           lang === "pcm"
-            ? `${r.payee} dey ask for ${words}. You wan approve?`
-            : `${r.payee} is asking for ${words}. Do you want to approve?`;
+            ? `${r.payee} dey ask for ${words} naira. ${digits}. You wan approve?`
+            : `${r.payee} is asking for ${words} naira. ${digits}. Do you want to approve?`;
         return json(200, {
           text,
           lang,
@@ -342,7 +362,7 @@ export function createFakeBackend(options: FakeOptions = {}) {
           record(r, "request.failed", "system", { reason: nextOutcome });
         } else if (nextOutcome === "FAILED") {
           r.state = "FAILED";
-          r.failure = "BANK_REJECTED";
+          r.failure = "BANK_TIMEOUT";
         } else if (nextOutcome === "SUBMITTED") {
           r.state = "SUBMITTED";
           record(r, "request.submitted", "system");

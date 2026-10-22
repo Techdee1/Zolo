@@ -55,7 +55,7 @@ describe("the API client against the fake backend", () => {
     expect(en).toMatchObject({
       lang: "en",
       amount_kobo: 1_500_000,
-      amount_words: "fifteen thousand naira",
+      amount_words: "fifteen thousand",
     });
     expect((await getRequest(made.id)).state).toBe("READ_BACK");
   });

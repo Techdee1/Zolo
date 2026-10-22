@@ -16,7 +16,7 @@
     "e2e:install": "playwright install --with-deps chromium",
     "check": "pnpm gen:api:check && pnpm typecheck && pnpm lint && pnpm format:check && pnpm test",
     "commitlint": "commitlint",
-    "build:e2e": "NEXT_PUBLIC_FEATURE_KITCHEN_SINK=true next build",
+    "build:e2e": "NEXT_PUBLIC_FEATURE_KITCHEN_SINK=true NEXT_PUBLIC_FEATURE_DEMO=true next build",
     "gen:api": "openapi-typescript ../backend/openapi.json -o lib/api/schema.d.ts",
     "gen:api:check": "node scripts/check-api-types.mjs"
   },

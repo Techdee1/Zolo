@@ -21,8 +21,17 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   projects: [
-    { name: "phone", use: { ...devices["Pixel 7"] } },
-    { name: "desktop", use: { ...devices["Desktop Chrome"] } },
+    { name: "phone", use: { ...devices["Pixel 7"] }, testIgnore: /flow\.spec/ },
+    { name: "desktop", use: { ...devices["Desktop Chrome"] }, testIgnore: /flow\.spec/ },
+    // The full journeys share ONE fake backend (one customer, one agent), so they run alone, one
+    // at a time, after the independent tests. Phone-sized, because that is who uses it.
+    {
+      name: "flow",
+      testMatch: /flow\.spec/,
+      use: { ...devices["Pixel 7"] },
+      dependencies: ["phone", "desktop"],
+      fullyParallel: false,
+    },
   ],
   webServer: [
     // A stand-in for the Zolo API. The production build proxies /api/* to it (BACKEND_URL, read at runtime).

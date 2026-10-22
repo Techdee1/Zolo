@@ -12,7 +12,7 @@ async function scan(page: import("@playwright/test").Page) {
 for (const scheme of ["light", "dark"] as const) {
   test(`home has no accessibility violations (${scheme})`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: scheme });
-    await page.goto("/");
+    await page.goto("/signin");
     const { violations } = await scan(page);
     expect(violations, JSON.stringify(violations, null, 2)).toEqual([]);
   });
@@ -22,14 +22,14 @@ test("home has no accessibility violations with reduced motion and more contrast
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce", contrast: "more" });
-  await page.goto("/");
+  await page.goto("/signin");
   expect((await scan(page)).violations).toEqual([]);
 });
 
 test("the page is a proper document: language, title, one h1, a main landmark", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/signin");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await expect(page).toHaveTitle(/Zolo/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
@@ -37,7 +37,7 @@ test("the page is a proper document: language, title, one h1, a main landmark", 
 });
 
 test("people can zoom: the viewport does not forbid scaling", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/signin");
   const content = await page.locator('meta[name="viewport"]').getAttribute("content");
   expect(content).not.toMatch(/user-scalable\s*=\s*(no|0)/i);
   expect(content).not.toMatch(/maximum-scale/i);
@@ -45,7 +45,7 @@ test("people can zoom: the viewport does not forbid scaling", async ({ page }) =
 
 test("the first Tab stop is the skip link, and it works", async ({ page, isMobile }) => {
   test.skip(isMobile, "keyboard navigation is a desktop concern");
-  await page.goto("/");
+  await page.goto("/signin");
   await page.keyboard.press("Tab");
   const skip = page.getByRole("link", { name: "Skip to main content" });
   await expect(skip).toBeFocused();
@@ -56,7 +56,7 @@ test("the first Tab stop is the skip link, and it works", async ({ page, isMobil
 
 test("the focus ring is clearly visible", async ({ page, isMobile }) => {
   test.skip(isMobile, "keyboard navigation is a desktop concern");
-  await page.goto("/");
+  await page.goto("/signin");
   await page.keyboard.press("Tab");
   const outline = await page.getByRole("link", { name: "Skip to main content" }).evaluate((el) => {
     const s = getComputedStyle(el);
@@ -98,7 +98,7 @@ test("the page runs under the CSP with no violations and no console errors", asy
     if (m.type() === "error" || /content security policy/i.test(m.text())) problems.push(m.text());
   });
   page.on("pageerror", (e) => problems.push(e.message));
-  await page.goto("/");
+  await page.goto("/signin");
   await page.waitForLoadState("networkidle");
   expect(problems).toEqual([]);
 });
@@ -113,13 +113,13 @@ test("no third-party requests: nothing leaves this origin", async ({ page, baseU
     )
       foreign.push(r.url());
   });
-  await page.goto("/");
+  await page.goto("/signin");
   await page.waitForLoadState("networkidle");
   expect(foreign).toEqual([]);
 });
 
 test("the app really runs under the CSP: scripts execute and React hydrates", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/signin");
   // Next sets window.next once its client runtime has started. If the CSP blocked the scripts
   // (as a statically prerendered page would), this never appears even though the HTML looks fine.
   await page.waitForFunction(() =>

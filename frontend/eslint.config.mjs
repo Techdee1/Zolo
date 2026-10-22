@@ -20,7 +20,9 @@ const eslintConfig = defineConfig([
       "jsx-a11y/no-autofocus": "error", // focus is managed deliberately, on the h1, on route change
       "jsx-a11y/anchor-is-valid": "error",
       "jsx-a11y/no-noninteractive-tabindex": ["error", { tags: [], roles: ["tabpanel"] }],
-      "jsx-a11y/control-has-associated-label": "error",
+      // Text fields are named by a <label htmlFor>, which label-has-associated-control (strict) checks;
+      // this rule cannot see an id that comes from useId().
+      "jsx-a11y/control-has-associated-label": ["error", { ignoreElements: ["input", "textarea"] }],
       "no-restricted-syntax": [
         "error",
         {

@@ -5,8 +5,9 @@ payment, only the account holder approves it, after hearing it. One Next.js app,
 and low-vision users first. Requirements are in [`Frontend_PRD.md`](../Frontend_PRD.md); the API it
 talks to is [`backend/openapi.json`](../backend/openapi.json).
 
-> **Status: step 1 of 7 (scaffold).** There is one placeholder page. The design tokens, UI kit,
-> API client and screens arrive in the next steps.
+> **Status: steps 1 to 5 of 7** (scaffold, design tokens, UI kit, typed API client, P0 screens).
+> Passkeys work end to end in Chromium against a fake backend; the real backend and a real phone are
+> step 6. The five languages are step 7 (English only now).
 
 ## Run it
 
@@ -55,8 +56,19 @@ pnpm dev                       # http://localhost:3000
 - Feature flags are environment variables (`NEXT_PUBLIC_FEATURE_*`, see `.env.example`). Nothing in
   `NEXT_PUBLIC_*` is secret, by construction.
 
+## Where things are
+
+| Path                          | What                                                                                                                                                                                                                         |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `app/`                        | Screens: `/signin` (demo chooser), `/` (home), `/pay/code`, `/requests/[id]` (review and approve), `/requests/[id]/result`, `/setup/passkey`, `/agent`, `/agent/requests/[id]`, `/demo` (flagged), `/kitchen-sink` (flagged) |
+| `components/ui/`              | The kit: Button, AmountDisplay, Keypad, Badge, TimeLeft, Sheet, LiveRegion                                                                                                                                                   |
+| `lib/api/`                    | `client.ts` (one fetch, two checks), `schemas.ts` (Zod, checked against the generated types), `endpoints.ts` (one function per call)                                                                                         |
+| `messages/en.json`            | Every word on screen, by key. No text lives in components                                                                                                                                                                    |
+| `tests/fakes/fake-backend.ts` | A faithful copy of the Phase 1 API as one pure function. MSW (unit tests) and the e2e server both use it                                                                                                                     |
+
 ## Not built yet
 
-Design tokens (step 2), UI kit and `/kitchen-sink` (3), API client, Zod schemas and MSW (4),
-screens (5), passkeys (6), i18n (7), the PWA manifest and service worker, and the bundle-size
-budget check (170 KB gzipped for the review route; it needs the review route to measure).
+Real-backend passkey runs and real-phone checks (6), the other four languages (7), QR scanning
+(camera, needs a real device), the PWA manifest and service worker, and the bundle-size budget check
+(170 KB gzipped for the review route). The list of differences from the PRD is
+[`docs/PRD_DEVIATIONS.md`](../docs/PRD_DEVIATIONS.md).

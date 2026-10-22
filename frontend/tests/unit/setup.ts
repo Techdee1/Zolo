@@ -1,6 +1,15 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
-import { afterEach } from "vitest";
+import { afterEach, beforeEach, vi } from "vitest";
+import { markNavigated } from "@/lib/initial-load";
+import { router } from "./router";
+
+vi.mock("next/navigation", () => ({ useRouter: () => router }));
+
+beforeEach(() => {
+  Object.values(router).forEach((fn) => fn.mockReset());
+  markNavigated(); // screens are tested as client-side navigations: focus moves to the h1
+});
 
 afterEach(() => cleanup());
 

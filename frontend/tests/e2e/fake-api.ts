@@ -78,7 +78,7 @@ createServer(async (req, res) => {
     if (action === "outcome") fake.setOutcome(arg as ApprovalOutcome);
     if (action === "settle") fake.settle(arg ?? "");
     if (action === "passkey") fake.addPasskey();
-    if (action === "audio") fake.setAudio(arg === "none" ? null : "/api/voice/audio/test.mp3");
+    if (action === "audio") fake.setAudio(arg === "none" ? null : "/voice/audio/test.mp3");
     res.writeHead(204);
     return res.end();
   }

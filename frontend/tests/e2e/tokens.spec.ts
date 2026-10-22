@@ -10,7 +10,7 @@ const htmlBg = (page: Page) =>
 
 test("light mode: white page, graphite-black text", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "light" });
-  await page.goto("/");
+  await page.goto("/signin");
   expect(await htmlBg(page)).toBe("rgb(255, 255, 255)");
   expect(await rootVar(page, "--color-text")).toBe("#1c1c1e");
   expect(await rootVar(page, "--color-brand-text")).toBe("#d7191e");
@@ -20,7 +20,7 @@ test("dark mode follows the system: black page, light text, the lighter red for 
   page,
 }) => {
   await page.emulateMedia({ colorScheme: "dark" });
-  await page.goto("/");
+  await page.goto("/signin");
   expect(await htmlBg(page)).toBe("rgb(0, 0, 0)");
   expect(await rootVar(page, "--color-text")).toBe("#f5f5f7");
   expect(await rootVar(page, "--color-brand-text")).toBe("#ff5a5f");
@@ -31,14 +31,14 @@ test("more contrast: a thicker focus ring and secondary text as strong as primar
   page,
 }) => {
   await page.emulateMedia({ contrast: "more" });
-  await page.goto("/");
+  await page.goto("/signin");
   expect(await rootVar(page, "--focus-width")).toBe("4px");
   expect(await rootVar(page, "--color-text-secondary")).toBe(await rootVar(page, "--color-text"));
 });
 
 test("reduced motion: no press scale", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
+  await page.goto("/signin");
   expect(await rootVar(page, "--motion-press-scale")).toBe("1");
   await page.emulateMedia({ reducedMotion: "no-preference" });
   expect(Number(await rootVar(page, "--motion-press-scale"))).toBe(0.97); // Chrome prints it as ".97"
@@ -47,7 +47,7 @@ test("reduced motion: no press scale", async ({ page }) => {
 test("the title style is 1.75rem: 28px at the default size, 56px at 200% text", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/signin");
   const size = () =>
     page
       .getByRole("heading", { level: 1 })
@@ -58,7 +58,7 @@ test("the title style is 1.75rem: 28px at the default size, 56px at 200% text", 
 });
 
 test("system fonts only", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/signin");
   const family = await page.evaluate(() => getComputedStyle(document.body).fontFamily);
   expect(family).toContain("-apple-system");
   expect(family).toContain("sans-serif");
@@ -68,7 +68,7 @@ test("works at 320px wide AND 200% text: no horizontal scrolling, nothing cut of
   page,
 }) => {
   await page.setViewportSize({ width: 320, height: 640 });
-  await page.goto("/");
+  await page.goto("/signin");
   await zoomText(page);
   const { scrollWidth, clientWidth } = await page.evaluate(() => ({
     scrollWidth: document.documentElement.scrollWidth,
