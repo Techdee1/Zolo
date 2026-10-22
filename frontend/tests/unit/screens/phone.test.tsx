@@ -56,6 +56,13 @@ describe("Phone-call approval", () => {
     expect(screen.getByText(/never your bank PIN or your card PIN/i)).toBeInTheDocument();
   });
 
+  it("offers English, Pidgin and Yoruba for the call", () => {
+    fake.setPhone(true);
+    renderScreen(<SetupPhone next="/home" />);
+    for (const name of ["English", "Pidgin", "Yoruba"])
+      expect(screen.getByRole("radio", { name })).toBeInTheDocument();
+  });
+
   it("rings first and only starts the call when it is answered", async () => {
     const made = await claimedRequest(fake);
     fake.setPhone(true, true);

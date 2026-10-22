@@ -44,7 +44,7 @@ class EnrolmentView:
 
 
 def _lang(value: str) -> CallLang:
-    return "pcm" if value == "pcm" else "en"
+    return "pcm" if value == "pcm" else "yo" if value == "yo" else "en"
 
 
 class PhoneService:

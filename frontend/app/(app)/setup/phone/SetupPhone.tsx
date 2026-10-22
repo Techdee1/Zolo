@@ -29,7 +29,7 @@ export function SetupPhone({ next }: { next: string }) {
   const announce = useAnnounce();
   const [phone, setPhone] = useState("");
   const [pin, setPin] = useState("");
-  const [language, setLanguage] = useState<"en" | "pcm">("en");
+  const [language, setLanguage] = useState<"en" | "pcm" | "yo">("en");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<MessageKey | null>(null);
@@ -130,7 +130,7 @@ export function SetupPhone({ next }: { next: string }) {
         </label>
         <fieldset className="grid gap-2 border-0 p-0">
           <legend className="type-headline mb-1">{t("phone.languageLabel")}</legend>
-          {(["en", "pcm"] as const).map((l) => (
+          {(["en", "pcm", "yo"] as const).map((l) => (
             <label key={l} className="type-body flex min-h-(--target-min) items-center gap-3">
               <input
                 type="radio"
@@ -138,7 +138,7 @@ export function SetupPhone({ next }: { next: string }) {
                 checked={language === l}
                 onChange={() => setLanguage(l)}
               />
-              {t(l === "en" ? "phone.langEn" : "phone.langPcm")}
+              {t(l === "en" ? "phone.langEn" : l === "pcm" ? "phone.langPcm" : "phone.langYo")}
             </label>
           ))}
         </fieldset>

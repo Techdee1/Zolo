@@ -129,7 +129,7 @@ export const timelineSchema = z.object({
 export const phoneEnrolmentSchema = z.object({
   enabled: z.boolean(),
   enrolled: z.boolean(),
-  language: z.enum(["en", "pcm"]),
+  language: z.enum(["en", "pcm", "yo"]),
   phone_last4: z.string(),
   locked: z.boolean(),
   paused: z.boolean(),
@@ -144,6 +144,7 @@ export const phoneCallSchema = z.object({
   ),
   done: z.boolean(),
   outcome: z.enum(["approved", "declined", "ended"]).nullish(),
+  lang: z.enum(["en", "pcm", "yo"]),
 });
 
 export const demoResetSchema = z.object({

@@ -25,7 +25,11 @@ const audioSrc = (url: string | null | undefined) =>
   url && /^\/voice\/audio\/[\w.-]+\.mp3$/.test(url) ? `${API_BASE}${url}` : null;
 
 /** Plays one prompt: its recording when there is one, else the browser's own voice reads the text. */
-function speak(prompt: Prompt, stop: { current: (() => void) | null }): Promise<void> {
+function speak(
+  prompt: Prompt,
+  lang: string,
+  stop: { current: (() => void) | null },
+): Promise<void> {
   return new Promise((resolve) => {
     const src = audioSrc(prompt.audio_url);
     const finish = () => {
@@ -45,7 +49,7 @@ function speak(prompt: Prompt, stop: { current: (() => void) | null }): Promise<
     }
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return finish();
     const u = new SpeechSynthesisUtterance(prompt.text);
-    u.lang = "en-NG";
+    u.lang = lang === "yo" ? "yo-NG" : "en-NG";
     u.onend = finish;
     u.onerror = finish;
     stop.current = () => {
@@ -92,12 +96,12 @@ export function CallScreen({ id }: { id: string }) {
   }, [asksForPin]);
 
   const play = useCallback(
-    async (prompts: Prompt[]) => {
+    async (prompts: Prompt[], lang: string) => {
       setLines((old) => [...old, ...prompts]);
       if (mode === "reader") return;
       for (const p of prompts) {
         if (!alive.current) return;
-        await speak(p, stop);
+        await speak(p, lang, stop);
       }
     },
     [mode],
@@ -130,7 +134,7 @@ export function CallScreen({ id }: { id: string }) {
     try {
       const started = await startPhoneCall(id);
       setCall(started);
-      await play(started.prompts);
+      await play(started.prompts, started.lang);
     } catch (e) {
       failWith(e);
     } finally {
@@ -147,7 +151,7 @@ export function CallScreen({ id }: { id: string }) {
       const next = await pressPhoneKeys(call.call_id, digits);
       setCall(next);
       setPin("");
-      await play(next.prompts);
+      await play(next.prompts, next.lang);
       if (next.done && alive.current) router.replace(resultPath(id));
     } catch (e) {
       failWith(e);

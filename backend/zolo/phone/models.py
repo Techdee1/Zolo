@@ -27,7 +27,7 @@ class PhoneEnrolment(Base):
 
     __tablename__ = "phone_enrolments"
     __table_args__ = (
-        CheckConstraint("language IN ('en', 'pcm')", name="language_known"),
+        CheckConstraint("language IN ('en', 'pcm', 'yo')", name="language_known"),
         CheckConstraint("failed_attempts >= 0", name="failed_attempts_non_negative"),
     )
 

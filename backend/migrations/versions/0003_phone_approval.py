@@ -33,7 +33,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.CheckConstraint(
-            "language IN ('en', 'pcm')", name=op.f("ck_phone_enrolments_language_known")
+            "language IN ('en', 'pcm', 'yo')", name=op.f("ck_phone_enrolments_language_known")
         ),
         sa.CheckConstraint(
             "failed_attempts >= 0", name=op.f("ck_phone_enrolments_failed_attempts_non_negative")

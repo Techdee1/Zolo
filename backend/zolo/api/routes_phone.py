@@ -30,7 +30,7 @@ def _service(services: ServicesDep) -> PhoneService:
     return PhoneService(services.settings, services.consent, services.consent.audio)
 
 
-def _out(view: CallView) -> PhoneCallOut:
+def _out(view: CallView, lang: str) -> PhoneCallOut:
     return PhoneCallOut(
         call_id=view.call_id,
         stage=view.stage,
@@ -40,6 +40,7 @@ def _out(view: CallView) -> PhoneCallOut:
         ],
         done=view.done,
         outcome=view.outcome,
+        lang=lang,
     )
 
 
@@ -98,7 +99,8 @@ async def start_call(
     body: PhoneCallIn, principal: CustomerDep, session: DbDep, services: ServicesDep
 ) -> PhoneCallOut:
     service = _service(services)
-    return _out(await service.start(session, principal.id, body.request_id))
+    view = await service.start(session, principal.id, body.request_id)
+    return _out(view, (await service.enrolment(session, principal.id)).language)
 
 
 @router.post(
@@ -118,4 +120,5 @@ async def press_keys(
         cid = uuid.UUID(call_id)
     except ValueError:
         raise ApiError(404, ErrorCode.NOT_FOUND, "Not found") from None
-    return _out(await service.press(session, principal.id, cid, body.digits))
+    view = await service.press(session, principal.id, cid, body.digits)
+    return _out(view, (await service.enrolment(session, principal.id)).language)

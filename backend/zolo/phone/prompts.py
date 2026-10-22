@@ -8,7 +8,7 @@ from typing import Literal
 
 from zolo.consent.audio import AudioLookup
 
-CallLang = Literal["en", "pcm"]
+CallLang = Literal["en", "pcm", "yo"]
 _FILE = Path(__file__).resolve().parents[1] / "ai" / "readbacks" / "status_phrases.json"
 _PHRASES: dict[str, dict[str, str]] = json.loads(_FILE.read_text("utf-8"))["phrases"]
 

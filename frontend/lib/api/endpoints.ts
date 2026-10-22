@@ -97,7 +97,7 @@ export const demoTimeline = (token: string, id: string, o: Opts = {}) =>
 
 // ── Phone-call approval (a flagged channel: every call answers 404 while it is off) ───────────
 export const getPhoneEnrolment = (o: Opts = {}) => api("/phone/enrolment", phoneEnrolmentSchema, o);
-export const enrolPhone = (phone: string, pin: string, language: "en" | "pcm") =>
+export const enrolPhone = (phone: string, pin: string, language: "en" | "pcm" | "yo") =>
   api("/phone/enrol", phoneEnrolmentSchema, { body: { phone, pin, language } });
 export const startPhoneCall = (requestId: string) =>
   api("/phone/calls", phoneCallSchema, { body: { request_id: requestId } });

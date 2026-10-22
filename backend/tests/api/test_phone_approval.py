@@ -355,3 +355,35 @@ def test_weak_pins(pin: str, weak: bool) -> None:
 
 def test_the_naira_unit_is_what_the_call_cap_assumes() -> None:
     assert Settings.model_fields["call_channel_cap_kobo"].default == 20_000 * NAIRA
+
+
+# ======================================================================= Yoruba
+
+
+async def test_a_yoruba_call_uses_the_yoruba_prompts_and_still_needs_the_pin(
+    agent: AsyncClient, customer: AsyncClient
+) -> None:
+    r = await enrol(customer, language="yo")
+    assert r.json()["language"] == "yo"
+    request_id = await claimed(agent, customer)
+    call = await ring(customer, request_id)
+    assert call["lang"] == "yo"
+    by_key = {p["key"]: p["text"] for p in call["prompts"]}
+    assert "Zolo" in by_key["intro"] and "tẹ ọ̀kan" in by_key["menu"]  # not the English lines
+    assert call["expects"] == "choice" and await state(customer, request_id) == "READ_BACK"
+    asked = await keys(customer, call, "1")
+    assert asked["lang"] == "yo" and asked["expects"] == "pin"
+    done = await keys(customer, call, PIN)
+    assert done["outcome"] == "approved" and await state(customer, request_id) == "SETTLED"
+
+
+async def test_a_wrong_pin_is_told_in_yoruba_and_sends_nothing(
+    agent: AsyncClient, customer: AsyncClient
+) -> None:
+    await enrol(customer, language="yo")
+    request_id = await claimed(agent, customer)
+    call = await ring(customer, request_id)
+    await keys(customer, call, "1")
+    wrong = await keys(customer, call, "2580")
+    assert wrong["prompts"][0]["key"] == "wrong_pin" and "O dìgbà" in wrong["prompts"][0]["text"]
+    assert await state(customer, request_id) == "READ_BACK"

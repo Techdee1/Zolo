@@ -433,6 +433,7 @@ export function createFakeBackend(options: FakeOptions = {}) {
           prompts,
           done: stage === "done",
           outcome,
+          lang: "en",
         });
       if (method === "GET" && path === "/phone/enrolment")
         return json(200, {

@@ -579,6 +579,13 @@ export interface components {
              * @enum {string}
              */
             expects: "choice" | "pin" | "none";
+            /**
+             * Lang
+             * @description The language of the prompts
+             * @default en
+             * @enum {string}
+             */
+            lang: "en" | "pcm" | "yo";
             /** Outcome */
             outcome?: ("approved" | "declined" | "ended") | null;
             /** Prompts */
@@ -596,7 +603,7 @@ export interface components {
              * @default en
              * @enum {string}
              */
-            language: "en" | "pcm";
+            language: "en" | "pcm" | "yo";
             /**
              * Phone
              * @example +2348011111111
@@ -623,7 +630,7 @@ export interface components {
              * @default en
              * @enum {string}
              */
-            language: "en" | "pcm";
+            language: "en" | "pcm" | "yo";
             /**
              * Locked
              * @default false

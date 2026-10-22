@@ -42,7 +42,19 @@
       "paid": "A ti san án. Owó náà ti kúrò nínú àkọọ́lẹ̀ rẹ.",
       "declined": "O kọ̀. A kò fi nǹkan kankan ránṣẹ́.",
       "expired": "Ìbéèrè yìí ti parí. A kò fi nǹkan kankan ránṣẹ́.",
-      "processing": "À ń ṣe é lọ́wọ́. Má ṣe fún ẹnikẹ́ni ní ẹrù rẹ̀ sibẹ̀."
+      "processing": "À ń ṣe é lọ́wọ́. Má ṣe fún ẹnikẹ́ni ní ẹrù rẹ̀ sibẹ̀.",
+      "call_intro": "Zolo ni èyí. Ẹnìkan ti béèrè fún owó láti inú àkọọ́lẹ̀ rẹ.",
+      "call_menu": "Láti fọwọ́ sí i, tẹ ọ̀kan. Láti kọ̀, tẹ méjì. Láti gbọ́ ọ lẹ́ẹ̀kan sí i, tẹ mẹ́sàn-án.",
+      "call_privacy": "Rí i dájú pé ẹnikẹ́ni kò gbọ́ ọ.",
+      "call_pin": "Tẹ nọ́ńbà ìdánimọ̀ Zolo oní-nọ́ńbà mẹ́rin rẹ báyìí.",
+      "call_wrong_pin": "Nọ́ńbà ìdánimọ̀ yẹn kò tọ́. A kò fi nǹkankan ránṣẹ́. O dìgbà.",
+      "call_locked": "A ti ti ìfọwọ́sí lórí fóònù fún ìgbà díẹ̀. A kò fi nǹkankan ránṣẹ́. O dìgbà.",
+      "call_approved": "A ti fọwọ́ sí i. O dìgbà.",
+      "call_declined": "O ti kọ̀. A kò fi nǹkankan ránṣẹ́. O dìgbà.",
+      "call_changed": "Ìsanwó yìí ti yípadà. A kò fi nǹkankan ránṣẹ́. O dìgbà.",
+      "call_expired": "Ìbéèrè yìí ti parí àkókò. A kò fi nǹkankan ránṣẹ́. O dìgbà.",
+      "call_limit": "Ìsanwó yìí ju ààlà fóònù lọ. A kò fi nǹkankan ránṣẹ́. O dìgbà.",
+      "call_none": "A kò fọwọ́ sí ìsanwó kankan. A kò fi nǹkankan ránṣẹ́. O dìgbà."
     },
     "ha": {
       "paid": "An biya. Kuɗin ya fita daga asusunka.",

@@ -70,11 +70,11 @@ def status_lines() -> list[tuple[Lang, str]]:
 
 
 def call_lines() -> list[tuple[Lang, str]]:
-    """The phone-approval prompts: English and Pidgin only (the call is spoken in those two)."""
+    """The phone-approval prompts: English, Pidgin and Yoruba (the three call languages)."""
     spec = json.loads(_PHRASES.read_text(encoding="utf-8"))["phrases"]
     return [
         (lang, spec[lang][k])
-        for lang in ("en", "pcm")
+        for lang in ("en", "pcm", "yo")
         for k in sorted(spec[lang])
         if k.startswith("call_")
     ]
@@ -148,8 +148,11 @@ def dry_run(settings: Settings) -> None:
     print(f"characters to synthesize: {chars}")
 
 
-def render(settings: Settings) -> int:
+def render(settings: Settings, only: str | None = None, lang: str | None = None) -> int:
     clips, _ = choose(settings)
+    clips = [
+        c for c in clips if (only is None or c.group == only) and (lang is None or c.lang == lang)
+    ]
     tts, cache = RoutingTTS(settings), AudioCache(settings.audio_cache_dir)
     todo = [c for c in clips if cache.get(key_for(tts, settings, c)) is None]
     print(f"{len(clips)} clips, {len(clips) - len(todo)} cached, {len(todo)} to render", flush=True)
@@ -244,6 +247,8 @@ def log_audio_inventory() -> None:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true", help="counts and voices, no credits")
+    ap.add_argument("--only", help="render just this group: script, status, call or amounts")
+    ap.add_argument("--lang", help="render just this language")
     ap.add_argument("--export", type=Path, help="copy the set into this folder")
     args = ap.parse_args()
     load_dotenv()
@@ -253,7 +258,7 @@ def main() -> int:
         return 0
     if args.export:
         return export(settings, args.export)
-    return render(settings)
+    return render(settings, args.only, args.lang)
 
 
 if __name__ == "__main__":

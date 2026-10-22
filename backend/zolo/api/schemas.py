@@ -149,13 +149,13 @@ class PhoneEnrolIn(BaseModel):
     pin: str = Field(
         pattern=r"^[0-9]{4}$", description="A four digit Zolo PIN: not a card or bank PIN"
     )
-    language: Literal["en", "pcm"] = "en"
+    language: Literal["en", "pcm", "yo"] = "en"
 
 
 class PhoneEnrolmentOut(BaseModel):
     enabled: bool = Field(default=True, description="False while phone approval is switched off")
     enrolled: bool
-    language: Literal["en", "pcm"] = "en"
+    language: Literal["en", "pcm", "yo"] = "en"
     phone_last4: str = ""
     locked: bool = False
     paused: bool = Field(default=False, description="The number was changed recently")
@@ -184,3 +184,6 @@ class PhoneCallOut(BaseModel):
     prompts: list[CallPromptOut]
     done: bool
     outcome: Literal["approved", "declined", "ended"] | None = None
+    lang: Literal["en", "pcm", "yo"] = Field(
+        default="en", description="The language of the prompts"
+    )
