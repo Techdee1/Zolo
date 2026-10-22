@@ -28,7 +28,7 @@ export type BadgeVariant =
   | "changed"
   | "failed";
 
-const STYLE: Record<BadgeVariant, { icon: LucideIcon; tone: string }> = {
+export const STYLE: Record<BadgeVariant, { icon: LucideIcon; tone: string }> = {
   verified: { icon: BadgeCheck, tone: "text-zolo-success" },
   paid: { icon: CheckCircle2, tone: "text-zolo-success" },
   waiting: { icon: Clock, tone: "text-zolo-secondary" },
@@ -54,7 +54,7 @@ export function Badge({
     <span
       data-variant={variant}
       className={cn(
-        "type-caption inline-flex items-center gap-1.5 rounded-full border border-zolo-separator bg-zolo-grouped px-3 py-1",
+        "type-caption inline-flex items-center gap-1.5 rounded-full border border-zolo-separator bg-zolo-elevated px-3 py-1",
         tone,
         className,
       )}

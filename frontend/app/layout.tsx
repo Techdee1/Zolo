@@ -15,8 +15,8 @@ export const viewport: Viewport = {
   viewportFit: "cover",
   colorScheme: "light dark",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
-    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+    { media: "(prefers-color-scheme: light)", color: "#F5F5F7" },
+    { media: "(prefers-color-scheme: dark)", color: "#111113" },
   ],
   // No maximumScale / userScalable: people must be able to pinch-zoom (WCAG 1.4.4).
 };
@@ -32,7 +32,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <a href="#main" className="skip-link">
           Skip to main content
         </a>
-        <LiveRegionProvider>{children}</LiveRegionProvider>
+        <LiveRegionProvider>
+          <div className="app-frame">{children}</div>
+        </LiveRegionProvider>
       </body>
     </html>
   );

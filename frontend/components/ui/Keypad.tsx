@@ -27,9 +27,8 @@ export type KeypadProps = {
 };
 
 const KEY =
-  "inline-flex min-h-14 items-center justify-center rounded-zolo-control " +
-  "bg-zolo-grouped text-zolo-text border border-zolo-separator touch-manipulation select-none tabular-nums " +
-  "transition-transform duration-100 ease-out active:scale-(--motion-press-scale)";
+  "inline-flex min-h-14 items-center justify-center rounded-zolo-card " +
+  "press bg-zolo-elevated text-zolo-text shadow-zolo-card touch-manipulation select-none tabular-nums";
 const DIGIT = cn(KEY, "type-title");
 
 const ROWS: Digit[][] = [

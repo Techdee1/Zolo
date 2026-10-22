@@ -12,6 +12,7 @@
   --color-zolo-brand-text: var(--color-brand-text);
   --color-zolo-graphite: var(--color-graphite);
   --color-zolo-bg: var(--color-bg);
+  --color-zolo-backdrop: var(--color-bg-backdrop);
   --color-zolo-grouped: var(--color-bg-grouped);
   --color-zolo-elevated: var(--color-bg-elevated);
   --color-zolo-text: var(--color-text);
@@ -25,13 +26,15 @@
   --radius-zolo-control: var(--radius-control);
   --radius-zolo-card: var(--radius-card);
   --radius-zolo-sheet: var(--radius-sheet);
+  --shadow-zolo-card: var(--shadow-card);
+  --shadow-zolo-primary: var(--shadow-primary);
   --font-sans: var(--font-sans);
 }
 
 html {
   font-family: var(--font-sans);
   font-optical-sizing: auto;
-  background: var(--color-bg);
+  background: var(--color-bg-backdrop);
   color: var(--color-text);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -50,7 +53,26 @@ body {
   outline-offset: var(--focus-offset);
 }
 
+/* A heading that focus is moved to (tabindex -1) is a landmark for the screen reader, not a control:
+   it gets no ring. Everything people can operate keeps the ring above. */
+:is(h1, h2)[tabindex="-1"]:focus-visible {
+  outline: none;
+}
+
 /* ── Type styles. Size, weight, leading and tracking always travel together. ───────────────── */
+.type-hero {
+  font-size: var(--type-hero-size);
+  font-weight: var(--type-hero-weight);
+  line-height: var(--type-hero-leading);
+  letter-spacing: var(--type-hero-tracking);
+  font-variant-numeric: tabular-nums;
+}
+.type-display {
+  font-size: var(--type-display-size);
+  font-weight: var(--type-display-weight);
+  line-height: var(--type-display-leading);
+  letter-spacing: var(--type-display-tracking);
+}
 .type-amount {
   font-size: var(--type-amount-size);
   font-weight: var(--type-amount-weight);
@@ -97,16 +119,63 @@ body {
   letter-spacing: var(--type-caption-tracking);
 }
 
-/* ── Layout ─────────────────────────────────────────────────────────────────────────────────── */
+/* ── Layout ─────────────────────────────────────────────────────────────────────────────────
+   The app is a phone-sized column. On a phone it fills the screen; on a wide screen it sits
+   centred on the backdrop as a quiet frame. Agent screens carry a faint graphite tint. ──────── */
+.app-frame {
+  position: relative;
+  min-height: 100dvh;
+  max-width: var(--layout-max);
+  margin-inline: auto;
+  background: var(--color-bg-grouped);
+  overflow-x: clip;
+}
+.screen:has(.action-bar) {
+  padding-block-end: 0; /* the bottom action area sits flush with the bottom edge */
+}
+.app-frame:has([data-role="agent"]) {
+  background: var(--tint-agent);
+}
+@media (min-width: 40rem) {
+  .app-frame {
+    min-height: calc(100dvh - var(--space-12));
+    margin-block: var(--space-6);
+    border-radius: var(--radius-sheet);
+    box-shadow: var(--shadow-frame);
+  }
+}
 .screen h1,
 .screen h2 {
   overflow-wrap: anywhere; /* a long word at 200% text must wrap, not push the page sideways */
 }
 .screen {
-  max-width: var(--layout-max);
-  margin-inline: auto;
   padding-inline: var(--space-screen-x);
-  padding-block: var(--space-8);
+  padding-block: var(--space-6) var(--space-8);
+}
+
+/* Press feedback: instant on pointer-down, then a small spring on release. Under reduced motion the
+   scale is 1 and the release has no duration, so nothing moves. Only transform is animated. */
+.press {
+  transition: transform var(--motion-release-duration) var(--motion-spring-ease);
+}
+.press:active {
+  transform: scale(var(--motion-press-scale));
+  transition-duration: var(--motion-press-duration);
+  transition-timing-function: ease-out;
+}
+
+/* The bottom action area: translucent, content scrolls under it. Solid under reduced
+   transparency and more contrast (the material tokens change; nothing here does). */
+.action-bar {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: 10;
+  margin-inline: calc(var(--space-screen-x) * -1);
+  padding: var(--space-3) var(--space-screen-x) calc(var(--space-3) + env(safe-area-inset-bottom));
+  background: var(--material-bg);
+  -webkit-backdrop-filter: var(--material-filter);
+  backdrop-filter: var(--material-filter);
+  border-top: var(--border-width) solid var(--color-separator);
 }
 
 /* ── Visually hidden but read by screen readers ────────────────────────────────────────────── */
@@ -141,10 +210,12 @@ body {
   inset-block-start: var(--space-4);
 }
 
-/* ── The scaffold's placeholder page (replaced by real screens) ─────────────────────────────── */
+/* ── Wordmark and the small role label ──────────────────────────────────────────────────────── */
 .wordmark {
   font-weight: 700;
-  margin: 0 0 var(--space-8);
+  font-size: var(--type-headline-size);
+  letter-spacing: -0.02em;
+  margin: 0;
 }
 .wordmark-sub {
   font-size: var(--type-caption-size);

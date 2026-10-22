@@ -15,6 +15,7 @@
   --color-brand-text: #d7191e; /* red text and icons on the page background */
   --color-graphite: #3a3a3c; /* brand secondary surfaces: agent header, chips */
   --color-bg: #ffffff;
+  --color-bg-backdrop: #e9e9ee; /* the desk the phone-sized frame sits on, on wide screens */
   --color-bg-grouped: #f5f5f7;
   --color-bg-elevated: #ffffff;
   --color-text: #1c1c1e;
@@ -29,6 +30,16 @@
   /* ── Typography ─────────────────────────────────────────────────────────────────────────────
      System fonts only (no web fonts). All sizes in rem so they follow the user's text size. */
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", Roboto, "Segoe UI", sans-serif;
+
+  --type-hero-size: 4.5rem; /* the amount on the review and Paid screens: the biggest thing there */
+  --type-hero-weight: 700;
+  --type-hero-leading: 1;
+  --type-hero-tracking: -0.035em;
+
+  --type-display-size: 2.125rem; /* a screen's heading on home and the chooser */
+  --type-display-weight: 700;
+  --type-display-leading: 1.08;
+  --type-display-tracking: -0.025em;
 
   --type-amount-size: 3.5rem;
   --type-amount-weight: 700;
@@ -96,6 +107,12 @@
   --material-bg: color-mix(in srgb, var(--color-bg) 72%, transparent);
   --material-filter: blur(20px) saturate(180%);
 
+  /* ── Depth: a soft two-layer shadow for cards (none in dark, where a hairline does the work) ── */
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.04), 0 6px 20px rgb(0 0 0 / 0.06);
+  --shadow-frame: 0 2px 6px rgb(0 0 0 / 0.06), 0 24px 60px rgb(0 0 0 / 0.12);
+  --shadow-primary: 0 1px 2px rgb(179 20 26 / 0.3), 0 8px 18px rgb(215 25 30 / 0.22);
+  --tint-agent: #f1f4fa; /* agent screens: the grouped background with a faint cool slate cast */
+
   /* ── Motion: springs for anything that moves; only transform and opacity are animated. ─────
         damping 1.0 = critically damped, no overshoot. Response is seconds, not a duration.
         These numbers are mirrored in lib/motion.ts, and a test keeps the two in step. ── */
@@ -104,7 +121,9 @@
   --motion-sheet-damping: 0.8;
   --motion-sheet-response: 0.3;
   --motion-press-scale: 0.97; /* feedback on pointer-down, not on release */
-  --motion-press-duration: 100ms;
+  --motion-press-duration: 90ms;
+  --motion-release-duration: 420ms; /* letting go settles back with a small spring */
+  --motion-spring-ease: linear(0, 0.42 8%, 0.86 18%, 1.05 30%, 1.03 42%, 0.995 62%, 1);
   --motion-fade-duration: 150ms; /* what motion becomes under reduced motion: a short fade */
 }
 
@@ -113,6 +132,11 @@
   :root {
     --color-brand-text: #ff5a5f;
     --color-bg: #000000;
+    --color-bg-backdrop: #000000;
+    --tint-agent: #12151c;
+    --shadow-card: 0 0 0 1px rgb(255 255 255 / 0.05);
+    --shadow-frame: 0 0 0 1px rgb(255 255 255 / 0.08);
+    --shadow-primary: 0 8px 20px rgb(215 25 30 / 0.28);
     --color-bg-grouped: #111113;
     --color-bg-elevated: #1c1c1e;
     --color-text: #f5f5f7;
@@ -130,6 +154,7 @@
 @media (prefers-reduced-motion: reduce) {
   :root {
     --motion-press-scale: 1;
+    --motion-release-duration: 0ms;
   }
 }
 

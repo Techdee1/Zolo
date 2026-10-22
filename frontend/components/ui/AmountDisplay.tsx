@@ -29,7 +29,7 @@ export type AmountDisplayProps = {
 };
 
 const SIZES: Record<Size, string> = {
-  hero: "type-amount",
+  hero: "type-hero",
   large: "type-headline tabular-nums",
   inline: "tabular-nums",
 };
@@ -58,4 +58,9 @@ export function AmountDisplay({
       )}
     </span>
   );
+}
+
+/** The big amount on a result screen: digits for the eye, words under them and for the ear. */
+export function HeroAmount({ kobo, unit, words }: { kobo: number; unit: string; words?: string }) {
+  return <AmountDisplay kobo={kobo} unit={unit} words={words} size="hero" showWords />;
 }

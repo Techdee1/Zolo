@@ -31,17 +31,18 @@ export type ButtonProps = Omit<ComponentProps<"button">, "disabled" | "children"
 };
 
 const BASE =
-  "relative inline-flex select-none items-center justify-center gap-2 rounded-zolo-control px-6 " +
+  "press relative inline-flex select-none items-center justify-center gap-2 rounded-zolo-control px-6 " +
   "type-body font-semibold touch-manipulation " +
-  "transition-transform duration-100 ease-out active:scale-(--motion-press-scale) " +
   "aria-disabled:cursor-not-allowed aria-disabled:active:scale-100";
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "min-h-(--target-primary) w-full bg-zolo-brand text-zolo-on-brand active:bg-zolo-brand-pressed " +
-    "aria-disabled:bg-zolo-grouped aria-disabled:text-zolo-secondary aria-disabled:active:bg-zolo-grouped",
+    "min-h-(--target-primary) w-full rounded-[16px] bg-zolo-brand text-zolo-on-brand shadow-zolo-primary " +
+    "active:bg-zolo-brand-pressed " +
+    "aria-disabled:border aria-disabled:border-zolo-separator aria-disabled:bg-zolo-elevated " +
+    "aria-disabled:text-zolo-secondary aria-disabled:shadow-none aria-disabled:active:bg-zolo-elevated",
   secondary:
-    "min-h-(--target-min) bg-zolo-grouped text-zolo-text border border-zolo-separator " +
+    "min-h-(--target-min) bg-zolo-elevated text-zolo-text border border-zolo-separator shadow-zolo-card " +
     "aria-disabled:text-zolo-secondary",
   tertiary:
     "min-h-(--target-min) bg-transparent text-zolo-text underline-offset-4 hover:underline aria-disabled:text-zolo-secondary",

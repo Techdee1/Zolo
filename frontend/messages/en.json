@@ -33,15 +33,14 @@
     "title": "What do you want to do?",
     "payAgent": "Pay an agent",
     "payAgentHint": "Type the 4-digit code the agent gives you",
-    "setupPasskey": "Set up your passkey",
     "recent": "Recent payments",
     "recentEmpty": "No payments yet.",
-    "switchUser": "Switch demo user",
     "today": "today",
     "yesterday": "yesterday",
     "itemPaid": "Paid {amountWords} to {payee}, {when}",
     "itemDeclined": "Declined {amountWords} to {payee}, {when}",
-    "itemNotPaid": "Not paid: {amountWords} to {payee}, {when}"
+    "itemNotPaid": "Not paid: {amountWords} to {payee}, {when}",
+    "recentEmptyHint": "Payments you approve will show here."
   },
   "pay": {
     "title": "Pay an agent",
@@ -77,7 +76,8 @@
     "noPasskey": "You need a passkey first.",
     "unavailable": "This request is not available.",
     "approveSpoken": "Approve {amountWords} to {payee}",
-    "titleSpoken": "{payee} is asking for {amountWords}"
+    "titleSpoken": "{payee} is asking for {amountWords}",
+    "askingFor": "is asking for"
   },
   "result": {
     "paid": "Paid. You sent {amount} to {payee}.",
@@ -112,7 +112,9 @@
       "limit": "Not sent",
       "blocked": "Stopped",
       "rejected": "Not accepted"
-    }
+    },
+    "paidFrom": "to {payee}",
+    "paidShort": "Paid"
   },
   "passkey": {
     "title": "Set up your passkey",
@@ -127,7 +129,15 @@
     "already": "This phone already has your passkey.",
     "unsupported": "This browser cannot use passkeys. Open Zolo in Chrome or Safari.",
     "noLock": "This phone has no screen lock we can use. Turn on a fingerprint, face or screen lock in your phone settings, then come back.",
-    "failed": "We could not set up your passkey. Try again."
+    "failed": "We could not set up your passkey. Try again.",
+    "rowTitle": "Passkey",
+    "statusOn": "Set up on this phone",
+    "statusOff": "Not set up",
+    "actionOn": "Replace",
+    "actionOff": "Set up",
+    "needTitle": "Set up your passkey first",
+    "needBody": "You approve payments with your fingerprint, face or screen lock. It takes a few seconds, and then you come straight back here.",
+    "needAction": "Set up passkey"
   },
   "agent": {
     "title": "New request",
@@ -168,7 +178,8 @@
       "declined": "Declined",
       "expired": "Expired",
       "failed": "Not paid"
-    }
+    },
+    "paidAt": "Received at {time}"
   },
   "demo": {
     "title": "Demo console",
@@ -188,5 +199,16 @@
     "ok": "{action}: done.",
     "refused": "{action}: refused ({code}).",
     "resetDone": "Reset: done. {customers} customer and {agents} agent restored."
+  },
+  "role": {
+    "customer": "Customer",
+    "agent": "Agent"
+  },
+  "demoMenu": {
+    "open": "Demo tools",
+    "title": "Demo tools",
+    "close": "Close demo tools",
+    "switchUser": "Switch demo user",
+    "console": "Demo console"
   }
 }
