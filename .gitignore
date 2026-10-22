@@ -11,3 +11,4 @@ backend/var/
 htmlcov/
 coverage.json
 docs/HANDOFF.md
+/HANDOFF.md

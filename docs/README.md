@@ -6,6 +6,7 @@
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | System design: components, the payment sequence, the state machine, the intent hash, data model |
 | [`DESIGN_DECISIONS.md`](DESIGN_DECISIONS.md) | Why it is built this way, and what each choice costs |
 | [`BACKEND.md`](BACKEND.md), [`FRONTEND.md`](FRONTEND.md) | Practical guides: endpoints, config, screens, conventions |
+| [`AI-USAGE.md`](AI-USAGE.md) | How we built Zolo, and where we used AI |
 | [`AI.md`](AI.md), [`AI_IMPLEMENTATION.md`](AI_IMPLEMENTATION.md) | Where AI is used, its boundary and safeguards; the full engineering record |
 | [`../SECURITY.md`](../SECURITY.md) | Security controls, reporting, what is not covered |
 | [`TESTING.md`](TESTING.md) | Test strategy, counts, CI |
