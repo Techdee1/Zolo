@@ -109,9 +109,15 @@ def test_the_agent_request_response_has_exactly_the_prd_fields() -> None:
 
 def test_the_readback_response_has_the_prd_fields() -> None:
     props = schema()["components"]["schemas"]["ReadbackOut"]["properties"]  # type: ignore[index]
+    assert set(props["lang"]["enum"]) == {"en", "pcm", "yo", "ha", "ig"}
+    fallback = props["fallback_from"]["anyOf"]
+    assert {"enum": ["yo", "ha", "ig"], "type": "string"} in [
+        {k: v for k, v in a.items() if k != "title"} for a in fallback
+    ]
     assert set(props) == {
         "text",
         "lang",
+        "fallback_from",
         "audio_url",
         "amount_words",
         "payee_name",

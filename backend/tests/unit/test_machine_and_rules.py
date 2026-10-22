@@ -93,12 +93,14 @@ def test_english_readback() -> None:
     )
 
 
-def test_only_english_and_pidgin_are_supported_in_phase_1() -> None:
-    assert readback_lang("pcm") == "pcm" and readback_lang("en") == "en"
-    for lang in set(LANGS) - {"en", "pcm"} | {"fr", ""}:
+def test_the_five_languages_have_readbacks_and_nothing_else_does() -> None:
+    for lang in LANGS:
+        assert readback_lang(lang) == lang
+        assert "Bisi Ventures" in build_readback(lang, "BISI VENTURES", 15_000_00).text
+    for lang in ("fr", "", "EN", "pt"):
         assert readback_lang(lang) is None
     with pytest.raises(ValueError):
-        build_readback("yo", "X", 100_00)  # type: ignore[arg-type]
+        build_readback("fr", "X", 100_00)  # type: ignore[arg-type]
 
 
 def test_spoken_name_title_cases_the_banks_capitals() -> None:

@@ -3,12 +3,15 @@ import type { Locale } from "@/lib/locales";
 export type { Locale };
 
 /**
- * The backend can only SPEAK English and Pidgin; any other `lang` is a 422. So a Yoruba, Hausa or
- * Igbo customer gets the screens in their language and the spoken readback in English, with a short
- * note saying so. We never ask for a language the backend does not have.
+ * The readback is asked for in the customer's own language. The backend answers in that language
+ * when it has a recording of the exact sentence; for Yoruba, Hausa or Igbo without one it answers in
+ * English and sets `fallback_from`, and only then does the screen say the voice is in English.
+ * Anything else the backend would refuse (422), but all five of ours are accepted.
  */
-export function readbackFor(locale: Locale): { lang: ReadbackLang; englishNote: boolean } {
-  if (locale === "pcm") return { lang: "pcm", englishNote: false };
-  if (locale === "en") return { lang: "en", englishNote: false };
-  return { lang: "en", englishNote: true };
+export function readbackFor(locale: Locale): { lang: ReadbackLang } {
+  return { lang: locale };
 }
+
+/** Did the readback fall back to English for a language the customer chose? Then say so. */
+export const fellBack = (readback: { fallback_from?: string | null }): boolean =>
+  Boolean(readback.fallback_from);

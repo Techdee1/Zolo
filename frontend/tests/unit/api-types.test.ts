@@ -36,8 +36,9 @@ describe("the backend contract, as the frontend sees it", () => {
     >();
   });
 
-  it("readback languages are only the ones the backend can voice", () => {
-    expectTypeOf<ReadbackOut["lang"]>().toEqualTypeOf<"en" | "pcm">();
+  it("a readback is in one of the five languages, and fallback_from is only Yoruba, Hausa or Igbo", () => {
+    expectTypeOf<ReadbackOut["lang"]>().toEqualTypeOf<"en" | "pcm" | "yo" | "ha" | "ig">();
+    expectTypeOf<NonNullable<ReadbackOut["fallback_from"]>>().toEqualTypeOf<"yo" | "ha" | "ig">();
   });
 
   it("the error codes the screens handle exist in the contract", () => {

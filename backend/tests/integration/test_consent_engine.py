@@ -344,7 +344,7 @@ async def test_readback_is_private_to_the_claimer_and_needs_a_supported_language
     with pytest.raises(ApiError) as stranger:
         await readback(world, made.id, customer=uuid.uuid4())
     assert await code_of(stranger) == (404, "NOT_FOUND")
-    for lang in ("yo", "fr", ""):
+    for lang in ("fr", "EN", "pt", ""):
         with pytest.raises(ApiError) as bad:
             await readback(world, made.id, lang=lang)
         assert await code_of(bad) == (422, "VALIDATION_ERROR")

@@ -87,7 +87,11 @@ class RequestOut(BaseModel):
 
 class ReadbackOut(BaseModel):
     text: str
-    lang: Literal["en", "pcm"]
+    # The language of `text`. It is the language asked for, unless `fallback_from` says otherwise.
+    lang: Literal["en", "pcm", "yo", "ha", "ig"]
+    # Set (to the language asked for) when it was Yoruba, Hausa or Igbo and there is no recording
+    # of this exact sentence: `text` is then the English readback. Null when the language is served.
+    fallback_from: Literal["yo", "ha", "ig"] | None = None
     audio_url: str | None = None
     amount_words: str
     payee_name: str

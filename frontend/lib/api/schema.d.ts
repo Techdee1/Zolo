@@ -318,7 +318,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** The readback text (and audio if pre-rendered); moves the request to READ_BACK */
+        /** The readback text (and audio if rendered); moves the request to READ_BACK */
         get: operations["readback_requests__request_id__readback_get"];
         put?: never;
         post?: never;
@@ -505,11 +505,13 @@ export interface components {
              * Format: date-time
              */
             expires_at: string;
+            /** Fallback From */
+            fallback_from?: ("yo" | "ha" | "ig") | null;
             /**
              * Lang
              * @enum {string}
              */
-            lang: "en" | "pcm";
+            lang: "en" | "pcm" | "yo" | "ha" | "ig";
             /** Payee Name */
             payee_name: string;
             /** Text */
@@ -1671,7 +1673,7 @@ export interface operations {
     readback_requests__request_id__readback_get: {
         parameters: {
             query?: {
-                /** @description en or pcm */
+                /** @description en, pcm, yo, ha or ig. Yoruba, Hausa and Igbo come back in that language only when a recording of the exact sentence exists; otherwise the English readback comes back with `fallback_from` set. */
                 lang?: string;
             };
             header?: never;
@@ -1736,7 +1738,7 @@ export interface operations {
                     "application/json": components["schemas"]["Problem"];
                 };
             };
-            /** @description VALIDATION_ERROR: language must be en or pcm */
+            /** @description VALIDATION_ERROR: language must be en, pcm, yo, ha or ig */
             422: {
                 headers: {
                     [name: string]: unknown;

@@ -1,4 +1,4 @@
-"""Readback text: fixed templates (en, pcm) filled from the stored request row.
+"""Readback text: fixed templates (en, pcm, yo, ha, ig) filled from the stored request row.
 
 What the customer hears and what the passkey signs both come from the same row, read once.
 The wording lives in the AI package's versioned template files so the pre-rendered audio and
@@ -11,7 +11,12 @@ from zolo.ai.nlu.words import kobo_to_naira_words
 from zolo.ai.readbacks import render_readback
 from zolo.ai.types import Lang
 
-READBACK_LANGS: tuple[Lang, ...] = ("en", "pcm")  # Phase 1; more languages need native review
+READBACK_LANGS: tuple[Lang, ...] = ("en", "pcm", "yo", "ha", "ig")
+# English and Pidgin always have a voice if one can be rendered. Yoruba, Hausa and Igbo are offered
+# only when their exact clip already exists: otherwise the customer gets the English readback and a
+# field saying so, because a screen reader would mispronounce them. See ConsentService.get_readback.
+CLIP_ONLY_LANGS: tuple[Lang, ...] = ("yo", "ha", "ig")
+FALLBACK_LANG: Lang = "en"
 
 
 @dataclass(frozen=True)

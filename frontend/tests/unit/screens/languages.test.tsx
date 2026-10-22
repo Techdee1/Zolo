@@ -81,7 +81,9 @@ for (const locale of LOCALES.filter((l) => l !== "en")) {
 
 describe("the spoken readback follows the language, and only asks for what the backend has", () => {
   const requested = async (locale: Locale) => {
+    const native = fake.nativeClips;
     fake.reset();
+    fake.setNativeClips(native);
     await claimedRequest(fake);
     const spy = vi.spyOn(globalThis, "fetch");
     renderScreen(<ReviewScreen id={[...fake.requests.keys()][0]!} />, locale);
@@ -96,10 +98,31 @@ describe("the spoken readback follows the language, and only asks for what the b
     expect(await requested("en")).toContain("lang=en");
   });
 
-  it("Yoruba, Hausa and Igbo ask for English, and show the note that the voice is in English for now", async () => {
+  it("Yoruba, Hausa and Igbo ask for their own language, and the backend decides what comes back", async () => {
     for (const l of ["yo", "ha", "ig"] as const) {
-      expect(await requested(l)).toContain("lang=en");
+      expect(await requested(l)).toContain(`lang=${l}`);
+      document.body.innerHTML = "";
+    }
+  });
+
+  it("when there is no recording, the English readback comes back and the note says the voice is in English", async () => {
+    for (const l of ["yo", "ha", "ig"] as const) {
+      fake.setNativeClips(false);
+      await requested(l);
       expect(screen.getByText(say(l, "review.englishNote"))).toBeInTheDocument();
+      expect(document.getElementById("readback-text")).toHaveAttribute("lang", "en");
+      expect(document.getElementById("readback-text")).toHaveTextContent(/is asking for/);
+      document.body.innerHTML = "";
+    }
+  });
+
+  it("when the recording exists, the readback is in the customer's language and there is NO note", async () => {
+    for (const l of ["yo", "ha", "ig"] as const) {
+      fake.setNativeClips(true);
+      await requested(l);
+      expect(screen.queryByText(say(l, "review.englishNote"))).not.toBeInTheDocument();
+      expect(document.getElementById("readback-text")).toHaveAttribute("lang", l);
+      expect(document.getElementById("readback-text")).not.toHaveTextContent(/is asking for/);
       document.body.innerHTML = "";
     }
   });

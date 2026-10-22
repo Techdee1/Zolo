@@ -19,7 +19,7 @@ import { genericErrorKey, redirectIfSignedOut } from "@/lib/errors";
 import { formatNaira } from "@/lib/format/money";
 import { amountSpoken } from "@/lib/format/words";
 import { useLocale, useT, type MessageKey } from "@/lib/i18n";
-import { readbackFor } from "@/lib/readback-lang";
+import { fellBack, readbackFor } from "@/lib/readback-lang";
 import { classifyPasskeyError, signWithPasskey } from "@/lib/passkeys";
 import { usePasskeyKnown, setPasskeyKnown } from "@/lib/passkey-status";
 import { resultPath } from "@/lib/result-reason";
@@ -31,7 +31,7 @@ const audioSrc = (url: string | null | undefined) =>
 
 export function ReviewScreen({ id }: { id: string }) {
   const t = useT();
-  const { lang, englishNote } = readbackFor(useLocale());
+  const { lang } = readbackFor(useLocale());
   const passkey = usePasskeyKnown();
   const router = useRouter();
   const announce = useAnnounce();
@@ -188,10 +188,12 @@ export function ReviewScreen({ id }: { id: string }) {
           {t("review.readbackHeading")}
         </h2>
         {/* Not a live region: the voice or the screen reader reads it once, on purpose. */}
-        <p id="readback-text" className="type-body m-0">
+        <p id="readback-text" lang={readback.lang} className="type-body m-0">
           {readback.text}
         </p>
-        {englishNote ? <p className="type-secondary m-0">{t("review.englishNote")}</p> : null}
+        {fellBack(readback) ? (
+          <p className="type-secondary m-0">{t("review.englishNote")}</p>
+        ) : null}
         {voice.hasAudio ? (
           <div className="mt-2">
             <Button variant="secondary" onClick={voice.play}>

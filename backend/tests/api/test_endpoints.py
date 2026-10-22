@@ -463,12 +463,12 @@ async def test_the_readback_in_pidgin_and_english(
     assert en["text"].startswith("Bisi Ventures is asking for fifteen thousand naira")
 
 
-async def test_unsupported_languages_and_other_peoples_requests(
+async def test_unknown_languages_and_other_peoples_requests(
     agent: AsyncClient, customer: AsyncClient, api: FastAPI
 ) -> None:
     made = await new_request(agent)
     await customer.post("/requests/claim", json={"claim_code": made["claim_code"]})
-    assert problem(await customer.get(f"/requests/{made['id']}/readback?lang=yo")) == (
+    assert problem(await customer.get(f"/requests/{made['id']}/readback?lang=fr")) == (
         422,
         "VALIDATION_ERROR",
     )

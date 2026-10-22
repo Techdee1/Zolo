@@ -118,36 +118,37 @@ Do you want to approve?") is built by the backend. Its audio is a YarnGPT clip s
 by a hash of *provider, language, voice and the exact words*. The readback endpoint only **looks up**
 that file, never renders it: rendering takes 3 to 7 seconds and must never sit on the approval path.
 
-- **Languages.** The backend can speak **English and Pidgin** (`en`, `pcm`). Yoruba, Hausa and Igbo
-  customers get the screens in their language and the readback in English, with a note saying so. The
-  frontend never asks for a language the backend does not have.
+- **Languages.** English, Pidgin, Yoruba, Hausa and Igbo are all accepted (`?lang=en|pcm|yo|ha|ig`).
+  English and Pidgin always return their text, with audio when a clip exists. **Yoruba, Hausa and Igbo
+  return in that language only when a recording of the exact sentence exists**; otherwise the English
+  readback comes back with `fallback_from` set to the language asked for (never an error), and the app
+  shows a short note. Which sentences have recordings is decided by the clip set below.
 - **Amounts.** Any amount can have a voice, in two ways that work together:
   1. **On request (the default in this setup).** With `AUDIO_PRERENDER_ON_CREATE=true`, the moment an
      agent creates a request the backend renders the English and Pidgin readbacks in the background.
      The customer takes several seconds to claim and open it, and the readback also waits up to 4
      seconds for a clip that is nearly done. If a render is late or fails, the customer gets the text
      and the screen reader reads it, exactly as before. The same sentence is rendered once, ever.
-  2. **Warm the cache for common amounts** so even the first listen is instant:
-     ```bash
-     docker compose -f deploy/compose.yml --env-file deploy/.env run --rm api \
-       python -m zolo.tools.prerender_amounts --dry-run        # count first
-     docker compose -f deploy/compose.yml --env-file deploy/.env run --rm api \
-       python -m zolo.tools.prerender_amounts                  # then render (spends credits)
-     ```
-     It covers every seeded agent in both languages for every ₦500 up to ₦10,000, every ₦1,000 up to
-     ₦20,000, then every ₦5,000 up to ₦100,000 (about 180 clips), skipping any already stored. Re-run
-     it any time: it only spends credits on new sentences.
-- **Clips that ship with the code.** `backend/audio_seed/` holds clips for common amounts. At every
-  start the container copies any that are missing onto the audio disk (it never overwrites). This is
-  what keeps the common amounts spoken on a host with no disk (the free Render plan), where the cache
-  starts empty after every restart. To refresh it, on a machine with a working key:
+  2. **The clip set** (below) so the demo amounts have a voice in every language from the first listen.
+- **Clips that ship with the code.** `backend/audio_seed/` holds the clip set. At every start the
+  container copies any that are missing onto the audio disk (it never overwrites). This is what keeps
+  the demo amounts spoken on a host with no disk (the free Render plan), where the cache starts empty
+  after every restart. The set (about 160 clips, mono mp3 at 40 kbps) is:
+  the demo script lines and voice replies; the fixed status lines (paid, declined, expired,
+  processing); and the readback for every seeded agent at N2,000, N5,000, N10,000, N15,000, N20,000
+  and N50,000 in English, with N5,000 and N15,000 only for the other four languages. English and
+  Pidgin are rendered in the primary voice (`idera`) and a backup (`jude`); Yoruba, Hausa and Igbo in
+  `idera`. To switch to the backup voice, set `TTS_VOICE_EN=jude` and `TTS_VOICE_PCM=jude`. To rebuild
+  or refresh the set, on a machine with a working YarnGPT key:
   ```bash
   cd backend
-  uv run python -m zolo.tools.prerender_amounts          # renders what is missing (spends credits)
-  uv run python -m zolo.tools.prerender_amounts --export audio_seed
-  git add audio_seed && git commit -m "feat: ship the clips for common amounts"
+  uv run python -m zolo.tools.render_clips --dry-run             # exact counts and voices, no credits
+  uv run python -m zolo.tools.render_clips                       # render what is missing (credits)
+  uv run python -m zolo.tools.render_clips --export audio_seed   # copy the set into the folder
+  git add audio_seed && git commit -m "feat: ship the clip set"
   ```
-  Every clip is a hash-named mp3 of a generic sentence; a test checks nothing else ships.
+  It renders one clip at a time, skips anything already cached, waits out the provider's rate limit,
+  and stops at once if the quota runs out. A test checks nothing but the set ships.
 - **Where the clips live.** On the `audio` Docker volume (`/data/audio`), so they survive restarts and
   redeploys. The files are named by a hash and hold audio only, no readable payment details.
 - **Cost.** One YarnGPT job per new sentence: at most two per new request (English and Pidgin), and

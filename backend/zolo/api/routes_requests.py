@@ -55,14 +55,14 @@ async def claim(
 @router.get(
     "/{request_id}/readback",
     response_model=ReadbackOut,
-    summary="The readback text (and audio if pre-rendered); moves the request to READ_BACK",
+    summary="The readback text (and audio if rendered); moves the request to READ_BACK",
     responses=docs.problems(
         docs.UNAUTHENTICATED,
         docs.FORBIDDEN,
         docs.NOT_FOUND,
         (409, "STATE_CONFLICT or INTENT_CHANGED: it changed after you heard it"),
         (410, "REQUEST_EXPIRED"),
-        (422, "VALIDATION_ERROR: language must be en or pcm"),
+        (422, "VALIDATION_ERROR: language must be en, pcm, yo, ha or ig"),
     ),
 )
 async def readback(
@@ -70,7 +70,16 @@ async def readback(
     principal: CustomerDep,
     session: DbDep,
     services: ServicesDep,
-    lang: Annotated[str, Query(description="en or pcm")] = "pcm",
+    lang: Annotated[
+        str,
+        Query(
+            description=(
+                "en, pcm, yo, ha or ig. Yoruba, Hausa and Igbo come back in that language only "
+                "when a recording of the exact sentence exists; otherwise the English readback "
+                "comes back with `fallback_from` set."
+            )
+        ),
+    ] = "pcm",
 ) -> ReadbackOut:
     view: ReadbackView = await services.consent.get_readback(
         session, principal.id, request_id, lang

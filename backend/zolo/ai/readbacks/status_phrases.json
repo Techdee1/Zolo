@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "note": "Fixed status lines in the five languages, taken word for word from the frontend's message files (Yoruba, Hausa and Igbo are the natively reviewed wording). They carry no amount or name. Rendered and shipped with the other clips; nothing plays them yet.",
+  "phrases": {
+    "en": {
+      "paid": "Paid. The money has left your account.",
+      "declined": "Declined. Nothing was sent.",
+      "expired": "This request expired. Nothing was sent.",
+      "processing": "Processing. Don't hand over goods yet."
+    },
+    "pcm": {
+      "paid": "Don pay. The money don comot your account.",
+      "declined": "You don decline. We no send anything.",
+      "expired": "This request don expire. We no send anything.",
+      "processing": "We dey process am. No give person im goods yet."
+    },
+    "yo": {
+      "paid": "A ti san án. Owó náà ti kúrò nínú àkọọ́lẹ̀ rẹ.",
+      "declined": "O kọ̀. A kò fi nǹkan kankan ránṣẹ́.",
+      "expired": "Ìbéèrè yìí ti parí. A kò fi nǹkan kankan ránṣẹ́.",
+      "processing": "À ń ṣe é lọ́wọ́. Má ṣe fún ẹnikẹ́ni ní ẹrù rẹ̀ sibẹ̀."
+    },
+    "ha": {
+      "paid": "An biya. Kuɗin ya fita daga asusunka.",
+      "declined": "Ka ƙi. Ba a aika komai ba.",
+      "expired": "Wannan buƙata ta ƙare. Ba a aika komai ba.",
+      "processing": "Ana aiwatarwa. Kada ka ba da kayan tukuna."
+    },
+    "ig": {
+      "paid": "Akwụọla ụgwọ. Ego ahụ esila n'akaụntụ gị pụọ.",
+      "declined": "Ị jụrụ. Anyị zigaghị ihe ọ bụla.",
+      "expired": "Arịrịọ a agwụla. Anyị zigaghị ihe ọ bụla.",
+      "processing": "Anyị na-arụ ọrụ na ya. Ejila ngwaahịa nye onye ọ bụla ugbu a."
+    }
+  }
+}

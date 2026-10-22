@@ -79,7 +79,8 @@ export const agentRequestSchema = z.object({
 
 export const readbackSchema = z.object({
   text: z.string().min(1),
-  lang: z.enum(["en", "pcm"]),
+  lang: z.enum(["en", "pcm", "yo", "ha", "ig"]),
+  fallback_from: z.enum(["yo", "ha", "ig"]).nullish(),
   amount_words: z.string().min(1),
   payee_name: z.string(),
   amount_kobo: kobo,

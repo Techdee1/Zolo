@@ -80,6 +80,7 @@ export function createFakeBackend(options: FakeOptions = {}) {
   const now = options.now ?? Date.now;
   const ttlMs = options.ttlMs ?? 120_000;
   let audioUrl = options.audioUrl ?? null;
+  let nativeClips = false; // is there a recording of the sentence in Yoruba, Hausa and Igbo?
   let seq = 0;
   let sessions = new Map<string, { role: Role; id: string }>();
   let requests = new Map<string, Row>();
@@ -286,9 +287,15 @@ export function createFakeBackend(options: FakeOptions = {}) {
         if (r.state === "EXPIRED") return problem(410, "REQUEST_EXPIRED");
         if (r.tampered) return problem(409, "INTENT_CHANGED");
         if (r.state !== "CREATED" && r.state !== "READ_BACK") return problem(409, "STATE_CONFLICT");
-        const lang = req.query?.lang ?? "pcm";
-        if (lang !== "en" && lang !== "pcm")
-          return problem(422, "VALIDATION_ERROR", "language must be en or pcm");
+        const asked = req.query?.lang ?? "pcm";
+        if (!["en", "pcm", "yo", "ha", "ig"].includes(asked))
+          return problem(422, "VALIDATION_ERROR", "language must be en, pcm, yo, ha or ig");
+        // Like the backend: Yoruba, Hausa and Igbo come back in that language only when a recording
+        // of the exact sentence exists; otherwise the English readback, with `fallback_from` set.
+        const native = ["yo", "ha", "ig"].includes(asked);
+        const served = native && !nativeClips ? "en" : asked;
+        const fallbackFrom = native && !nativeClips ? asked : null;
+        const lang = served;
         r.state = "READ_BACK";
         record(r, "request.read_back", "customer", { lang });
         // Like the backend: `amount_words` has no "naira" (the template adds it), and the digits
@@ -315,10 +322,17 @@ export function createFakeBackend(options: FakeOptions = {}) {
         const text =
           lang === "pcm"
             ? `${r.payee} dey ask for ${words} naira. ${digits}. You wan approve?`
-            : `${r.payee} is asking for ${words} naira. ${digits}. Do you want to approve?`;
+            : lang === "yo"
+              ? `${r.payee} n bere fun ${words} naira. ${digits}. Se o fowo si i?`
+              : lang === "ha"
+                ? `${r.payee} yana neman naira ${words}. ${digits}. Kana amincewa?`
+                : lang === "ig"
+                  ? `${r.payee} na-arị naira ${words}. ${digits}. I kwenyere?`
+                  : `${r.payee} is asking for ${words} naira. ${digits}. Do you want to approve?`;
         return json(200, {
           text,
           lang,
+          fallback_from: fallbackFrom,
           amount_words: words,
           payee_name: r.payee,
           amount_kobo: r.amount,
@@ -489,6 +503,10 @@ export function createFakeBackend(options: FakeOptions = {}) {
     setAudio(url: string | null) {
       audioUrl = url;
     },
+    /** Pretend the Yoruba, Hausa and Igbo recordings exist (or not): the language is then served as asked. */
+    setNativeClips(on: boolean) {
+      nativeClips = on;
+    },
     /** The bank confirms a SUBMITTED payment. */
     settle(id: string) {
       const r = find(id);
@@ -506,8 +524,12 @@ export function createFakeBackend(options: FakeOptions = {}) {
       passkeys.clear();
       idempotent.clear();
       nextOutcome = "SETTLED";
+      nativeClips = false;
       forcedSession = null;
       lastApproval = null;
+    },
+    get nativeClips() {
+      return nativeClips;
     },
     get requests() {
       return requests;

@@ -29,10 +29,9 @@ describe("messages", () => {
 
 describe("readback language", () => {
   it("speaks English or Pidgin, and never a language the backend would refuse", () => {
-    expect(readbackFor("en")).toEqual({ lang: "en", englishNote: false });
-    expect(readbackFor("pcm")).toEqual({ lang: "pcm", englishNote: false });
-    for (const l of ["yo", "ha", "ig"] as const)
-      expect(readbackFor(l)).toEqual({ lang: "en", englishNote: true });
+    expect(readbackFor("en")).toEqual({ lang: "en" });
+    expect(readbackFor("pcm")).toEqual({ lang: "pcm" });
+    for (const l of ["yo", "ha", "ig"] as const) expect(readbackFor(l)).toEqual({ lang: l });
   });
 });
 

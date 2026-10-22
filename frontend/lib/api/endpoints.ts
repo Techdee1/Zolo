@@ -17,8 +17,9 @@ import {
 
 type Opts = { signal?: AbortSignal };
 
-/** The languages the backend can speak a readback in. Anything else is a 422. */
-export type ReadbackLang = "en" | "pcm";
+/** The languages a readback can be asked for. Yoruba, Hausa and Igbo come back in English (with
+ * `fallback_from` set) when their exact recording does not exist; anything else is a 422. */
+export type ReadbackLang = "en" | "pcm" | "yo" | "ha" | "ig";
 
 // ── Session (demo only: the backend has mock login, no real OTP yet) ─────────────────────────
 export const mockLogin = (phone: string, otp: string) =>

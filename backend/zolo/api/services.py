@@ -8,6 +8,7 @@ from fastapi import FastAPI
 
 from zolo.ai.config import Settings as AiSettings
 from zolo.ai.tts.cache import AudioCache
+from zolo.ai.types import LANGS
 from zolo.bank.adapter import BankAdapter
 from zolo.bank.mock import Latency, MockBankAdapter
 from zolo.consent.audio import AudioLookup, CachedAudio, ReadbackAudioPreparer
@@ -56,7 +57,15 @@ def build_services(app: FastAPI) -> Services:
     ai = AiSettings.from_env()
     passkeys = PasskeyService(settings, clock)
     audio_prep = overrides.audio_prep or (
-        ReadbackAudioPreparer(ai, wait_seconds=settings.audio_wait_seconds)
+        ReadbackAudioPreparer(
+            ai,
+            wait_seconds=settings.audio_wait_seconds,
+            langs=tuple(
+                lang
+                for lang in LANGS
+                if lang in settings.audio_prerender_langs.replace(" ", "").split(",")
+            ),
+        )
         if settings.audio_prerender_on_create
         else None
     )

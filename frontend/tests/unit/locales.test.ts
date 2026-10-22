@@ -119,9 +119,8 @@ describe("choosing a language", () => {
 
 describe("the language of the spoken readback", () => {
   it("is Pidgin for Pidgin, English for English, and English with a note for Yoruba, Hausa and Igbo", () => {
-    expect(readbackFor("pcm")).toEqual({ lang: "pcm", englishNote: false });
-    expect(readbackFor("en")).toEqual({ lang: "en", englishNote: false });
-    for (const l of ["yo", "ha", "ig"] as const)
-      expect(readbackFor(l)).toEqual({ lang: "en", englishNote: true });
+    expect(readbackFor("pcm")).toEqual({ lang: "pcm" });
+    expect(readbackFor("en")).toEqual({ lang: "en" });
+    for (const l of ["yo", "ha", "ig"] as const) expect(readbackFor(l)).toEqual({ lang: l });
   });
 });

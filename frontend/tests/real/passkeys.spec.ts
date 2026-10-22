@@ -303,9 +303,27 @@ test("the real backend's contract: unsupported readback languages are refused, w
   const statuses = await customer.page.evaluate(async (rid) => {
     const get = async (lang: string) =>
       (await fetch(`/api/requests/${rid}/readback?lang=${lang}`)).status;
-    return { en: await get("en"), pcm: await get("pcm"), yo: await get("yo") };
+    const body = async (lang: string) =>
+      (await (await fetch(`/api/requests/${rid}/readback?lang=${lang}`)).json()) as {
+        lang: string;
+        fallback_from: string | null;
+      };
+    return {
+      en: await get("en"),
+      pcm: await get("pcm"),
+      yo: await get("yo"),
+      ha: await get("ha"),
+      fr: await get("fr"),
+      yoBody: await body("yo"),
+    };
   }, id);
-  expect(statuses).toEqual({ en: 200, pcm: 200, yo: 422 }); // why the frontend never asks for yo, ha or ig
+  // Yoruba, Hausa and Igbo are accepted: never a 422. Only a language we do not have is refused.
+  expect(statuses).toMatchObject({ en: 200, pcm: 200, yo: 200, ha: 200, fr: 422 });
+  // ...and the answer is either that language, or English with `fallback_from` saying so.
+  const { lang, fallback_from } = statuses.yoBody;
+  expect(lang === "yo" ? fallback_from === null : lang === "en" && fallback_from === "yo").toBe(
+    true,
+  );
 
   const cookies = await customer.context.cookies();
   const session = cookies.find((c) => c.name === "zolo_session");

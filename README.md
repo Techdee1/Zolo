@@ -92,15 +92,15 @@ clip, and where the clips are stored.
 | [`docs/DEPLOY.md`](docs/DEPLOY.md) | Deploying, and how the readback audio works |
 | [`docs/REAL_DEVICE_TEST.md`](docs/REAL_DEVICE_TEST.md) | Testing passkeys on a real phone, and the results so far |
 | [`docs/PRD_DEVIATIONS.md`](docs/PRD_DEVIATIONS.md) | Every place the frontend follows the backend instead of the PRD |
-| [`docs/TRANSLATION_REVIEW.md`](docs/TRANSLATION_REVIEW.md) | The translations to be checked by native speakers, safety sentences first |
 | [`docs/AI_IMPLEMENTATION.md`](docs/AI_IMPLEMENTATION.md) | The speech and language package |
 
 ## Status and known limits
 
-- **Languages:** the screens are in English, Pidgin, Yoruba, Hausa and Igbo. The Pidgin, Yoruba, Hausa
-  and Igbo translations are **drafts** that no native speaker has checked yet. The backend can speak
-  the readback in English and Pidgin only, so Yoruba, Hausa and Igbo customers hear English (with a
-  note saying so).
+- **Languages:** the screens and the readback are in English, Pidgin, Yoruba, Hausa and Igbo. The
+  Yoruba, Hausa and Igbo wording was natively reviewed and approved (as reported by the team); the
+  Pidgin wording has not been checked by a native speaker. A readback in Yoruba, Hausa or Igbo is
+  spoken only when a recording of that exact sentence exists; otherwise the customer gets the English
+  readback and an on-screen note, never an error. The clips for the demo amounts ship with the code.
 - **Real phone:** the passkey flow has been run once on a real phone through a tunnel and worked. The
   failure cases were tested too. It has **not** yet been recorded with TalkBack or VoiceOver for a
   full payment, so whether the voice and the screen reader ever talk over each other is unverified.

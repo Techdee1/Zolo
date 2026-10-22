@@ -1,3 +1,3 @@
 # version: 1
-# status: UNREVIEWED machine-written draft. Not for the demo until a native Yoruba speaker rewrites it
+# status: wording approved by native Yoruba review (reported by the team, 2026-10-22); final
 {payee} n bere fun {amount_words} naira. {amount_digits_spoken}. Se o fowo si i?

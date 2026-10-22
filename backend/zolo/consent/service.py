@@ -27,7 +27,7 @@ from zolo.consent.audio import AudioLookup, NoAudio
 from zolo.consent.intent import Intent, intent_hash
 from zolo.consent.machine import EXPIRABLE, apply_transition, reload
 from zolo.consent.models import PaymentRequest
-from zolo.consent.readback import build_readback, readback_lang
+from zolo.consent.readback import CLIP_ONLY_LANGS, FALLBACK_LANG, build_readback, readback_lang
 from zolo.consent.states import State
 from zolo.core.config import Settings
 from zolo.core.errors import ApiError, ErrorCode
@@ -83,6 +83,7 @@ class ReadbackView:
     payee_name: str
     amount_kobo: int
     expires_at: datetime
+    fallback_from: Lang | None = None  # set when the language asked for could not be served
 
 
 @dataclass(frozen=True)
@@ -407,16 +408,27 @@ class ConsentService:
             raise _conflict()
 
         await session.commit()
-        spoken = build_readback(language, row.payee_verified_name, row.amount_kobo)
-        await self.audio.wait_ready(spoken.text, language)  # only if it is still being rendered
+        served: Lang = language
+        spoken = build_readback(served, row.payee_verified_name, row.amount_kobo)
+        await self.audio.wait_ready(spoken.text, served)  # only if it is still being rendered
+        audio_url = self.audio.audio_url(spoken.text, served)
+        fallback_from: Lang | None = None
+        if served in CLIP_ONLY_LANGS and audio_url is None:
+            # No clip for this exact sentence in Yoruba, Hausa or Igbo: never hand over text a
+            # screen reader would mangle. Give the English readback and say that we did.
+            fallback_from, served = served, FALLBACK_LANG
+            spoken = build_readback(served, row.payee_verified_name, row.amount_kobo)
+            await self.audio.wait_ready(spoken.text, served)
+            audio_url = self.audio.audio_url(spoken.text, served)
         return ReadbackView(
             text=spoken.text,
-            lang=language,
-            audio_url=self.audio.audio_url(spoken.text, language),
+            lang=served,
+            audio_url=audio_url,
             amount_words=spoken.amount_words,
             payee_name=spoken.payee_name,
             amount_kobo=row.amount_kobo,
             expires_at=row.expires_at,
+            fallback_from=fallback_from,
         )
 
     # ------------------------------------------------------------------ decline (customer)

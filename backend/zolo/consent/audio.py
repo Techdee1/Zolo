@@ -18,7 +18,7 @@ from zolo.ai.tts.base import AudioRenderer
 from zolo.ai.tts.cache import AudioCache, cache_key
 from zolo.ai.tts.factory import RoutingTTS
 from zolo.ai.types import Lang, ProviderError
-from zolo.consent.readback import READBACK_LANGS, build_readback
+from zolo.consent.readback import build_readback
 
 log = logging.getLogger("zolo.consent.audio")
 
@@ -46,11 +46,13 @@ class ReadbackAudioPreparer:
         renderers: dict[str, AudioRenderer] | None = None,
         wait_seconds: float = 4.0,
         render_timeout_s: float = 30.0,
+        langs: tuple[Lang, ...] = ("en", "pcm"),
     ) -> None:
         self._ai = ai_settings or AiSettings.from_env()
         self._cache = AudioCache(self._ai.audio_cache_dir)
         self._tts = RoutingTTS(self._ai, renderers)
         self._wait, self._timeout = wait_seconds, render_timeout_s
+        self._langs = langs
         self._inflight: dict[str, asyncio.Task[None]] = {}
 
     def _key(self, text: str, lang: Lang) -> str:
@@ -59,7 +61,7 @@ class ReadbackAudioPreparer:
 
     def schedule(self, verified_name: str, amount_kobo: int) -> None:
         """Start rendering this payee and amount in every readback language. Returns at once."""
-        for lang in READBACK_LANGS:
+        for lang in self._langs:
             text = build_readback(lang, verified_name, amount_kobo).text
             key = self._key(text, lang)
             if key in self._inflight or self._cache.get(key) is not None:

@@ -149,7 +149,7 @@ describe("response schemas", () => {
       );
     }
   });
-  it("accept only the readback languages the backend speaks", () => {
+  it("accept the five readback languages, and fallback_from only for Yoruba, Hausa and Igbo", () => {
     const rb = {
       text: "t",
       lang: "en",
@@ -159,7 +159,10 @@ describe("response schemas", () => {
       expires_at: "t",
     };
     expect(readbackSchema.safeParse(rb).success).toBe(true);
-    expect(readbackSchema.safeParse({ ...rb, lang: "yo" }).success).toBe(false);
+    expect(readbackSchema.safeParse({ ...rb, lang: "yo" }).success).toBe(true);
+    expect(readbackSchema.safeParse({ ...rb, lang: "fr" }).success).toBe(false);
+    expect(readbackSchema.safeParse({ ...rb, lang: "en", fallback_from: "yo" }).success).toBe(true);
+    expect(readbackSchema.safeParse({ ...rb, fallback_from: "en" }).success).toBe(false);
   });
   it("accept a claim code that may be null", () => {
     const a = { id: "1", qr_payload: "q", expires_at: "t", payee_name: "B" };

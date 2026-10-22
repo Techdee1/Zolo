@@ -356,10 +356,29 @@
             "title": "Expires At",
             "type": "string"
           },
+          "fallback_from": {
+            "anyOf": [
+              {
+                "enum": [
+                  "yo",
+                  "ha",
+                  "ig"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback From"
+          },
           "lang": {
             "enum": [
               "en",
-              "pcm"
+              "pcm",
+              "yo",
+              "ha",
+              "ig"
             ],
             "title": "Lang",
             "type": "string"
@@ -2008,13 +2027,13 @@
             }
           },
           {
-            "description": "en or pcm",
+            "description": "en, pcm, yo, ha or ig. Yoruba, Hausa and Igbo come back in that language only when a recording of the exact sentence exists; otherwise the English readback comes back with `fallback_from` set.",
             "in": "query",
             "name": "lang",
             "required": false,
             "schema": {
               "default": "pcm",
-              "description": "en or pcm",
+              "description": "en, pcm, yo, ha or ig. Yoruba, Hausa and Igbo come back in that language only when a recording of the exact sentence exists; otherwise the English readback comes back with `fallback_from` set.",
               "title": "Lang",
               "type": "string"
             }
@@ -2089,10 +2108,10 @@
                 }
               }
             },
-            "description": "VALIDATION_ERROR: language must be en or pcm"
+            "description": "VALIDATION_ERROR: language must be en, pcm, yo, ha or ig"
           }
         },
-        "summary": "The readback text (and audio if pre-rendered); moves the request to READ_BACK",
+        "summary": "The readback text (and audio if rendered); moves the request to READ_BACK",
         "tags": [
           "requests"
         ]

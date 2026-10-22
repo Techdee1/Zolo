@@ -8,6 +8,7 @@ import hashlib
 from pathlib import Path
 
 from zolo.ai.tts.base import AudioClip, AudioRenderer
+from zolo.ai.tts.compress import compress_mp3
 from zolo.ai.types import Lang, ProviderError
 
 AUDIO_URL_PREFIX = "/voice/audio/"
@@ -63,7 +64,8 @@ class CachedTTS:
             return self.cache.url(key)
         if self.live_enabled:
             try:
-                self.cache.put(key, self.renderer.render(text, lang, voice, self.live_budget_s))
+                clip = self.renderer.render(text, lang, voice, self.live_budget_s)
+                self.cache.put(key, AudioClip(compress_mp3(clip.data), clip.mime))
                 self.last_source = "live"
                 return self.cache.url(key)
             except ProviderError:
@@ -76,5 +78,6 @@ class CachedTTS:
         key = cache_key(self.renderer.name, lang, voice, text)
         if self.cache.get(key) is not None:
             return False
-        self.cache.put(key, self.renderer.render(text, lang, voice, timeout_s))
+        clip = self.renderer.render(text, lang, voice, timeout_s)
+        self.cache.put(key, AudioClip(compress_mp3(clip.data), clip.mime))
         return True

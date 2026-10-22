@@ -101,7 +101,7 @@ describe("fake backend: the Phase 1 state machine", () => {
     const r = created(s.call);
     s.call("customer", "POST", "/requests/claim", { claim_code: r.claim_code });
     expect(
-      s.call("customer", "GET", `/requests/${r.id}/readback`, undefined, {}, { lang: "yo" }).status,
+      s.call("customer", "GET", `/requests/${r.id}/readback`, undefined, {}, { lang: "fr" }).status,
     ).toBe(422);
   });
 
