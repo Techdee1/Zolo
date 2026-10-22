@@ -1,0 +1,2165 @@
+{
+  "components": {
+    "schemas": {
+      "ActivityItemOut": {
+        "properties": {
+          "amount_kobo": {
+            "title": "Amount Kobo",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "line": {
+            "description": "A readable line, e.g. 'Paid \u20a615,000 to Bisi Ventures'",
+            "title": "Line",
+            "type": "string"
+          },
+          "payee_name": {
+            "title": "Payee Name",
+            "type": "string"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "state",
+          "amount_kobo",
+          "payee_name",
+          "created_at",
+          "line"
+        ],
+        "title": "ActivityItemOut",
+        "type": "object"
+      },
+      "ActivityOut": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ActivityItemOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "ActivityOut",
+        "type": "object"
+      },
+      "AgentRequestIn": {
+        "properties": {
+          "amount_kobo": {
+            "description": "Whole naira, in kobo",
+            "examples": [
+              1500000
+            ],
+            "exclusiveMinimum": 0.0,
+            "maximum": 1000000000000.0,
+            "title": "Amount Kobo",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "amount_kobo"
+        ],
+        "title": "AgentRequestIn",
+        "type": "object"
+      },
+      "AgentRequestOut": {
+        "properties": {
+          "claim_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Four digits; the agent reads it aloud",
+            "title": "Claim Code"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "payee_name": {
+            "title": "Payee Name",
+            "type": "string"
+          },
+          "qr_payload": {
+            "title": "Qr Payload",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "claim_code",
+          "qr_payload",
+          "expires_at",
+          "payee_name"
+        ],
+        "title": "AgentRequestOut",
+        "type": "object"
+      },
+      "AssertionIn": {
+        "additionalProperties": true,
+        "description": "The PublicKeyCredential JSON from navigator.credentials.get(), passed through as-is.",
+        "properties": {},
+        "title": "AssertionIn",
+        "type": "object"
+      },
+      "ClaimIn": {
+        "properties": {
+          "claim_code": {
+            "anyOf": [
+              {
+                "pattern": "^\\d{4}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "examples": [
+              "4821"
+            ],
+            "title": "Claim Code"
+          },
+          "qr_payload": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Qr Payload"
+          }
+        },
+        "title": "ClaimIn",
+        "type": "object"
+      },
+      "DemoResetOut": {
+        "properties": {
+          "accounts": {
+            "title": "Accounts",
+            "type": "integer"
+          },
+          "agents": {
+            "title": "Agents",
+            "type": "integer"
+          },
+          "customers": {
+            "title": "Customers",
+            "type": "integer"
+          },
+          "recipients": {
+            "title": "Recipients",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "customers",
+          "agents",
+          "accounts",
+          "recipients"
+        ],
+        "title": "DemoResetOut",
+        "type": "object"
+      },
+      "ErrorCode": {
+        "enum": [
+          "LIMIT_EXCEEDED",
+          "CODE_NOT_FOUND",
+          "REQUEST_EXPIRED",
+          "STATE_CONFLICT",
+          "INTENT_CHANGED",
+          "SIGNATURE_INVALID",
+          "ALREADY_USED",
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "NOT_FOUND",
+          "VALIDATION_ERROR",
+          "RATE_LIMITED",
+          "NAME_ENQUIRY_FAILED",
+          "NO_PASSKEY",
+          "PASSKEY_REGISTRATION_FAILED",
+          "CHALLENGE_NOT_FOUND",
+          "RISK_BLOCKED",
+          "BANK_REJECTED",
+          "INTERNAL_ERROR"
+        ],
+        "title": "ErrorCode",
+        "type": "string"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "Health": {
+        "properties": {
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "Health",
+        "type": "object"
+      },
+      "MockLoginIn": {
+        "properties": {
+          "otp": {
+            "examples": [
+              "123456"
+            ],
+            "maxLength": 10,
+            "minLength": 4,
+            "title": "Otp",
+            "type": "string"
+          },
+          "phone": {
+            "examples": [
+              "+2348011111111"
+            ],
+            "maxLength": 20,
+            "minLength": 8,
+            "title": "Phone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "phone",
+          "otp"
+        ],
+        "title": "MockLoginIn",
+        "type": "object"
+      },
+      "PasskeyOut": {
+        "properties": {
+          "device_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device Label"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "replaced_previous": {
+            "title": "Replaced Previous",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "device_label",
+          "replaced_previous"
+        ],
+        "title": "PasskeyOut",
+        "type": "object"
+      },
+      "Problem": {
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode"
+          },
+          "detail": {
+            "default": "",
+            "title": "Detail",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "title",
+          "status",
+          "code"
+        ],
+        "title": "Problem",
+        "type": "object"
+      },
+      "ReadbackOut": {
+        "properties": {
+          "amount_kobo": {
+            "title": "Amount Kobo",
+            "type": "integer"
+          },
+          "amount_words": {
+            "title": "Amount Words",
+            "type": "string"
+          },
+          "audio_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Url"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "fallback_from": {
+            "anyOf": [
+              {
+                "enum": [
+                  "yo",
+                  "ha",
+                  "ig"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback From"
+          },
+          "lang": {
+            "enum": [
+              "en",
+              "pcm",
+              "yo",
+              "ha",
+              "ig"
+            ],
+            "title": "Lang",
+            "type": "string"
+          },
+          "payee_name": {
+            "title": "Payee Name",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "lang",
+          "amount_words",
+          "payee_name",
+          "amount_kobo",
+          "expires_at"
+        ],
+        "title": "ReadbackOut",
+        "type": "object"
+      },
+      "Readiness": {
+        "properties": {
+          "database": {
+            "title": "Database",
+            "type": "boolean"
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "boolean"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "database",
+          "seed"
+        ],
+        "title": "Readiness",
+        "type": "object"
+      },
+      "RegisterVerifyIn": {
+        "properties": {
+          "credential": {
+            "additionalProperties": true,
+            "description": "The PublicKeyCredential JSON from navigator.credentials.create()",
+            "title": "Credential",
+            "type": "object"
+          },
+          "device_label": {
+            "anyOf": [
+              {
+                "maxLength": 60,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device Label"
+          }
+        },
+        "required": [
+          "credential"
+        ],
+        "title": "RegisterVerifyIn",
+        "type": "object"
+      },
+      "RequestOut": {
+        "properties": {
+          "amount_kobo": {
+            "title": "Amount Kobo",
+            "type": "integer"
+          },
+          "bank_reference": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bank Reference"
+          },
+          "claimed": {
+            "title": "Claimed",
+            "type": "boolean"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "failure_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Failure Reason"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "payee_name": {
+            "title": "Payee Name",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "CREATED",
+              "READ_BACK",
+              "APPROVED",
+              "SUBMITTED",
+              "SETTLED",
+              "DECLINED",
+              "EXPIRED",
+              "FAILED"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "state",
+          "amount_kobo",
+          "payee_name",
+          "expires_at",
+          "claimed"
+        ],
+        "title": "RequestOut",
+        "type": "object"
+      },
+      "SessionOut": {
+        "properties": {
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "customer",
+              "agent"
+            ],
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "role",
+          "id",
+          "display_name"
+        ],
+        "title": "SessionOut",
+        "type": "object"
+      },
+      "TamperIn": {
+        "properties": {
+          "amount_kobo": {
+            "default": 5100000,
+            "description": "The new amount (default: N51,000)",
+            "exclusiveMinimum": 0.0,
+            "maximum": 1000000000000.0,
+            "title": "Amount Kobo",
+            "type": "integer"
+          }
+        },
+        "title": "TamperIn",
+        "type": "object"
+      },
+      "TimelineEventOut": {
+        "properties": {
+          "actor": {
+            "title": "Actor",
+            "type": "string"
+          },
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "details": {
+            "additionalProperties": true,
+            "description": "Ids, states and reason codes only",
+            "title": "Details",
+            "type": "object"
+          },
+          "event": {
+            "title": "Event",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "at",
+          "event",
+          "actor",
+          "details"
+        ],
+        "title": "TimelineEventOut",
+        "type": "object"
+      },
+      "TimelineOut": {
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/TimelineEventOut"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "request": {
+            "$ref": "#/components/schemas/RequestOut"
+          }
+        },
+        "required": [
+          "request",
+          "events"
+        ],
+        "title": "TimelineOut",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Anyone can propose a payment. Only the account holder approves it.",
+    "title": "Zolo API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/agent/requests": {
+      "post": {
+        "operationId": "create_request_agent_requests_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentRequestIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentRequestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: log in first"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "FORBIDDEN: wrong role for this endpoint"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "STATE_CONFLICT: that Idempotency-Key was used for a different request"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "LIMIT_EXCEEDED: over the payment limit; VALIDATION_ERROR; NAME_ENQUIRY_FAILED"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "The agent creates a payment request (a cash-out)",
+        "tags": [
+          "agent"
+        ]
+      }
+    },
+    "/auth/mock-login": {
+      "post": {
+        "operationId": "mock_login_auth_mock_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MockLoginIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: unknown phone or wrong code"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "Mock login (demo only)",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/demo/requests/{request_id}/expire": {
+      "post": {
+        "description": "It becomes EXPIRED the next time anything reads or acts on it (lazy expiry).",
+        "operationId": "expire_demo_requests__request_id__expire_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+            "in": "header",
+            "name": "x-demo-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+              "title": "X-Demo-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: missing or wrong X-Demo-Token"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: DEMO_MODE is off, or no such request"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "STATE_CONFLICT: only a live request can be expired"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "Set the request's expiry to now",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/demo/requests/{request_id}/replay": {
+      "post": {
+        "description": "Sends the last accepted assertion through the normal approve path again. After a real approval the answer is 409 ALREADY_USED, and no money moves a second time.",
+        "operationId": "replay_demo_requests__request_id__replay_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+            "in": "header",
+            "name": "x-demo-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+              "title": "X-Demo-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: missing or wrong X-Demo-Token"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: DEMO_MODE is off, or no such request"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "ALREADY_USED, or STATE_CONFLICT when there is nothing to replay"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "Re-submit the last valid approval",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/demo/requests/{request_id}/tamper": {
+      "post": {
+        "description": "Approval then fails with INTENT_CHANGED and nothing is sent.",
+        "operationId": "tamper_demo_requests__request_id__tamper_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+            "in": "header",
+            "name": "x-demo-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+              "title": "X-Demo-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/TamperIn"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: missing or wrong X-Demo-Token"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: DEMO_MODE is off, or no such request"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "STATE_CONFLICT: the request is not in READ_BACK"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "VALIDATION_ERROR"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "Change the amount after the readback",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/demo/requests/{request_id}/timeline": {
+      "get": {
+        "operationId": "timeline_demo_requests__request_id__timeline_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+            "in": "header",
+            "name": "x-demo-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+              "title": "X-Demo-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimelineOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: missing or wrong X-Demo-Token"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: DEMO_MODE is off, or no such request"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "State changes and audit events, for the projector",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/demo/reset": {
+      "post": {
+        "description": "Re-seeds customers, agents, accounts and balances and clears requests, challenges, the audit trail and transfers. **Registered passkeys are kept**, so the passkey on the demo phone survives every reset. Also forgets rate-limit counts and captured assertions.",
+        "operationId": "reset_demo_reset_post",
+        "parameters": [
+          {
+            "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+            "in": "header",
+            "name": "x-demo-token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The demo token (DEMO_TOKEN). Demo mode only.",
+              "title": "X-Demo-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoResetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: missing or wrong X-Demo-Token"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: DEMO_MODE is off, or no such request"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "Put the demo back to its starting state",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/healthz": {
+      "get": {
+        "description": "The process is up. Does not touch the database.",
+        "operationId": "healthz_healthz_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Healthz",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/me/activity": {
+      "get": {
+        "operationId": "activity_me_activity_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: log in first"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "FORBIDDEN: wrong role for this endpoint"
+          }
+        },
+        "summary": "The last 20 payments, each with a readable line",
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/passkeys/register/options": {
+      "post": {
+        "operationId": "register_options_passkeys_register_options_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Register Options Passkeys Register Options Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: log in first"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "FORBIDDEN: wrong role for this endpoint"
+          }
+        },
+        "summary": "WebAuthn creation options for navigator.credentials.create()",
+        "tags": [
+          "passkeys"
+        ]
+      }
+    },
+    "/passkeys/register/verify": {
+      "post": {
+        "operationId": "register_verify_passkeys_register_verify_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterVerifyIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PasskeyOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "PASSKEY_REGISTRATION_FAILED: the browser's answer did not verify"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: log in first"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "FORBIDDEN: wrong role for this endpoint"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "CHALLENGE_NOT_FOUND: start registration first"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Verify the browser's answer and store the passkey",
+        "tags": [
+          "passkeys"
+        ]
+      }
+    },
+    "/readyz": {
+      "get": {
+        "description": "The database is reachable and the demo seed is present. Check before going on stage.",
+        "operationId": "readyz_readyz_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Readiness"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Readiness"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Readyz",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/requests/claim": {
+      "post": {
+        "operationId": "claim_requests_claim_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: log in first"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "FORBIDDEN: wrong role for this endpoint"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "CODE_NOT_FOUND: no live request has that code"
+          },
+          "410": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "REQUEST_EXPIRED"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "The customer links a request by its code or QR payload",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/requests/{request_id}": {
+      "get": {
+        "operationId": "get_request_requests__request_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: log in first"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: no such request, or it is not yours"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Current state, for the agent's page and the customer's app",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/requests/{request_id}/approve": {
+      "post": {
+        "operationId": "approve_requests__request_id__approve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssertionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED, or SIGNATURE_INVALID (the reason is never given)"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "FORBIDDEN: wrong role for this endpoint"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: no such request, or it is not yours"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "STATE_CONFLICT, INTENT_CHANGED, ALREADY_USED or CHALLENGE_NOT_FOUND"
+          },
+          "410": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "REQUEST_EXPIRED"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "LIMIT_EXCEEDED: over your daily or per-payment limit"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "Verify the passkey assertion; returns the final or pending state",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/requests/{request_id}/challenge": {
+      "post": {
+        "operationId": "challenge_requests__request_id__challenge_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Challenge Requests  Request Id  Challenge Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: log in first"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "FORBIDDEN: wrong role for this endpoint"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: no such request, or it is not yours"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "STATE_CONFLICT, INTENT_CHANGED or NO_PASSKEY"
+          },
+          "410": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "REQUEST_EXPIRED"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "RATE_LIMITED: slow down; see the Retry-After header"
+          }
+        },
+        "summary": "WebAuthn options whose challenge is the request's intent hash",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/requests/{request_id}/decline": {
+      "post": {
+        "operationId": "decline_requests__request_id__decline_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: log in first"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "FORBIDDEN: wrong role for this endpoint"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: no such request, or it is not yours"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "STATE_CONFLICT: it must be read back first"
+          },
+          "410": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "REQUEST_EXPIRED"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "The customer declines; nothing moves",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/requests/{request_id}/readback": {
+      "get": {
+        "operationId": "readback_requests__request_id__readback_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "en, pcm, yo, ha or ig. Yoruba, Hausa and Igbo come back in that language only when a recording of the exact sentence exists; otherwise the English readback comes back with `fallback_from` set.",
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "pcm",
+              "description": "en, pcm, yo, ha or ig. Yoruba, Hausa and Igbo come back in that language only when a recording of the exact sentence exists; otherwise the English readback comes back with `fallback_from` set.",
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadbackOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "UNAUTHENTICATED: log in first"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "FORBIDDEN: wrong role for this endpoint"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "NOT_FOUND: no such request, or it is not yours"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "STATE_CONFLICT or INTENT_CHANGED: it changed after you heard it"
+          },
+          "410": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "REQUEST_EXPIRED"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "description": "VALIDATION_ERROR: language must be en, pcm, yo, ha or ig"
+          }
+        },
+        "summary": "The readback text (and audio if rendered); moves the request to READ_BACK",
+        "tags": [
+          "requests"
+        ]
+      }
+    },
+    "/voice/audio/{key}.mp3": {
+      "get": {
+        "operationId": "audio_voice_audio__key__mp3_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "audio/mpeg": {}
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "NOT_FOUND"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Pre-rendered readback audio",
+        "tags": [
+          "audio"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,558 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+/*
+ * Tailwind utilities for the tokens, under a `zolo-` prefix so they never clash with Tailwind's
+ * own palette (bg-zolo-brand, text-zolo-secondary, rounded-zolo-card ...). The tokens themselves
+ * live in styles/tokens.css and stay the source of truth.
+ */
+@theme inline {
+  --color-zolo-brand: var(--color-brand);
+  --color-zolo-brand-pressed: var(--color-brand-pressed);
+  --color-zolo-brand-text: var(--color-brand-text);
+  --color-zolo-graphite: var(--color-graphite);
+  --color-zolo-bg: var(--color-bg);
+  --color-zolo-backdrop: var(--color-bg-backdrop);
+  --color-zolo-grouped: var(--color-bg-grouped);
+  --color-zolo-elevated: var(--color-bg-elevated);
+  --color-zolo-text: var(--color-text);
+  --color-zolo-secondary: var(--color-text-secondary);
+  --color-zolo-separator: var(--color-separator);
+  --color-zolo-success: var(--color-success);
+  --color-zolo-warning: var(--color-warning);
+  --color-zolo-critical: var(--color-critical);
+  --color-zolo-focus: var(--color-focus);
+  --color-zolo-on-brand: var(--color-on-brand);
+  --radius-zolo-control: var(--radius-control);
+  --radius-zolo-card: var(--radius-card);
+  --radius-zolo-sheet: var(--radius-sheet);
+  --shadow-zolo-card: var(--shadow-card);
+  --shadow-zolo-primary: var(--shadow-primary);
+  --font-sans: var(--font-sans);
+}
+
+html {
+  font-family: var(--font-sans);
+  font-optical-sizing: auto;
+  background: var(--color-bg-backdrop);
+  color: var(--color-text);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-leading);
+}
+
+/* The focus ring: 3px, 2px offset, high contrast in both themes (4px with more contrast). */
+:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--focus-offset);
+}
+
+/* A heading that focus is moved to (tabindex -1) is a landmark for the screen reader, not a control:
+   it gets no ring. Everything people can operate keeps the ring above. */
+:is(h1, h2)[tabindex="-1"]:focus-visible {
+  outline: none;
+}
+
+/* ── Type styles. Size, weight, leading and tracking always travel together. ───────────────── */
+.type-hero {
+  font-size: var(--type-hero-size);
+  font-weight: var(--type-hero-weight);
+  line-height: var(--type-hero-leading);
+  letter-spacing: var(--type-hero-tracking);
+  font-variant-numeric: tabular-nums;
+}
+.type-display {
+  font-size: var(--type-display-size);
+  font-weight: var(--type-display-weight);
+  line-height: var(--type-display-leading);
+  letter-spacing: var(--type-display-tracking);
+}
+.type-amount {
+  font-size: var(--type-amount-size);
+  font-weight: var(--type-amount-weight);
+  line-height: var(--type-amount-leading);
+  letter-spacing: var(--type-amount-tracking);
+  font-variant-numeric: tabular-nums;
+}
+.type-code {
+  font-size: var(--type-code-size);
+  font-weight: var(--type-code-weight);
+  line-height: var(--type-code-leading);
+  letter-spacing: var(--type-code-tracking);
+  font-variant-numeric: tabular-nums;
+}
+.type-title {
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--type-title-leading);
+  letter-spacing: var(--type-title-tracking);
+}
+.type-headline {
+  font-size: var(--type-headline-size);
+  font-weight: var(--type-headline-weight);
+  line-height: var(--type-headline-leading);
+  letter-spacing: var(--type-headline-tracking);
+}
+.type-body {
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-leading);
+  letter-spacing: var(--type-body-tracking);
+}
+.type-secondary {
+  font-size: var(--type-secondary-size);
+  font-weight: var(--type-secondary-weight);
+  line-height: var(--type-secondary-leading);
+  letter-spacing: var(--type-secondary-tracking);
+  color: var(--color-text-secondary);
+}
+.type-caption {
+  font-size: var(--type-caption-size);
+  font-weight: var(--type-caption-weight);
+  line-height: var(--type-caption-leading);
+  letter-spacing: var(--type-caption-tracking);
+}
+
+/* ── Layout ─────────────────────────────────────────────────────────────────────────────────
+   The app is a phone-sized column. On a phone it fills the screen; on a wide screen it sits
+   centred on the backdrop as a quiet frame. Agent screens carry a faint graphite tint. ──────── */
+.app-frame {
+  position: relative;
+  min-height: 100dvh;
+  max-width: var(--layout-max);
+  margin-inline: auto;
+  background: var(--color-bg-grouped);
+  overflow-x: clip;
+}
+.screen:has(.action-bar) {
+  padding-block-end: 0; /* the bottom action area sits flush with the bottom edge */
+}
+.app-frame:has([data-role="agent"]) {
+  background: var(--tint-agent);
+}
+@media (min-width: 40rem) {
+  .app-frame {
+    min-height: calc(100dvh - var(--space-12));
+    margin-block: var(--space-6);
+    border-radius: var(--radius-sheet);
+    box-shadow: var(--shadow-frame);
+  }
+}
+.screen h1,
+.screen h2 {
+  overflow-wrap: anywhere; /* a long word at 200% text must wrap, not push the page sideways */
+}
+.screen {
+  padding-inline: var(--space-screen-x);
+  padding-block: var(--space-6) var(--space-8);
+}
+
+/* Press feedback: instant on pointer-down, then a small spring on release. Under reduced motion the
+   scale is 1 and the release has no duration, so nothing moves. Only transform is animated. */
+.press {
+  transition: transform var(--motion-release-duration) var(--motion-spring-ease);
+}
+.press:active {
+  transform: scale(var(--motion-press-scale));
+  transition-duration: var(--motion-press-duration);
+  transition-timing-function: ease-out;
+}
+
+/* The bottom action area: translucent, content scrolls under it. Solid under reduced
+   transparency and more contrast (the material tokens change; nothing here does). */
+.action-bar {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: 10;
+  margin-inline: calc(var(--space-screen-x) * -1);
+  padding: var(--space-3) var(--space-screen-x) calc(var(--space-3) + env(safe-area-inset-bottom));
+  background: var(--material-bg);
+  -webkit-backdrop-filter: var(--material-filter);
+  backdrop-filter: var(--material-filter);
+  border-top: var(--border-width) solid var(--color-separator);
+}
+
+/* ── Visually hidden but read by screen readers ────────────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Skip link ─────────────────────────────────────────────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  inset-inline-start: var(--space-screen-x);
+  inset-block-start: -4rem;
+  z-index: 100;
+  min-height: var(--target-min);
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--space-4);
+  background: var(--color-bg-elevated);
+  color: var(--color-text);
+  border: var(--border-width) solid var(--color-focus);
+  border-radius: var(--radius-control);
+}
+.skip-link:focus {
+  inset-block-start: var(--space-4);
+}
+
+/* ── Wordmark and the small role label ──────────────────────────────────────────────────────── */
+.wordmark {
+  font-weight: 700;
+  font-size: var(--type-headline-size);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.wordmark-sub {
+  font-size: var(--type-caption-size);
+  font-weight: var(--type-caption-weight);
+  letter-spacing: var(--type-caption-tracking);
+  color: var(--color-text-secondary);
+  margin-inline-start: var(--space-2);
+}
+
+/* ── Sheet (native <dialog>): the card slides; the scrim is just dimmed. ──────────────────────── */
+.sheet {
+  inset-block: auto 0;
+  inset-inline: 0;
+  margin: 0 auto;
+  width: min(100%, var(--layout-max));
+  max-width: 100%;
+  max-height: 90dvh;
+  padding: 0;
+  border: var(--border-width) solid var(--color-separator);
+  border-bottom: 0;
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  background: var(--color-bg-elevated);
+  color: var(--color-text);
+  overflow: auto;
+}
+.sheet::backdrop {
+  background: rgb(0 0 0 / 0.4);
+}
+.sheet-body {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-screen-x) calc(var(--space-6) + env(safe-area-inset-bottom));
+}
+
+/* ══ The landing page ═════════════════════════════════════════════════════════════════════════
+   A full-width, warm page. Everything is plain HTML and CSS: it reads, scrolls and links with no
+   JavaScript. Motion is CSS only, only transform and opacity, and off under reduced motion. ══ */
+.landing {
+  position: relative;
+  min-height: 100dvh;
+  background: var(--land-bg);
+  color: var(--land-ink);
+  overflow-x: clip;
+}
+/* A faint film grain under the content. Nothing reads or clicks it; it is gone under reduced
+   transparency and more contrast (the opacity token becomes 0). */
+.landing::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: url("/landing/grain.png") repeat;
+  background-size: 96px 96px;
+  opacity: var(--land-grain-opacity);
+  pointer-events: none;
+}
+.landing > * {
+  position: relative;
+  z-index: 1;
+}
+.land-wrap {
+  width: min(100% - 2.5rem, 64rem);
+  margin-inline: auto;
+}
+.land-secondary {
+  color: var(--land-ink-secondary);
+}
+.land-display {
+  font-family: var(--font-display), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2.5rem, 1.6rem + 4.6vw, 4.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.008em;
+  text-wrap: balance;
+  margin: 0;
+}
+.land-display-md {
+  font-family: var(--font-display), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+  line-height: 1.06;
+  letter-spacing: -0.004em;
+  text-wrap: balance;
+  margin: 0;
+}
+.land-lede {
+  font-size: clamp(1.125rem, 1.05rem + 0.4vw, 1.3125rem);
+  line-height: 1.5;
+  color: var(--land-ink-secondary);
+  max-width: 36rem;
+  margin: 0;
+}
+.land-section {
+  padding-block: clamp(3.5rem, 8vw, 6.5rem);
+}
+.land-section + .land-section {
+  border-top: 1px solid var(--land-line);
+}
+.land-eyebrow {
+  font-size: var(--type-caption-size);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--land-accent-text);
+  margin: 0 0 var(--space-3);
+}
+
+/* The header: translucent material over the page, solid under reduced transparency. */
+.land-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 20;
+  background: var(--land-material-bg);
+  -webkit-backdrop-filter: var(--land-material-filter);
+  backdrop-filter: var(--land-material-filter);
+  border-bottom: 1px solid var(--land-line);
+}
+.land-header .land-wrap {
+  display: flex;
+  min-height: 4rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+/* Buttons and links: the primary is the one red thing; the quiet link is just text. */
+.land-btn {
+  display: inline-flex;
+  min-height: var(--target-primary);
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--space-8);
+  border-radius: 16px;
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+  font-size: var(--type-body-size);
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--shadow-primary);
+}
+.land-btn:active {
+  background: var(--color-brand-pressed);
+}
+.land-pill {
+  display: inline-flex;
+  min-height: var(--target-min);
+  align-items: center;
+  padding-inline: var(--space-4);
+  border-radius: 999px;
+  border: 1px solid var(--land-line);
+  background: var(--land-surface);
+  color: var(--land-ink);
+  font-size: var(--type-secondary-size);
+  font-weight: 600;
+  text-decoration: none;
+}
+.land-link {
+  display: inline-flex;
+  min-height: var(--target-min);
+  align-items: center;
+  color: var(--land-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+  text-decoration-thickness: 1px;
+}
+
+/* Photos sit in soft frames with the slightest tilt, alternating. 1 degree at most. */
+.land-photo {
+  margin: 0;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: var(--land-surface);
+  box-shadow: var(--land-shadow);
+}
+.land-photo img,
+.land-photo .land-placeholder {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.tilt-a {
+  rotate: -0.8deg;
+}
+.tilt-b {
+  rotate: 0.8deg;
+}
+.land-placeholder {
+  background:
+    radial-gradient(120% 90% at 20% 10%, #f0c9a6, transparent 60%),
+    radial-gradient(90% 90% at 90% 90%, #d9a38a, transparent 55%), #e6cdb5;
+}
+@media (prefers-color-scheme: dark) {
+  .land-placeholder {
+    background:
+      radial-gradient(120% 90% at 20% 10%, #5a4030, transparent 60%),
+      radial-gradient(90% 90% at 90% 90%, #4a2e2a, transparent 55%), #2f2824;
+  }
+}
+.land-caption {
+  font-size: var(--type-secondary-size);
+  color: var(--land-ink-secondary);
+  padding: var(--space-3) var(--space-4);
+}
+
+/* The app screenshots, as a phone-shaped card. */
+.land-shot {
+  margin: 0;
+  overflow: clip;
+  border-radius: 28px;
+  border: 1px solid var(--land-line);
+  background: var(--land-surface);
+  box-shadow: var(--land-shadow);
+}
+.land-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Layouts: phone first, then two columns where there is room. */
+.land-hero {
+  display: grid;
+  gap: var(--space-8);
+  padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 7vw, 6rem);
+}
+.land-hero-copy {
+  display: grid;
+  gap: var(--space-6);
+  align-content: center;
+  justify-items: start;
+}
+.land-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+}
+.land-split {
+  display: grid;
+  gap: var(--space-8);
+  align-items: center;
+}
+.land-steps {
+  display: grid;
+  gap: var(--space-8);
+  margin: var(--space-8) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.land-step {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+}
+.land-step-num {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 2.25rem;
+  line-height: 1;
+  color: var(--land-accent-text);
+}
+.land-checks {
+  display: grid;
+  gap: var(--space-4);
+  margin: var(--space-8) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.land-checks li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  align-items: start;
+  padding: var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--land-surface);
+  box-shadow: var(--land-shadow);
+  font-size: var(--type-body-size);
+}
+.land-rule {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2rem, 1.2rem + 4vw, 4rem);
+  line-height: 1.08;
+  letter-spacing: -0.004em;
+  text-wrap: balance;
+  margin: 0;
+  max-width: 22ch;
+}
+@media (min-width: 56rem) {
+  .land-hero {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+  }
+  .land-split {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+  }
+  .land-split.flip > :first-child {
+    order: 2;
+  }
+  .land-steps {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .land-checks {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Scroll reveal and the hero's gentle drift: pure CSS, scroll-linked (so it follows the finger and
+   can be reversed at any moment), and only where the browser supports it. Without support, or
+   under reduced motion, nothing moves and everything is simply there. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: land-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+    .drift {
+      animation: land-drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 70vh;
+    }
+  }
+  @keyframes land-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes land-drift {
+    to {
+      transform: translateY(-20px);
+    }
+  }
+}

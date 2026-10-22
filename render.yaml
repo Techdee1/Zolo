@@ -1,0 +1,78 @@
+# Render Blueprint for Zolo (a DEMO deployment: mock login, a mock bank, the demo console).
+# In Render: New > Blueprint > pick this repo and branch. See docs/DEPLOY.md ("On Render").
+#
+# Passkeys belong to the public address of the WEB service, so after the first deploy the three
+# values marked `sync: false` below must be that address (the guide says exactly what to type).
+
+databases:
+  - name: zolo-db
+    databaseName: zolo
+    user: zolo
+    plan: basic-256mb
+
+services:
+  # The backend. Private: only the web service can reach it, over Render's private network.
+  - type: pserv
+    name: zolo-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: starter
+    # Migrate, seed ONLY if the database is empty (a restart keeps everything), then serve.
+    dockerCommand: sh -c "alembic upgrade head && python -m zolo.seed --if-empty && exec uvicorn zolo.api.main:create_app --factory --host 0.0.0.0 --port 8000"
+    disk:
+      # The voice clips. Without a disk they are lost on every deploy and rendered (and paid for) again.
+      name: audio
+      mountPath: /data/audio
+      sizeGB: 1
+    envVars:
+      - key: PORT
+        value: "8000"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: zolo-db
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DEMO_TOKEN
+        generateValue: true
+      - key: DEMO_MODE
+        value: "true"
+      - key: ENV
+        value: prod
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: TRUST_FORWARDED_FOR
+        value: "true"
+      # The public address of the web service, e.g. zolo-web.onrender.com / https://zolo-web.onrender.com
+      - key: RP_ID
+        sync: false
+      - key: ORIGIN
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      # The voice. Without a key the app still works: the screen reader reads the request.
+      - key: YARNGPT_API_KEY
+        sync: false
+      - key: AUDIO_PRERENDER_ON_CREATE
+        value: "true"
+      - key: AUDIO_CACHE_DIR
+        value: /data/audio
+      - key: TTS_VOICE_EN
+        value: idera
+      - key: TTS_VOICE_PCM
+        value: idera
+
+  # The web app: landing page, screens, and the proxy that sends /api/* to the backend.
+  - type: web
+    name: zolo-web
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    plan: starter
+    healthCheckPath: /signin
+    envVars:
+      - key: PORT
+        value: "3000"
+      - key: BACKEND_URL
+        value: http://zolo-api:8000

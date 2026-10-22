@@ -1,0 +1,3 @@
+# version: 1
+# status: draft wording, English
+{payee} is asking for {amount_words} naira. {amount_digits_spoken}. Do you approve?

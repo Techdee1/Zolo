@@ -1,0 +1,9 @@
+# One public address. Caddy gets and renews the HTTPS certificate by itself when SITE_ADDRESS is a
+# real domain; with `http://localhost` it serves plain HTTP for a local check.
+{$SITE_ADDRESS:http://localhost} {
+	encode zstd gzip
+	# Next serves the pages and proxies /api/* to the backend; nothing else is exposed.
+	reverse_proxy web:3000 {
+		flush_interval -1
+	}
+}

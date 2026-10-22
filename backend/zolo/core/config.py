@@ -1,0 +1,140 @@
+"""Settings from environment variables (pydantic-settings). No secret has a default.
+
+Phase 2 and 3 features sit behind the `feature_*` flags, all off by default, so switching them
+off always returns Phase 1 behaviour.
+"""
+
+from functools import lru_cache
+from pathlib import Path
+
+from pydantic import Field, field_validator, model_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
+NAIRA = 100  # kobo per naira
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=_ENV_FILE, extra="ignore", case_sensitive=False)
+
+    # --- required, no defaults ---
+    database_url: str = Field(description="postgresql+asyncpg://user:pass@host:5432/db")
+    session_secret: str = Field(min_length=32, description="Signs session cookies")
+
+    # --- database connection (hosts like Heroku need SSL and a small pool) ---
+    database_ssl: str = ""  # "require" adds ssl=require to DATABASE_URL (Heroku Postgres)
+    db_pool_size: int = 10
+    db_max_overflow: int = 10
+
+    public_base_url: str = "http://localhost:8000"
+    twilio_account_sid: str = "AC_dummy"
+    twilio_auth_token: str = "dummy_token"
+    twilio_from_number: str = "+15005550006"
+    phone_lock_wrong_tries: int = 3
+    phone_lock_seconds: int = 1800
+    phone_cooling_off_hours: int = 24
+    phone_call_attempts_per_hour: int = 3
+
+    # --- passkeys: the RP ID must be the registrable domain the phone's passkey is bound to ---
+    rp_id: str = "localhost"
+    rp_name: str = "Zolo"
+    origin: str = "http://localhost:3000"  # exact origin the browser reports; comma list allowed
+    cors_origins: str = "http://localhost:3000"
+
+    # --- environment ---
+    env: str = "dev"  # dev | test | prod
+    log_level: str = "INFO"
+    cookie_secure: bool = True  # Secure cookies (HTTPS). Turn off only for plain-http localhost.
+
+    # --- passkeys: signature counter ---
+    # True (default): the counter must strictly increase once it is non-zero, so an equal count
+    # (a possible cloned authenticator) is refused. False (demo only): an equal non-zero count is
+    # allowed and logged as a warning. A count that goes BACKWARDS is refused in both modes.
+    webauthn_strict_counter: bool = True
+
+    # --- consent ---
+    request_ttl_seconds: int = 120
+    session_ttl_seconds: int = 12 * 60 * 60
+    mock_otp: str = "123456"  # the fixed OTP for mock login (Phases 1 and 2)
+
+    # --- mock bank ---
+    mock_bank_code: str = "057"  # the bank Zolo sits in front of; from_account lives here
+    mock_bank_latency_min_ms: int = 300
+    mock_bank_latency_max_ms: int = 800
+
+    # --- risk (Phase 1): hard caps, in kobo ---
+    per_payment_cap_kobo: int = 100_000 * NAIRA
+    daily_cap_kobo: int = 200_000 * NAIRA
+    risk_timezone: str = "Africa/Lagos"  # the daily cap counts Lagos calendar days
+
+    # --- rate limits ---
+    claim_attempts_per_minute: int = 5
+    claim_lock_wrong_tries: int = 5
+    claim_lock_seconds: int = 300
+    approve_attempts_per_minute: int = 10
+    challenge_attempts_per_minute: int = 10
+    create_requests_per_minute: int = 10
+    trust_forwarded_for: bool = False  # behind a proxy or tunnel, use X-Forwarded-For for the IP
+    login_attempts_per_minute: int = 10
+
+    # --- readback audio ---
+    # Render the English and Pidgin readback in the background when an agent creates a request, so
+    # any amount can have a voice (spends text-to-speech credits). Off unless asked for.
+    audio_prerender_on_create: bool = False
+    audio_daily_render_cap: int = 60  # renders that may start per UTC day; then text only
+    audio_wait_seconds: float = 4.0  # how long a readback waits for a clip still being rendered
+    # Which languages to render when a request is created (each one spends credits). Yoruba, Hausa
+    # and Igbo are added here once their voices are approved, e.g. "en,pcm,yo,ha,ig".
+    audio_prerender_langs: str = "en,pcm"
+
+    # --- demo console: exists only when DEMO_MODE is true and a demo token is sent ---
+    demo_mode: bool = False
+    demo_token: str = ""
+
+    # --- Phase 2 and 3 flags: all off ---
+    feature_sse: bool = False
+    feature_renew: bool = False
+    feature_voice: bool = False
+    feature_card_guard: bool = False
+    feature_failure_injection: bool = False
+    feature_phone_call: bool = False
+
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def _async_driver(cls, v: str) -> str:
+        # Hosts such as Render hand out plain postgres:// or postgresql:// URLs; we need asyncpg.
+        for plain in ("postgres://", "postgresql://"):
+            if isinstance(v, str) and v.startswith(plain):
+                v = "postgresql+asyncpg://" + v[len(plain) :]
+        if not isinstance(v, str) or not v.startswith("postgresql+asyncpg://"):
+            raise ValueError("DATABASE_URL must be a Postgres URL (postgresql+asyncpg://)")
+        return v
+
+    @model_validator(mode="after")
+    def _ssl_for_hosted_databases(self) -> "Settings":
+        if self.database_ssl.lower() == "require" and "ssl=" not in self.database_url:
+            joiner = "&" if "?" in self.database_url else "?"
+            self.database_url = f"{self.database_url}{joiner}ssl=require"
+        return self
+
+    @model_validator(mode="after")
+    def _demo_needs_a_token(self) -> "Settings":
+        # Demo mode opens mock login and the demo console; never without a real token.
+        if self.demo_mode and len(self.demo_token) < 8:
+            raise ValueError("DEMO_MODE=true requires DEMO_TOKEN of at least 8 characters")
+        return self
+
+    @property
+    def origins(self) -> list[str]:
+        return [o.strip() for o in self.origin.split(",") if o.strip()]
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+
+
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()  # required values come from the environment
+
+settings = Settings()

@@ -1,0 +1,3 @@
+# version: 1
+# status: wording approved by native Igbo review (reported by the team, 2026-10-22); final
+{payee} na-arị naira {amount_words}. {amount_digits_spoken}. I kwenyere?

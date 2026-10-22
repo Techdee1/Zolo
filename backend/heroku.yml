@@ -1,0 +1,12 @@
+# Heroku (container stack). Deploy from this folder:  git subtree push --prefix backend heroku main
+# The image is the same Dockerfile Render and Docker Compose use. Migrations (and the first seed) run in
+# the release phase, before the new dyno takes traffic. Settings are Heroku config vars: see docs/DEPLOY.md.
+build:
+  docker:
+    web: Dockerfile
+release:
+  image: web
+  command:
+    - sh -c "alembic upgrade head && python -m zolo.seed --if-empty"
+run:
+  web: sh -c "exec uvicorn zolo.api.main:create_app --factory --host 0.0.0.0 --port ${PORT:-8000}"

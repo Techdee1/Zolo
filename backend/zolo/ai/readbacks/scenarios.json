@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "note": "Extra demo variants beyond demo_script.json. Keep this list small: every new line costs a YarnGPT render. Only English and Pidgin; yo, ha and ig wording is unreviewed.",
+  "langs": ["en", "pcm"],
+  "readbacks": [
+    {"scenario": "agent cash-out, round amount", "payee": "Bisi Ventures", "amount_kobo": 2500000},
+    {"scenario": "agent cash-out, small", "payee": "Bisi Ventures", "amount_kobo": 500000},
+    {"scenario": "two Tundes: first", "payee": "Tunde Bakare", "amount_kobo": 500000},
+    {"scenario": "two Tundes: second", "payee": "Tunde Adeyemi", "amount_kobo": 500000},
+    {"scenario": "voice transfer to sister", "payee": "Adaeze Okafor", "amount_kobo": 1000000}
+  ],
+  "balances": [
+    {"scenario": "balance check", "balance_kobo": 2500000},
+    {"scenario": "balance check, larger", "balance_kobo": 12000000}
+  ]
+}
