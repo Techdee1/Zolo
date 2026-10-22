@@ -52,7 +52,7 @@ describe("Result screen: one outcome per screen, honest about money", () => {
       const id = await endedAs(outcome);
       renderScreen(<ResultScreen id={id} reason={null} />);
       const h1 = await screen.findByRole("heading", { level: 1, name: title });
-      expect(h1).toHaveFocus();
+      await waitFor(() => expect(h1).toHaveFocus());
       expect(document.querySelector("[data-result]")).toHaveAttribute("data-result", variant);
       expect(document.querySelector("[data-variant] svg")).toHaveAttribute("aria-hidden", "true");
     });

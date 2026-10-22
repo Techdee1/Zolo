@@ -80,7 +80,9 @@ describe("Review and approve: with no pre-rendered audio (screen reader reads it
     await ready();
     expect(approveButton()).toHaveAttribute("aria-disabled", "true");
     expect(approveButton()).toHaveAccessibleDescription("Listen to the request first.");
-    expect(screen.getByRole("heading", { level: 2, name: "What Zolo says" })).toHaveFocus();
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { level: 2, name: "What Zolo says" })).toHaveFocus(),
+    );
     await userEvent.click(approveButton());
     expect(sign).not.toHaveBeenCalled();
     await waitFor(() => expect(approveButton()).not.toHaveAttribute("aria-disabled"), {
@@ -233,7 +235,9 @@ describe("Review and approve: with Zolo's voice", () => {
     expect(screen.getByRole("heading", { level: 2, name: "What Zolo says" })).not.toHaveFocus();
     act(() => FakeAudio.last?.onended?.());
     expect(approveButton()).not.toHaveAttribute("aria-disabled");
-    expect(screen.getByRole("heading", { level: 2, name: "What Zolo says" })).toHaveFocus();
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { level: 2, name: "What Zolo says" })).toHaveFocus(),
+    );
   });
 
   it("says nothing through the live region while Zolo speaks, then catches up", async () => {
@@ -265,7 +269,9 @@ describe("Review and approve: with Zolo's voice", () => {
     await ready();
     await waitFor(() => expect(FakeAudio.last).not.toBeNull());
     act(() => FakeAudio.last?.onerror?.());
-    expect(screen.getByRole("heading", { level: 2, name: "What Zolo says" })).toHaveFocus();
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { level: 2, name: "What Zolo says" })).toHaveFocus(),
+    );
     await waitFor(() => expect(approveButton()).not.toHaveAttribute("aria-disabled"), {
       timeout: 4000,
     });
